@@ -48,6 +48,8 @@ export type Project = {
   challenge?: string;
   solution?: string;
   outcome?: string;
+  /** Shown in a notice under the cover — e.g. why a private project has no link. */
+  note?: string;
 };
 
 export const projects: Project[] = [
@@ -242,6 +244,45 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/LeouDev/DataVerse",
   },
   {
+    id: "lac-apex",
+    slug: "lac-apex",
+    name: "LAC Apex",
+    tagline: "Your personal financial command center.",
+    description:
+      "A personal finance app that brings income, expenses, budgets, recurring bills, credit cards, loans, savings, investments, and net worth into one place — for one person or a whole household.",
+    categories: ["web-app"],
+    status: "private",
+    year: 2026,
+    featured: false,
+    // Private: no liveUrl or githubUrl. Screens come from a local build filled with a fictional
+    // demo household — never capture the live app, which holds real financial data.
+    coverImage: "/projects/lac-apex/cover.webp",
+    logo: "/projects/lac-apex/icon.png",
+    gallery: [
+      { src: "/projects/lac-apex/desktop-1.webp", alt: "Reports: income vs expenses over twelve months", kind: "desktop" },
+      { src: "/projects/lac-apex/desktop-2.webp", alt: "Credit cards with utilization and due dates", kind: "desktop" },
+      { src: "/projects/lac-apex/desktop-3.webp", alt: "Savings goals with progress and contributions", kind: "desktop" },
+      { src: "/projects/lac-apex/mobile-1.webp", alt: "The dashboard on a phone", kind: "mobile" },
+      { src: "/projects/lac-apex/mobile-2.webp", alt: "Credit cards on a phone", kind: "mobile" },
+      { src: "/projects/lac-apex/mobile-3.webp", alt: "Savings goals on a phone", kind: "mobile" },
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL", "Auth.js", "Recharts", "Framer Motion", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "dashboard", title: "One dashboard", description: "Income, spending, budgets, and net worth at a glance." },
+      { icon: "calendar", title: "Bills on autopilot", description: "Income logs itself on payday, and recurring bills on their due dates." },
+      { icon: "card", title: "Debt & savings", description: "Credit cards, loans, savings goals, and an emergency fund, tracked together." },
+      { icon: "chart", title: "Investments & net worth", description: "Investment and net worth snapshots over time." },
+      { icon: "table", title: "Reports", description: "Reports you can export as PDF or Excel." },
+      { icon: "zap", title: "Installable", description: "Works like an app on your phone, with a bottom tab bar and an offline page." },
+    ],
+    challenge: "Personal finances end up scattered across banking apps, spreadsheets, and reminders — hard to see as one picture.",
+    solution:
+      "LAC Apex brings every account, bill, and goal into one command center, with automation for recurring money and exportable reports.",
+    role: "Design and development.",
+    note: "This is a private personal app, so there’s no public link. The screenshots use a fictional demo household — no real accounts or balances are shown.",
+  },
+  {
     id: "dicta",
     slug: "dicta",
     name: "DICTA",
@@ -310,6 +351,7 @@ export const projects: Project[] = [
       "Team performance lived in a weekly workbook, so spotting who needed support — and following through — was slow and manual.",
     solution: "A focused internal tool that turns the weekly workbook into KPI checks, action items, and scorecards leaders can act on.",
     role: "Design and full-stack development.",
+    note: "This is a private internal tool, so there’s no public link. Names in the screenshots are blurred, and no patient data is shown.",
   },
 ];
 
@@ -346,7 +388,7 @@ const techGroups: Record<string, string> = {
   "React Native": "Mobile", Expo: "Mobile", iOS: "Mobile", Swift: "Mobile", "React Native Skia": "Mobile",
   PayMongo: "Backend", "Drizzle ORM": "Backend",
   Supabase: "Backend", PostgreSQL: "Backend", Prisma: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
-  Resend: "Backend", Brevo: "Backend",
+  Resend: "Backend", Brevo: "Backend", "Auth.js": "Backend",
   Vercel: "Tools", GitHub: "Tools", Figma: "Tools", "AI development tools": "Tools",
 };
 

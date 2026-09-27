@@ -106,11 +106,10 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
           />
           <StatusBadge status={project.status} className="absolute top-5 left-5" />
         </div>
-        {project.status === "private" && (
+        {project.note && (
           <p className="mt-4 flex items-start gap-3 rounded-2xl border border-line bg-white/60 px-5 py-4 text-sm text-muted">
-            <Lock aria-hidden className="mt-0.5 size-4 shrink-0 text-navy" />
-            This is a private internal tool, so there’s no public link. Names in the screenshots are blurred, and no patient
-            data is shown.
+            {project.status === "private" && <Lock aria-hidden className="mt-0.5 size-4 shrink-0 text-navy" />}
+            {project.note}
           </p>
         )}
       </div>
