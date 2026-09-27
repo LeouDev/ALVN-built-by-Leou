@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ContactOptions } from "@/components/ContactOptions";
 import { Emblem, Eyebrow } from "@/components/ui";
-import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -20,7 +19,7 @@ export default function ContactPage() {
         </div>
       </div>
       <div className="lg:col-span-7">
-        <ContactOptions bookingUrl={site.bookingUrl} />
+        <ContactOptions booking={Boolean(process.env.BOOKING_URL)} />
       </div>
     </section>
   );

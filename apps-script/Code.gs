@@ -1,30 +1,45 @@
 /**
- * ALVN booking emails (Google Apps Script)
+ * ALVN bookings (Google Apps Script)
  *
- * When someone books the 30-min intro call on the site's Contact page, this sends them a
- * branded "You're booked" email from your Gmail. Google's own calendar invite (with the Meet
- * link) still goes out too; that one can't be restyled or turned off.
+ * Runs in Leou's Google account and powers the "Book a call" calendar on the site's Contact page:
+ *   - The site asks this web app for open 30-minute times. Anything on your calendar is skipped.
+ *   - Booking a time creates the event with a Google Meet link. Google emails the client the
+ *     invite, and you get an email about the new booking.
+ *   - Each booker also gets a branded "You're booked" email from your Gmail (sendBookingEmails).
  *
- * Setup, once:
- *   1. Go to script.google.com → New project, and name it "ALVN booking emails".
+ * Setup, once (the repo copy of this project lives in apps-script/):
+ *   1. script.google.com → New project, named "ALVN booking emails".
  *   2. Replace everything in Code.gs with this file, then click Save.
- *   3. Next to "Services" click + → Google Calendar API → Add. If the + won't respond: Project Settings
- *      (gear) → tick "Show appsscript.json manifest file in editor", then replace that file with
- *      apps-script/appsscript.json.
- *   4. Choose `setup` in the toolbar and click Run, then allow the permissions it asks for.
+ *   3. Add the Google Calendar API service: Services + → Google Calendar API → Add. If the + won't
+ *      respond: Project Settings (gear) → tick "Show appsscript.json manifest file in editor", then
+ *      replace that file with apps-script/appsscript.json.
+ *   4. Project Settings → Script Properties → add BOOKING_SECRET, the same value as the site's
+ *      BOOKING_SECRET in Vercel.
+ *   5. Choose `setup` in the toolbar and click Run, then allow the permissions it asks for.
  *      "Google hasn't verified this app" is expected for your own script:
  *      click Advanced → Go to ALVN booking emails.
- *   5. Optional: run `sendTestEmail` to get a sample in your own inbox.
+ *   6. Deploy → New deployment → Web app. Execute as: Me. Who has access: Anyone. Deploy, and put
+ *      the Web app URL (it ends in /exec) in the site's BOOKING_URL in Vercel.
  *
- * It runs whenever your calendar changes (with a 5-minute backup check), so the email lands right
- * after Google's invite. After pasting a new version of this file, run `setup` once more.
- * Tests: apps-script/booking-emails.test.mjs (npm test).
+ * After pasting a new version of this file, run `setup` once more, then Deploy → Manage deployments
+ * → Edit (pencil) → Version: New version → Deploy. Until then the web app keeps running the old code.
+ * Tests: apps-script/code.test.mjs (npm test).
  */
 
-const SCHEDULE_TITLE = "30-min intro call with Leou"; // must match the appointment schedule's title
+const SCHEDULE_TITLE = "30-min intro call with Leou"; // booked events are titled "<this> (<name>)"
 const CALENDAR_ID = "primary";
 const SITE_URL = "https://alvn-built-by-leou.vercel.app";
 const SENDER_NAME = "Leou · ALVN";
+
+// Bookable times: weekdays, 9:00 AM–5:00 PM Manila time, in 30-minute calls.
+const TIME_ZONE = "Asia/Manila";
+const UTC_OFFSET_HOURS = 8; // ponytail: fixed offset (Manila has no daylight saving); work it out per day if TIME_ZONE ever changes to a zone that has it
+const WORK_DAYS = [1, 2, 3, 4, 5]; // 0 = Sunday … 6 = Saturday
+const DAY_START_HOUR = 9;
+const DAY_END_HOUR = 17;
+const SLOT_MINUTES = 30;
+const MIN_NOTICE_HOURS = 12;
+const DAYS_AHEAD = 14;
 
 function setup() {
   ScriptApp.getProjectTriggers().forEach((t) => ScriptApp.deleteTrigger(t));
@@ -54,6 +69,94 @@ function sendBookingEmails() {
       send_(event, guest, res.timeZone);
       props.setProperty("sent:" + event.id, new Date().toISOString());
     }
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** The site's /api/booking route calls this web app with {secret, action: "slots" | "book", ...}. */
+function doPost(e) {
+  let result;
+  try {
+    const body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+    const secret = PropertiesService.getScriptProperties().getProperty("BOOKING_SECRET");
+    if (!secret || body.secret !== secret) result = { error: "unauthorized" };
+    else if (body.action === "slots") result = { slots: openSlots_(busyTimes_(), Date.now()) };
+    else if (body.action === "book") result = book_(body);
+    else result = { error: "unknown action" };
+  } catch (err) {
+    console.error(err);
+    result = { error: "server" };
+  }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Open start times (ISO strings) in the booking window, skipping busy times. */
+function openSlots_(busy, now) {
+  const hour = 36e5, day = 864e5, slot = SLOT_MINUTES * 6e4, offset = UTC_OFFSET_HOURS * hour;
+  const earliest = now + MIN_NOTICE_HOURS * hour;
+  const today = Math.floor((now + offset) / day) * day - offset; // local midnight
+  const slots = [];
+  for (let d = 0; d <= DAYS_AHEAD; d++) {
+    const midnight = today + d * day;
+    if (!WORK_DAYS.includes(new Date(midnight + offset).getUTCDay())) continue;
+    for (let t = midnight + DAY_START_HOUR * hour; t + slot <= midnight + DAY_END_HOUR * hour; t += slot) {
+      if (t >= earliest && !busy.some((b) => b.start < t + slot && b.end > t)) slots.push(new Date(t).toISOString());
+    }
+  }
+  return slots;
+}
+
+function busyTimes_() {
+  const now = Date.now();
+  const res = Calendar.Freebusy.query({
+    timeMin: new Date(now).toISOString(),
+    timeMax: new Date(now + (DAYS_AHEAD + 2) * 864e5).toISOString(),
+    items: [{ id: CALENDAR_ID }],
+  });
+  const calendar = Object.values(res.calendars)[0];
+  if (calendar.errors) throw new Error(JSON.stringify(calendar.errors));
+  return (calendar.busy || []).map((b) => ({ start: new Date(b.start).getTime(), end: new Date(b.end).getTime() }));
+}
+
+function book_(body) {
+  const name = String(body.name || "").replace(/\s+/g, " ").trim().slice(0, 120);
+  const email = String(body.email || "").trim();
+  const note = String(body.note || "").trim().slice(0, 1000);
+  const start = String(body.start || "");
+  if (!name || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "invalid" };
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) return { error: "busy" };
+  try {
+    // Checked again under the lock, so two people can't book the same time.
+    if (!openSlots_(busyTimes_(), Date.now()).includes(start)) return { error: "taken" };
+    const end = new Date(new Date(start).getTime() + SLOT_MINUTES * 6e4).toISOString();
+    const event = Calendar.Events.insert(
+      {
+        summary: `${SCHEDULE_TITLE} (${name})`,
+        description: [note, `Booked on ${SITE_URL}/contact`].filter(Boolean).join("\n\n"),
+        start: { dateTime: start, timeZone: TIME_ZONE },
+        end: { dateTime: end, timeZone: TIME_ZONE },
+        attendees: [{ email, displayName: name }],
+        conferenceData: { createRequest: { requestId: Utilities.getUuid(), conferenceSolutionKey: { type: "hangoutsMeet" } } },
+      },
+      CALENDAR_ID,
+      { conferenceDataVersion: 1, sendUpdates: "all" },
+    );
+    const when = Utilities.formatDate(new Date(start), TIME_ZONE, "EEE, MMM d 'at' h:mm a");
+    MailApp.sendEmail({
+      to: Session.getEffectiveUser().getEmail(),
+      replyTo: email,
+      subject: `New call booked: ${name}, ${when}`,
+      body: [
+        `${name} (${email}) booked a 30-min intro call.`, "",
+        `When: ${when} (Manila time)`, `Google Meet: ${event.hangoutLink || "see the calendar event"}`,
+        ...(note ? ["", "Their note:", note] : []), "",
+        "It's on your Google Calendar. Reply to this email to reach them directly.",
+      ].join("\n"),
+    });
+    return { ok: true, start, end };
   } finally {
     lock.releaseLock();
   }
@@ -98,7 +201,7 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
   const intro = "Thanks for booking a call. I’m looking forward to hearing what you’re building.";
   const prep = ["What you’re building and who it’s for", "Links, screenshots, or apps you like", "Your timeline and a rough budget"];
   const invite = "Google may label my calendar invite as coming from an “unknown sender” because we haven’t emailed before. Tap “Add to calendar” to save it.";
-  const change = "Need a different time? Use the links in the Google Calendar invite, or just reply to this email.";
+  const change = "Need a different time? Just reply to this email.";
 
   const subject = `You’re booked: ${day} at ${start}`;
   const text = [

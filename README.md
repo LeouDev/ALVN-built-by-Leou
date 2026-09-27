@@ -41,7 +41,14 @@ To add another provider, add a function to `providers` in `lib/email.ts`.
 
 ## Call bookings
 
-The Contact page embeds a Google Calendar appointment schedule (`bookingUrl` in `lib/site.ts`; use the full calendar.google.com URL, since the short link can't be embedded). Google sends its own invite with the Meet link. [`apps-script/booking-emails.gs`](apps-script/booking-emails.gs) adds a branded "You're booked" email: it runs in your Google account, not on Vercel, and its setup steps are at the top of the file.
+The Contact page's "Book a 30-min call" calendar (`components/BookingCalendar.tsx`) is the site's own. `/api/booking` passes requests to a Google Apps Script web app in Leou's Google account ([`apps-script/Code.gs`](apps-script/Code.gs)). The script lists open 30-minute times from the calendar's free/busy info and creates the event with a Google Meet link (Google emails the invite). It also emails Leou about each booking and sends the booker a branded confirmation. Setup steps are at the top of that file.
+
+| Variable | Value |
+| --- | --- |
+| `BOOKING_URL` | The Apps Script web app URL (ends in `/exec`) |
+| `BOOKING_SECRET` | A long random string, also saved as the script's `BOOKING_SECRET` property |
+
+Without `BOOKING_URL`, the Contact page shows only the inquiry form.
 
 ## Brand assets
 

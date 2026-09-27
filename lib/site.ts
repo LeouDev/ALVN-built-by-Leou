@@ -3,9 +3,6 @@ export const site = {
   title: "ALVN — Built by Leou",
   descriptor: "Digital Products & Experiences",
   resumeUrl: "https://leoudev.github.io/LeouComendador/",
-  // Google Calendar appointment schedule. Use the full calendar.google.com URL: the calendar.app.google
-  // short link refuses to load in an iframe. Empty hides the "Book a call" option on /contact.
-  bookingUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3bfCtciD93xo6RSa0rn4cnQ6C1Tyg5lal9-VTDeEdPUz2yCTyv9r1tnz6hBLJAzxH0JUvRbvGT",
   description:
     "Ideas, designed and built into digital experiences. A growing collection of websites, apps, experiments, and digital products built by Leou.",
   url:
