@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #071a2d;
+  --color-navy-soft: #0d2942;
+  --color-accent: #f47721;
+  --color-cream: #f7f3ea;
+  --color-paper: #fefbf0; /* the logo artwork's own background */
+  --color-muted: #5f6b7e; /* brand #667085, nudged darker to keep 4.5:1 contrast on cream */
+  --color-line: rgb(7 26 45 / 0.12);
+
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade-in: fade-in 1.4s ease-out both;
+  --animate-orbit: orbit 90s linear infinite;
+  --animate-orbit-reverse: orbit 150s linear infinite reverse;
+  --animate-grid-in: grid-in 1.8s ease-out both;
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes grid-in {
+  from { opacity: 0; transform: translate(-14px, -14px); }
+}
+
+@utility shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+@utility section {
+  @apply mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28;
+}
+@utility eyebrow {
+  @apply inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.22em] text-muted uppercase;
+}
+@utility headline {
+  @apply font-semibold leading-[0.95] tracking-[-0.045em] text-balance;
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-cream text-navy antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-navy);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 3px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-cream);
+  }
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+}
+
+/* Fine grid behind heroes */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(7 26 45 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(7 26 45 / 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 60% 40%, #000 25%, transparent 75%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Cards and sections ease in as they scroll into view (where supported; otherwise just visible) */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
