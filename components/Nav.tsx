@@ -7,6 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { navLinks } from "@/lib/site";
 
+// The floating capsule; the mobile menu reuses it so its close button lands where the menu button was.
+const pill = "pointer-events-auto flex h-14 items-center rounded-full border border-line pr-2 pl-5 backdrop-blur-xl transition-[background-color,box-shadow] duration-300";
+
 export function Nav() {
   const pathname = usePathname();
   const menu = useRef<HTMLDialogElement>(null);
@@ -24,14 +27,16 @@ export function Nav() {
 
   return (
     <>
-      <header
-        className={`sticky top-0 z-40 border-b transition-[background-color,border-color,backdrop-filter] duration-300 ${
-          scrolled ? "border-line bg-cream/80 backdrop-blur-xl" : "border-transparent"
-        }`}
-      >
-        <nav aria-label="Main" className="shell flex h-16 items-center justify-between gap-6 md:h-20">
+      {/* Only the pill takes clicks; the rest of the sticky strip lets them through to the page. */}
+      <header className="pointer-events-none sticky top-0 z-40 px-4 pt-3 md:pt-4">
+        <nav
+          aria-label="Main"
+          className={`${pill} mx-auto w-full justify-between gap-2 md:w-fit md:gap-8 ${
+            scrolled ? "bg-paper/85 shadow-[0_12px_40px_-16px_rgba(7,26,45,0.35)]" : "bg-paper/60"
+          }`}
+        >
           <Link href="/" className="shrink-0">
-            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} preload className="h-7 w-auto md:h-8" />
+            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} preload className="h-6 w-auto md:h-7" />
           </Link>
 
           <ul className="hidden items-center gap-1 md:flex">
@@ -67,7 +72,7 @@ export function Nav() {
               menu.current?.showModal();
               setOpen(true);
             }}
-            className="-mr-2 grid size-11 place-items-center rounded-full md:hidden"
+            className="grid size-10 place-items-center rounded-full md:hidden"
           >
             <span aria-hidden className="flex w-5 flex-col gap-[5px]">
               <span className="h-0.5 rounded-full bg-navy" />
@@ -85,16 +90,18 @@ export function Nav() {
         onClick={(e) => (e.target as HTMLElement).closest("a") && menu.current?.close()}
         className="m-0 h-dvh max-h-none w-full max-w-none bg-cream p-0 text-navy open:flex open:animate-[fade-in_250ms_ease-out] open:flex-col"
       >
-        <div className="shell flex h-16 items-center justify-between">
-          <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={96} height={28} className="h-7 w-auto" />
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => menu.current?.close()}
-            className="-mr-2 grid size-11 place-items-center rounded-full ring-1 ring-line"
-          >
-            <X aria-hidden className="size-5" />
-          </button>
+        <div className="px-4 pt-3">
+          <div className={`${pill} justify-between bg-paper/60`}>
+            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={96} height={28} className="h-6 w-auto" />
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => menu.current?.close()}
+              className="grid size-10 place-items-center rounded-full ring-1 ring-line"
+            >
+              <X aria-hidden className="size-5" />
+            </button>
+          </div>
         </div>
         <nav aria-label="Mobile" className="shell flex flex-1 flex-col justify-between pt-10 pb-10">
           <ul>
