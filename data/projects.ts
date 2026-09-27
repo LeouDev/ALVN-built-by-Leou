@@ -64,7 +64,7 @@ export const projects: Project[] = [
     status: "live",
     year: 2026,
     featured: true,
-    coverImage: "/projects/air-rally/desktop-1.webp",
+    coverImage: "/projects/air-rally/cover.webp",
     logo: "/projects/air-rally/icon.png",
     // videoUrl: "https://…",
     gallery: [
