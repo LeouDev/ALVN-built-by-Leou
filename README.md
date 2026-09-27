@@ -39,6 +39,10 @@ Set these in Vercel → Project → Settings → Environment Variables:
 
 To add another provider, add a function to `providers` in `lib/email.ts`.
 
+## Call bookings
+
+The Contact page embeds a Google Calendar appointment schedule (`bookingUrl` in `lib/site.ts`; use the full calendar.google.com URL, since the short link can't be embedded). Google sends its own invite with the Meet link. [`apps-script/booking-emails.gs`](apps-script/booking-emails.gs) adds a branded "You're booked" email: it runs in your Google account, not on Vercel, and its setup steps are at the top of the file.
+
 ## Brand assets
 
 - `public/brand/alvn-logo.webp`: the official logo, untouched

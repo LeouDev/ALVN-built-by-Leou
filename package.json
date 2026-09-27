@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --experimental-strip-types --test lib/inquiry.test.mjs"
+    "test": "node --experimental-strip-types --test lib/inquiry.test.mjs apps-script/booking-emails.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.48.0",
