@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import {
   Activity, ArrowLeft, ArrowRight, CalendarCheck, Camera, ChartColumn, Compass, CreditCard, Gauge, Globe,
   LayoutDashboard, ListChecks, Lock, Mail, MessageCircle, MessagesSquare, Package, QrCode, Quote, Rocket, ShieldCheck,
-  Palette, Shuffle, SlidersHorizontal, Sparkles, Table2, Trophy, Users, Workflow, Zap, type LucideIcon,
+  Palette, Share2, Shuffle, SlidersHorizontal, Sparkles, Table2, Trophy, Users, Workflow, Zap, type LucideIcon,
 } from "lucide-react";
 import { PhoneMockup } from "@/components/PhoneMockup";
 import { ButtonLink, StartProject, StatusBadge } from "@/components/ui";
@@ -17,7 +17,7 @@ const featureIcons: Record<IconName, LucideIcon> = {
   thought: MessageCircle, quote: Quote, camera: Camera, community: Users,
   zap: Zap, gauge: Gauge, box: Package, chat: MessagesSquare, admin: SlidersHorizontal, publish: Rocket,
   activity: Activity, sparkles: Sparkles, mail: Mail, globe: Globe, dashboard: LayoutDashboard, qr: QrCode,
-  shield: ShieldCheck, palette: Palette, checklist: ListChecks,
+  shield: ShieldCheck, palette: Palette, checklist: ListChecks, share: Share2,
 };
 
 export const dynamicParams = false;

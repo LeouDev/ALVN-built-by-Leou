@@ -12,7 +12,7 @@ export type IconName =
   | "workflow" | "transform" | "table" | "chart"
   | "thought" | "quote" | "camera" | "community"
   | "zap" | "gauge" | "box" | "chat" | "admin" | "publish"
-  | "activity" | "sparkles" | "mail" | "globe" | "dashboard" | "qr" | "shield" | "palette" | "checklist";
+  | "activity" | "sparkles" | "mail" | "globe" | "dashboard" | "qr" | "shield" | "palette" | "checklist" | "share";
 
 export type Feature = { title: string; description: string; icon: IconName };
 
@@ -242,20 +242,26 @@ export const projects: Project[] = [
     status: "coming-soon",
     year: 2026,
     featured: false, // shown in the home page's Mobile Apps section instead
-    coverImage: "/projects/dicta/cover.svg",
+    coverImage: "/projects/dicta/cover.webp",
     logo: "/projects/dicta/icon.png",
     // appStoreUrl: "https://apps.apple.com/…", // once it's on the App Store
     gallery: [
-      // Add the App Store screenshots here when they exist:
-      // { src: "/projects/dicta/ios-1.webp", alt: "The DICTA feed", kind: "mobile" },
+      // Screens cropped from the app's App Store screenshots.
+      { src: "/projects/dicta/ios-1.webp", alt: "The DICTA feed of designed quote cards", kind: "mobile" },
+      { src: "/projects/dicta/ios-2.webp", alt: "Designing a card with templates, fonts, and colors", kind: "mobile" },
+      { src: "/projects/dicta/ios-3.webp", alt: "Sharing a card as a Story, post, or square", kind: "mobile" },
+      { src: "/projects/dicta/ios-4.webp", alt: "A profile gallery of cards", kind: "mobile" },
+      { src: "/projects/dicta/ios-5.webp", alt: "Discover trending quotes, topics, and creators", kind: "mobile" },
     ],
     technologies: ["Expo", "React Native", "TypeScript", "Supabase", "React Native Skia", "TanStack Query", "Zustand"],
     platforms: ["iOS"],
     features: [
-      { icon: "quote", title: "Quote cards", description: "Every post is a designed card, drawn with Skia across 18 templates." },
-      { icon: "palette", title: "Visual editor", description: "Set type, color, texture, and layout with a live preview." },
-      { icon: "community", title: "Social layer", description: "Likes, threaded comments, follows, saves, and realtime activity." },
-      { icon: "compass", title: "Discover & share", description: "Trending creators, topics, and hashtags — and every card exports as an image or link." },
+      { icon: "quote", title: "Your thoughts, as art", description: "Every post is a designed quote card." },
+      { icon: "palette", title: "Design it in seconds", description: "18 templates, 13 fonts, your colors and photos." },
+      { icon: "share", title: "Share it everywhere", description: "Instagram and Facebook Stories, Threads, and X." },
+      { icon: "community", title: "A gallery of your words", description: "Your cover photo, your cards, your people." },
+      { icon: "compass", title: "Find words that move you", description: "Trending quotes, topics, and creators." },
+      { icon: "chat", title: "Real conversation", description: "Likes, threaded comments, follows, saves, and realtime activity." },
     ],
     challenge: "In most feeds, words are just plain text — easy to scroll past.",
     solution:

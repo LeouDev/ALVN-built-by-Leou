@@ -18,10 +18,10 @@ export function PhoneMockup({
 }) {
   return (
     <div
-      className={`relative aspect-[9/19.5] shrink-0 rounded-[16%/7.4%] bg-[#0b1f33] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.6)] ring-1 ring-white/15 ${className}`}
+      className={`relative aspect-[9/18.83] shrink-0 rounded-[16%/7.4%] bg-[#0b1f33] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.6)] ring-1 ring-white/15 ${className}`}
     >
-      {/* Bezel via insets, not padding: % padding resolves against the parent's width, insets against this frame. */}
-      <div className="@container absolute inset-x-[3.2%] inset-y-[1.48%] overflow-hidden rounded-[13%/6%] bg-cream">
+      {/* Bezel via insets (not % padding, which resolves against the parent). Frame 9:18.83 leaves a 9:19.5 screen. */}
+      <div className="@container absolute inset-x-[3.2%] inset-y-[1.53%] overflow-hidden rounded-[13%/6%] bg-cream">
         {screen ? (
           <Image src={screen.src} alt={screen.alt} fill sizes="(min-width: 1024px) 260px, 45vw" className="object-cover" />
         ) : (
