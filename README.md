@@ -32,10 +32,10 @@ Set these in Vercel → Project → Settings → Environment Variables:
 
 | Variable         | Value                                                                  |
 | ---------------- | ---------------------------------------------------------------------- |
-| `EMAIL_PROVIDER` | `resend`                                                               |
-| `RESEND_API_KEY` | from resend.com (or the Resend integration on the Vercel Marketplace) |
+| `EMAIL_PROVIDER` | `brevo`                                                                |
+| `BREVO_API_KEY`  | Brevo → SMTP & API → API Keys (v3 key)                                 |
 | `INQUIRY_EMAIL`  | where inquiries are delivered                                          |
-| `EMAIL_FROM`     | a sender on a Resend-verified domain, e.g. `ALVN <hello@yourdomain.com>` |
+| `EMAIL_FROM`     | a sender verified in Brevo, e.g. `ALVN <hello@yourdomain.com>`         |
 
 To add another provider, add a function to `providers` in `lib/email.ts`.
 

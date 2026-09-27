@@ -3,24 +3,31 @@
 
 export type Email = { to: string; from: string; replyTo?: string; subject: string; html: string; text: string };
 
+/** `ALVN <hi@example.com>` → { name: "ALVN", email: "hi@example.com" }; a bare address has no name. */
+export function parseAddress(value: string): { name?: string; email: string } {
+  const m = value.match(/^\s*"?(.*?)"?\s*<\s*([^>\s]+)\s*>\s*$/);
+  return m ? { ...(m[1] && { name: m[1] }), email: m[2] } : { email: value.trim() };
+}
+
 const providers: Record<string, (email: Email) => Promise<void>> = {
-  async resend(email) {
-    const key = process.env.RESEND_API_KEY;
-    if (!key) throw new Error("RESEND_API_KEY is not set");
-    const res = await fetch("https://api.resend.com/emails", {
+  // Brevo transactional email: https://developers.brevo.com/reference/sendtransacemail
+  async brevo(email) {
+    const key = process.env.BREVO_API_KEY;
+    if (!key) throw new Error("BREVO_API_KEY is not set");
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      headers: { "api-key": key, "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
-        from: email.from,
-        to: [email.to],
-        reply_to: email.replyTo,
+        sender: parseAddress(email.from),
+        to: [{ email: email.to }],
+        ...(email.replyTo && { replyTo: { email: email.replyTo } }),
         subject: email.subject,
-        html: email.html,
-        text: email.text,
+        htmlContent: email.html,
+        textContent: email.text,
       }),
       signal: AbortSignal.timeout(10_000),
     });
-    if (!res.ok) throw new Error(`Resend responded ${res.status}: ${await res.text()}`);
+    if (!res.ok) throw new Error(`Brevo responded ${res.status}: ${await res.text()}`);
   },
 
   // Local development: prints the email instead of sending it.
@@ -30,7 +37,7 @@ const providers: Record<string, (email: Email) => Promise<void>> = {
 };
 
 export async function sendEmail(email: Email) {
-  const name = process.env.EMAIL_PROVIDER || "resend";
+  const name = process.env.EMAIL_PROVIDER || "brevo";
   if (!Object.hasOwn(providers, name)) throw new Error(`Unknown EMAIL_PROVIDER "${name}"`);
   await providers[name](email);
 }
