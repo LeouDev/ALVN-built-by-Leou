@@ -23,6 +23,16 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href={site.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-navy/65 transition-colors hover:text-navy"
+              >
+                Résumé ↗<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
           </ul>
         </nav>
         <div className="md:col-span-3 md:text-right">

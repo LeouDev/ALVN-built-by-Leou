@@ -12,7 +12,7 @@ export type IconName =
   | "workflow" | "transform" | "table" | "chart"
   | "thought" | "quote" | "camera" | "community"
   | "zap" | "gauge" | "box" | "chat" | "admin" | "publish"
-  | "activity" | "sparkles" | "mail" | "globe" | "dashboard" | "qr" | "shield";
+  | "activity" | "sparkles" | "mail" | "globe" | "dashboard" | "qr" | "shield" | "palette" | "checklist";
 
 export type Feature = { title: string; description: string; icon: IconName };
 
@@ -57,34 +57,44 @@ export const projects: Project[] = [
     name: "AIR/Rally",
     tagline: "Pickleball discovery and booking platform.",
     description:
-      "A platform designed to make discovering pickleball venues, checking availability, and booking courts simple.",
+      "A platform designed to make discovering pickleball venues, checking availability, and booking courts simple — on the web and in the iOS app.",
     categories: ["web-app", "mobile-app"],
     status: "live",
     year: 2026,
     featured: true,
-    coverImage: "/projects/air-rally/cover.svg",
-    // logo: "/projects/air-rally/icon.png",
-    // liveUrl: "https://…",
-    // appStoreUrl: "https://apps.apple.com/…",
+    coverImage: "/projects/air-rally/desktop-1.webp",
+    logo: "/projects/air-rally/icon.png",
     // videoUrl: "https://…",
     gallery: [
-      // { src: "/projects/air-rally/web-discover.webp", alt: "Venue discovery on desktop", kind: "desktop" },
-      // { src: "/projects/air-rally/ios-booking.webp", alt: "Booking a court on iOS", kind: "mobile" },
-      // { src: "/projects/air-rally/promo.mp4", alt: "AIR/Rally promo video", kind: "video" },
+      { src: "/projects/air-rally/desktop-2.webp", alt: "Exploring courts with filters on air-rally.com", kind: "desktop" },
+      { src: "/projects/air-rally/desktop-3.webp", alt: "AIR/Rally HQ venue page with the booking panel", kind: "desktop" },
+      { src: "/projects/air-rally/desktop-4.webp", alt: "Why AIR/Rally and how booking works", kind: "desktop" },
+      // iOS screens are the app's own App Store screenshots.
+      { src: "/projects/air-rally/ios-1.webp", alt: "Finding a court in the iOS app", kind: "mobile" },
+      { src: "/projects/air-rally/ios-2.webp", alt: "Setting up a ranked game", kind: "mobile" },
+      { src: "/projects/air-rally/ios-3.webp", alt: "A ranked match found", kind: "mobile" },
+      { src: "/projects/air-rally/ios-4.webp", alt: "The COURT/Side community feed", kind: "mobile" },
+      { src: "/projects/air-rally/ios-5.webp", alt: "Player profile with rank", kind: "mobile" },
+      { src: "/projects/air-rally/ios-6.webp", alt: "Choosing a referee for a ranked match", kind: "mobile" },
     ],
-    technologies: ["React", "TypeScript", "Supabase", "Expo", "React Native", "Vercel"],
+    technologies: ["Next.js", "React Native", "Expo", "TypeScript", "Tailwind CSS", "Supabase", "PayMongo", "Vercel"],
     platforms: ["Web", "iOS"],
     features: [
-      { icon: "compass", title: "Discover", description: "Find pickleball courts and venues." },
-      { icon: "calendar", title: "Booking", description: "Reserve available schedules." },
-      { icon: "card", title: "Payments", description: "Support digital payment workflows." },
-      { icon: "trophy", title: "Rankings", description: "Competitive ranking and matchmaking." },
+      { icon: "compass", title: "Discover", description: "Find courts by city, price, surface, and rating." },
+      { icon: "calendar", title: "Booking", description: "Reserve open slots with live availability — double bookings are blocked at the database." },
+      { icon: "card", title: "Payments", description: "Pay online at checkout through PayMongo." },
+      { icon: "trophy", title: "Rankings", description: "Ranked matches with rank tiers, referees, and matchmaking." },
+      { icon: "community", title: "COURT/Side", description: "A social feed where players share, follow, and rally together." },
+      { icon: "dashboard", title: "For venue owners", description: "List a court, set hours and pricing, and follow bookings and earnings." },
     ],
     challenge:
       "Discovering venues, checking court availability, and booking a slot is often fragmented and manual.",
     solution:
-      "AIR/Rally brings venue discovery, availability, booking, and payments into one platform — on the web and on mobile.",
+      "AIR/Rally brings discovery, live availability, booking, payments, and ranked play into one platform — on the web and in the iOS app, on a shared Supabase backend.",
     role: "Concept, product design, and development across web and mobile.",
+    liveUrl: "https://air-rally.com",
+    appStoreUrl: "https://apps.apple.com/app/id6803324731",
+    githubUrl: "https://github.com/LeouDev/AIR-Rally",
   },
   {
     id: "aprrc-2027",
@@ -225,33 +235,34 @@ export const projects: Project[] = [
     id: "dicta",
     slug: "dicta",
     name: "DICTA",
-    tagline: "Thoughts worth sharing.",
+    tagline: "A place where thoughts become art.",
     description:
-      "A social platform combining thoughts, quotes, photography, and community interaction into a positive creative feed.",
+      "An iOS-first social network where every post is a designed quote card: write a thought, then choose its typography, colors, background, and layout. Followers see the card, not plain text.",
     categories: ["mobile-app"],
     status: "coming-soon",
     year: 2026,
     featured: false, // shown in the home page's Mobile Apps section instead
     coverImage: "/projects/dicta/cover.svg",
-    // logo: "/projects/dicta/icon.png",
-    // liveUrl: "https://…",
-    // appStoreUrl: "https://apps.apple.com/…",
-    // videoUrl: "https://…",
+    logo: "/projects/dicta/icon.png",
+    // appStoreUrl: "https://apps.apple.com/…", // once it's on the App Store
     gallery: [
-      // { src: "/projects/dicta/feed.webp", alt: "The DICTA feed", kind: "mobile" },
+      // Add the App Store screenshots here when they exist:
+      // { src: "/projects/dicta/ios-1.webp", alt: "The DICTA feed", kind: "mobile" },
     ],
-    technologies: [],
+    technologies: ["Expo", "React Native", "TypeScript", "Supabase", "React Native Skia", "TanStack Query", "Zustand"],
     platforms: ["iOS"],
     features: [
-      { icon: "thought", title: "Thoughts", description: "Share short thoughts and ideas." },
-      { icon: "quote", title: "Quotes", description: "Post and discover quotes worth keeping." },
-      { icon: "camera", title: "Photography", description: "Pair words with images — or let photos speak." },
-      { icon: "community", title: "Community", description: "Connect in a feed designed to stay positive." },
+      { icon: "quote", title: "Quote cards", description: "Every post is a designed card, drawn with Skia across 18 templates." },
+      { icon: "palette", title: "Visual editor", description: "Set type, color, texture, and layout with a live preview." },
+      { icon: "community", title: "Social layer", description: "Likes, threaded comments, follows, saves, and realtime activity." },
+      { icon: "compass", title: "Discover & share", description: "Trending creators, topics, and hashtags — and every card exports as an image or link." },
     ],
-    challenge: "Social feeds often reward noise over substance, leaving little room for thoughtful, creative sharing.",
+    challenge: "In most feeds, words are just plain text — easy to scroll past.",
     solution:
-      "DICTA combines thoughts, quotes, photography, and community interaction into one positive, creative feed.",
+      "DICTA turns every post into a designed quote card, with a visual editor, 18 templates, and a full social layer around it.",
     role: "Concept, product design, and development.",
+    liveUrl: "https://dicta-orcin.vercel.app",
+    githubUrl: "https://github.com/LeouDev/dicta",
   },
   {
     id: "prior-authorization-emr",
@@ -259,24 +270,27 @@ export const projects: Project[] = [
     name: "Prior Authorization EMR",
     tagline: "A productivity and performance tool for prior authorization operations.",
     description:
-      "An internal web application that supports prior authorization teams with tools for day-to-day productivity and performance visibility.",
+      "An internal performance command center for a prior authorization team. It imports the weekly performance workbook, checks every KPI against its threshold, and tracks the actions, scorecards, and quality audits that follow.",
     categories: ["web-app"],
     status: "private",
     year: 2026,
     featured: false,
     // Private project: only ever use sanitized, illustrative visuals. No patient, employee,
-    // credential, or company data — in images, copy, or links.
+    // credential, or company data — in images, copy, or links. No liveUrl or githubUrl, ever:
+    // the owner asked that nothing here shows where or how to access it.
     coverImage: "/projects/prior-authorization-emr/cover.svg",
-    technologies: [],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase", "PostgreSQL", "Drizzle ORM", "Vercel"],
     platforms: ["Web"],
     features: [
-      { icon: "zap", title: "Productivity", description: "Tools that streamline day-to-day prior authorization work." },
-      { icon: "gauge", title: "Performance", description: "Visibility into individual and team performance." },
+      { icon: "table", title: "Workbook import", description: "Reads the weekly performance workbook instead of re-keying it." },
+      { icon: "gauge", title: "KPI thresholds", description: "Evaluates each KPI against its target and flags what needs attention." },
+      { icon: "checklist", title: "Action items", description: "Opens development actions and tracks them through to completion." },
+      { icon: "dashboard", title: "Scorecards", description: "Monthly scorecards, quality audits, and a leader’s daily board in one place." },
     ],
     challenge:
-      "Prior authorization operations involve high-volume, detail-heavy work where productivity and performance are hard to see.",
-    solution: "A focused internal tool that helps teams work efficiently and understand performance at a glance.",
-    role: "Design and development of an internal tool.",
+      "Team performance lived in a weekly workbook, so spotting who needed support — and following through — was slow and manual.",
+    solution: "A focused internal tool that turns the weekly workbook into KPI checks, action items, and scorecards leaders can act on.",
+    role: "Design and full-stack development.",
   },
 ];
 
@@ -310,7 +324,8 @@ export const mobileApps = projects.filter((p) => p.categories.includes("mobile-a
 
 // Tech section groups. Anything not listed here counts as Frontend.
 const techGroups: Record<string, string> = {
-  "React Native": "Mobile", Expo: "Mobile", iOS: "Mobile", Swift: "Mobile",
+  "React Native": "Mobile", Expo: "Mobile", iOS: "Mobile", Swift: "Mobile", "React Native Skia": "Mobile",
+  PayMongo: "Backend", "Drizzle ORM": "Backend",
   Supabase: "Backend", PostgreSQL: "Backend", Prisma: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
   Resend: "Backend", Brevo: "Backend",
   Vercel: "Tools", GitHub: "Tools", Figma: "Tools", "AI development tools": "Tools",

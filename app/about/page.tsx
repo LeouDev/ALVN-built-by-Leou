@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Eyebrow, StartProject } from "@/components/ui";
+import { ButtonLink, Eyebrow, StartProject } from "@/components/ui";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -29,9 +30,14 @@ export default function AboutPage() {
             ALVN is my digital product portfolio — a place where I showcase the websites, applications, experiments, and ideas I’ve
             turned into working products.
           </p>
-          <p className="text-lg text-muted lg:col-span-4 lg:col-start-9 lg:pt-2">
-            I enjoy taking an idea from a rough concept and turning it into something people can actually use.
-          </p>
+          <div className="lg:col-span-4 lg:col-start-9 lg:pt-2">
+            <p className="text-lg text-muted">
+              I enjoy taking an idea from a rough concept and turning it into something people can actually use.
+            </p>
+            <ButtonLink href={site.resumeUrl} external variant="outline" className="mt-8">
+              View my résumé
+            </ButtonLink>
+          </div>
         </div>
       </section>
 
