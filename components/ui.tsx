@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { type Project, type Status, statusLabels } from "@/data/projects";
+import { OrbitGallery } from "@/components/OrbitGallery";
+import { type Project, type Status, projects, statusLabels } from "@/data/projects";
 
 const buttonStyles = {
   primary: "bg-navy text-cream hover:bg-navy-soft",
@@ -110,7 +111,7 @@ export function Sparkle({ className = "" }: { className?: string }) {
 }
 
 /** Concentric orbit lines with slowly travelling dots — the logo's orbit motif. Pass positioning + size + text colour. */
-export function Orbits({ className = "" }: { className?: string }) {
+export function Orbits({ className = "", children }: { className?: string; children?: React.ReactNode }) {
   // Dots ride on rotating HTML layers (compositor-only) rather than animated SVG groups (repaint every frame).
   return (
     <div aria-hidden className={className}>
@@ -124,6 +125,7 @@ export function Orbits({ className = "" }: { className?: string }) {
       <div className="absolute inset-[10%] animate-orbit-reverse">
         <span className="absolute top-1/2 right-0 size-[1.5%] translate-x-1/2 -translate-y-1/2 rounded-full bg-current" />
       </div>
+      {children}
     </div>
   );
 }
@@ -165,7 +167,9 @@ export function StartProject() {
   return (
     <section className="shell pb-24 lg:pb-32">
       <div className="on-dark relative isolate overflow-hidden rounded-[36px] bg-navy px-6 py-16 text-cream sm:px-12 sm:py-20 lg:px-20 lg:py-28">
-        <Orbits className="absolute -top-48 -right-48 -z-10 size-[560px] text-cream/12 sm:-right-24 lg:size-[680px]" />
+        <Orbits className="absolute top-1/2 -right-48 -z-10 size-[560px] -translate-y-1/2 text-cream/12 sm:-right-24 lg:size-[680px]">
+          <OrbitGallery items={projects.map((p) => ({ slug: p.slug, name: p.name, image: p.coverImage }))} />
+        </Orbits>
         <Eyebrow className="text-cream/60!">Start a Project</Eyebrow>
         <h2 className="headline mt-6 max-w-3xl text-5xl sm:text-7xl">Have an idea?</h2>
         <p className="mt-6 max-w-xl text-lg text-cream/70">Tell me what you’re thinking. Let’s turn it into something real.</p>
