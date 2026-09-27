@@ -11,7 +11,8 @@ export type IconName =
   | "compass" | "calendar" | "card" | "trophy"
   | "workflow" | "transform" | "table" | "chart"
   | "thought" | "quote" | "camera" | "community"
-  | "zap" | "gauge";
+  | "zap" | "gauge" | "box" | "chat" | "admin" | "publish"
+  | "activity" | "sparkles" | "mail" | "globe" | "dashboard" | "qr" | "shield";
 
 export type Feature = { title: string; description: string; icon: IconName };
 
@@ -86,6 +87,116 @@ export const projects: Project[] = [
     role: "Concept, product design, and development across web and mobile.",
   },
   {
+    id: "aprrc-2027",
+    slug: "aprrc-2027",
+    name: "APRRC '27",
+    tagline: "Event website, organizer dashboard, and QR check-in for a regional conference.",
+    description:
+      "The official website for the Asia Pacific Regional Rotaract Conference 2027 in Cebu, Philippines — with an organizer dashboard for managing delegates and a phone-first QR check-in app for event-day staff.",
+    categories: ["website", "web-app", "client"],
+    status: "live",
+    year: 2026,
+    featured: true,
+    coverImage: "/projects/aprrc-2027/desktop-1.webp",
+    logo: "/projects/aprrc-2027/icon.png",
+    gallery: [
+      { src: "/projects/aprrc-2027/desktop-2.webp", alt: "About the event section on the APRRC '27 website", kind: "desktop" },
+      { src: "/projects/aprrc-2027/desktop-3.webp", alt: "Welcome to Cebu destination guide", kind: "desktop" },
+      { src: "/projects/aprrc-2027/desktop-4.webp", alt: "Event highlights and registration call to action", kind: "desktop" },
+      { src: "/projects/aprrc-2027/mobile-1.webp", alt: "APRRC '27 homepage on a phone", kind: "mobile" },
+      { src: "/projects/aprrc-2027/mobile-2.webp", alt: "Cebu destination guide on a phone", kind: "mobile" },
+      { src: "/projects/aprrc-2027/mobile-3.webp", alt: "Event highlights on a phone", kind: "mobile" },
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma", "Supabase", "PostgreSQL", "Recharts", "Radix UI", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "globe", title: "Event website", description: "Program, venue, and a destination guide for delegates across the Asia Pacific." },
+      { icon: "dashboard", title: "Organizer dashboard", description: "Manage delegates, import registrations from CSV, and chart them by country and over time." },
+      { icon: "qr", title: "QR check-in", description: "A phone-first scanner registration staff can install to their home screen." },
+      { icon: "shield", title: "Staff access", description: "Admins approve scanner accounts and can revoke access instantly." },
+    ],
+    challenge:
+      "A four-day international conference needed a public home for delegates, plus tools for organizers to track registrations and check people in on the day.",
+    solution:
+      "A Next.js site backed by Supabase Postgres through Prisma, with custom cookie-based admin auth, registration charts, and a QR scanner for the registration desk.",
+    role: "Design and full-stack development.",
+    liveUrl: "https://www.aprrc27cebuph.org",
+    githubUrl: "https://github.com/LeouDev/APRRC2027",
+  },
+  {
+    id: "roll-up-cinnamons",
+    slug: "roll-up-cinnamons",
+    name: "Roll Up Cinnamons",
+    tagline: "Website and build-your-box ordering for a homemade bakery.",
+    description:
+      "A website for Roll Up Cinnamons, homemade cinnamon rolls in Lapu-Lapu City. Visitors build a box of four with their own mix of flavors, review the order, and send it through Messenger, where the bakery confirms every order.",
+    categories: ["website", "client"],
+    status: "live",
+    year: 2026,
+    featured: true,
+    coverImage: "/projects/roll-up-cinnamons/desktop-1.webp",
+    logo: "/projects/roll-up-cinnamons/icon.png",
+    gallery: [
+      { src: "/projects/roll-up-cinnamons/desktop-2.webp", alt: "The build-your-box flavor picker", kind: "desktop" },
+      { src: "/projects/roll-up-cinnamons/desktop-3.webp", alt: "The Fresh From The Oven menu", kind: "desktop" },
+      { src: "/projects/roll-up-cinnamons/desktop-4.webp", alt: "Ready to roll call to action and footer", kind: "desktop" },
+      { src: "/projects/roll-up-cinnamons/mobile-1.webp", alt: "Roll Up Cinnamons homepage on a phone", kind: "mobile" },
+      { src: "/projects/roll-up-cinnamons/mobile-2.webp", alt: "Building a box on a phone", kind: "mobile" },
+      { src: "/projects/roll-up-cinnamons/mobile-3.webp", alt: "The menu on a phone", kind: "mobile" },
+    ],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "box", title: "Build your box", description: "Pick any four flavors for one box and review the order." },
+      { icon: "chat", title: "Order via Messenger", description: "The finished order goes straight to the bakery’s Messenger — no checkout." },
+      { icon: "admin", title: "Menu admin", description: "Update prices, flavors, photos, and sold-out items from a phone." },
+      { icon: "publish", title: "One-tap publishing", description: "Each change is saved as a commit and the site rebuilds in about a minute." },
+    ],
+    challenge:
+      "Customers needed an easy way to browse the menu and put an order together before messaging — and the bakery needed to keep prices and availability current without touching code.",
+    solution:
+      "A fast, prerendered site with a build-your-box flow that hands the order to Messenger, plus a password-protected admin that publishes menu changes through GitHub.",
+    role: "Design and development.",
+    liveUrl: "https://www.rollup-cinnamon.online",
+    githubUrl: "https://github.com/LeouDev/Roll-Up-Cinnamons",
+  },
+  {
+    id: "fat-fueled",
+    slug: "fat-fueled",
+    name: "Fat Fueled",
+    tagline: "Marketing website for an endurance coaching brand.",
+    description:
+      "A marketing site for Fat Fueled, endurance coaching for triathlon, cycling, running, and swimming led by a UESCA-certified coach. Built around the brand’s own race-day photography.",
+    categories: ["website", "client"],
+    status: "live",
+    year: 2026,
+    featured: true,
+    coverImage: "/projects/fat-fueled/desktop-1.webp",
+    logo: "/projects/fat-fueled/icon.png",
+    gallery: [
+      { src: "/projects/fat-fueled/desktop-2.webp", alt: "Find your discipline section", kind: "desktop" },
+      { src: "/projects/fat-fueled/desktop-3.webp", alt: "Athlete stories gallery", kind: "desktop" },
+      { src: "/projects/fat-fueled/desktop-4.webp", alt: "Meet your coach section", kind: "desktop" },
+      { src: "/projects/fat-fueled/mobile-1.webp", alt: "Fat Fueled homepage on a phone", kind: "mobile" },
+      { src: "/projects/fat-fueled/mobile-2.webp", alt: "Disciplines on a phone", kind: "mobile" },
+      { src: "/projects/fat-fueled/mobile-3.webp", alt: "Athlete stories on a phone", kind: "mobile" },
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Brevo", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "activity", title: "Four disciplines", description: "Clear paths into coaching for triathlon, cycling, running, and swimming." },
+      { icon: "camera", title: "Real photography", description: "Every photo comes from the brand’s own Instagram feed." },
+      { icon: "sparkles", title: "Bold motion", description: "Editorial type and restrained motion with Framer Motion." },
+      { icon: "mail", title: "Enquiry form", description: "Validated on the server and emailed to the coach, ready to reply to." },
+    ],
+    challenge: "A coaching brand needed one place to explain its coaching across four disciplines and turn interest into enquiries.",
+    solution:
+      "A statically prerendered Next.js site built around the brand’s photography, with a server-validated contact form that emails each enquiry directly.",
+    role: "Design and development.",
+    liveUrl: "https://fat-fueled.vercel.app",
+    githubUrl: "https://github.com/LeouDev/FatFueled",
+  },
+  {
     id: "dataverse",
     slug: "dataverse",
     name: "DataVerse",
@@ -120,7 +231,7 @@ export const projects: Project[] = [
     categories: ["mobile-app"],
     status: "coming-soon",
     year: 2026,
-    featured: true,
+    featured: false, // shown in the home page's Mobile Apps section instead
     coverImage: "/projects/dicta/cover.svg",
     // logo: "/projects/dicta/icon.png",
     // liveUrl: "https://…",
@@ -200,7 +311,8 @@ export const mobileApps = projects.filter((p) => p.categories.includes("mobile-a
 // Tech section groups. Anything not listed here counts as Frontend.
 const techGroups: Record<string, string> = {
   "React Native": "Mobile", Expo: "Mobile", iOS: "Mobile", Swift: "Mobile",
-  Supabase: "Backend", PostgreSQL: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
+  Supabase: "Backend", PostgreSQL: "Backend", Prisma: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
+  Resend: "Backend", Brevo: "Backend",
   Vercel: "Tools", GitHub: "Tools", Figma: "Tools", "AI development tools": "Tools",
 };
 

@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowLeft, ArrowRight, CalendarCheck, Camera, ChartColumn, Compass, CreditCard, Gauge, Lock,
-  MessageCircle, Quote, Shuffle, Table2, Trophy, Users, Workflow, Zap, type LucideIcon,
+  Activity, ArrowLeft, ArrowRight, CalendarCheck, Camera, ChartColumn, Compass, CreditCard, Gauge, Globe,
+  LayoutDashboard, Lock, Mail, MessageCircle, MessagesSquare, Package, QrCode, Quote, Rocket, ShieldCheck,
+  Shuffle, SlidersHorizontal, Sparkles, Table2, Trophy, Users, Workflow, Zap, type LucideIcon,
 } from "lucide-react";
 import { PhoneMockup } from "@/components/PhoneMockup";
 import { ButtonLink, StartProject, StatusBadge } from "@/components/ui";
@@ -14,7 +15,9 @@ const featureIcons: Record<IconName, LucideIcon> = {
   compass: Compass, calendar: CalendarCheck, card: CreditCard, trophy: Trophy,
   workflow: Workflow, transform: Shuffle, table: Table2, chart: ChartColumn,
   thought: MessageCircle, quote: Quote, camera: Camera, community: Users,
-  zap: Zap, gauge: Gauge,
+  zap: Zap, gauge: Gauge, box: Package, chat: MessagesSquare, admin: SlidersHorizontal, publish: Rocket,
+  activity: Activity, sparkles: Sparkles, mail: Mail, globe: Globe, dashboard: LayoutDashboard, qr: QrCode,
+  shield: ShieldCheck,
 };
 
 export const dynamicParams = false;
@@ -177,9 +180,9 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         </section>
       )}
 
-      {isMobile && (
+      {(isMobile || screens.length > 0) && (
         <section className="section pt-0 lg:pt-0">
-          <h2 className="eyebrow">Screens</h2>
+          <h2 className="eyebrow">{isMobile ? "Screens" : "On mobile"}</h2>
           <div className="on-dark mt-8 overflow-x-auto rounded-[32px] bg-navy">
             <div className="mx-auto flex w-max gap-6 px-8 py-12 sm:px-12 lg:gap-10 lg:py-16">
               {(screens.length ? screens : [undefined, undefined, undefined]).map((screen, i) => (
