@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { LogoAnimation } from "@/components/LogoAnimation";
 import { ButtonLink, Eyebrow, StartProject } from "@/components/ui";
 import { site } from "@/lib/site";
 
@@ -43,14 +43,7 @@ export default function AboutPage() {
 
       <section className="shell py-16 lg:py-24">
         <figure className="overflow-hidden rounded-[36px] border border-line bg-paper">
-          <Image
-            src="/brand/alvn-logo.webp"
-            alt="The ALVN logo: Gemini twins and an astronaut in orbit beside the ALVN wordmark"
-            width={1536}
-            height={1024}
-            sizes="(min-width: 1280px) 1216px, 100vw"
-            className="-my-[11%] h-auto w-full"
-          />
+          <LogoAnimation />
           <figcaption className="relative flex flex-col gap-2 border-t border-line px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <span className="eyebrow">ALVN · Digital Products &amp; Experiences</span>
             <span className="text-lg font-semibold">Built by Leou.</span>
