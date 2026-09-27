@@ -281,10 +281,13 @@ export const projects: Project[] = [
     status: "private",
     year: 2026,
     featured: false,
-    // Private project: only ever use sanitized, illustrative visuals. No patient, employee,
-    // credential, or company data — in images, copy, or links. No liveUrl or githubUrl, ever:
+    // Private project: screenshots must have every name (and anything identifying the company)
+    // redacted before they're added, and never show patient data. No liveUrl or githubUrl, ever:
     // the owner asked that nothing here shows where or how to access it.
-    coverImage: "/projects/prior-authorization-emr/cover.svg",
+    coverImage: "/projects/prior-authorization-emr/cover.webp",
+    gallery: [
+      { src: "/projects/prior-authorization-emr/signing-in.webp", alt: "The EMR sign-in screen: Bringing the center online", kind: "desktop" },
+    ],
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase", "PostgreSQL", "Drizzle ORM", "Vercel"],
     platforms: ["Web"],
     features: [
