@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { InquiryForm } from "@/components/InquiryForm";
+import { ContactOptions } from "@/components/ContactOptions";
 import { Emblem, Eyebrow } from "@/components/ui";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -19,7 +20,7 @@ export default function ContactPage() {
         </div>
       </div>
       <div className="lg:col-span-7">
-        <InquiryForm />
+        <ContactOptions bookingUrl={site.bookingUrl} />
       </div>
     </section>
   );
