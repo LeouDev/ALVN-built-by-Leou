@@ -84,7 +84,7 @@ export async function reply(id: number, _state: unknown, form: FormData) {
   });
   if (!sent?.ok) return { error: "The reply couldn’t be sent. Please try again.", text };
   await addReply(id, text);
-  redirect(`/admin/messages/${id}?sent=1`);
+  redirect(`/admin/messages/${id}?notice=sent&t=${Date.now()}`); // t: a repeat reply pops up its notice again
 }
 
 /** Creates (id = null) or updates a client project. On a validation error it returns the

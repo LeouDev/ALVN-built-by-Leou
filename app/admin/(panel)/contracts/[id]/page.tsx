@@ -7,6 +7,7 @@ import { ContractForm, ContractTextForm } from "@/components/ContractForm";
 import { StatusPill } from "@/components/ContractStatus";
 import { ContractText, SignatureCard } from "@/components/ContractText";
 import { SignForm } from "@/components/SignForm";
+import { Toast } from "@/components/Toast";
 import { inManila, requireAdmin } from "@/lib/admin";
 import { getContract, provider, type Contract } from "@/lib/contracts-db";
 import { signatureFont } from "@/lib/signature-font";
@@ -14,11 +15,11 @@ import { signatureFont } from "@/lib/signature-font";
 const at = (d: Date | null) => (d ? inManila(d, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "");
 const plainButton = "w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold transition-colors hover:border-navy/40";
 
-const flashes: Record<string, [string, string]> = {
-  saved: ["Draft saved.", "text-[#067647]"],
-  sent: ["Signed and sent. Your client has the signing link.", "text-[#067647]"],
-  resent: ["A new signing link is on its way. The old one no longer works.", "text-[#067647]"],
-  failed: ["The email couldn’t be sent. Google can be slow for a minute after the script is updated, so try “Send a new link” again shortly. Any link already sent still works.", "text-[#b42318]"],
+const notices: Record<string, [string, "success" | "error"]> = {
+  saved: ["Draft saved.", "success"],
+  sent: ["Signed and sent. Your client has the signing link.", "success"],
+  resent: ["New signing link sent. The previous link no longer works.", "success"],
+  failed: ["The email couldn’t be sent. Google can be slow for a minute after the script is updated, so try again shortly. Any link already sent still works.", "error"],
 };
 
 function Timeline({ c }: { c: Contract }) {
@@ -50,7 +51,7 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
   const c = Number.isSafeInteger(id) ? await getContract(id) : null;
   if (!c) notFound();
   const query = await searchParams;
-  const flash = query.email === "failed" ? flashes.failed : flashes[Object.keys(flashes).find((k) => k !== "failed" && query[k]) ?? ""];
+  const notice = typeof query.notice === "string" ? notices[query.notice] : undefined;
   const first = c.client_name.split(" ")[0];
 
   return (
@@ -67,11 +68,7 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
           For {c.client_name}
           {c.client_company && ` · ${c.client_company}`} · Contract #{c.id}
         </p>
-        {flash && (
-          <p role="status" className={`mt-4 text-sm font-semibold ${flash[1]}`}>
-            {flash[0]}
-          </p>
-        )}
+        {notice && <Toast key={String(query.t)} message={notice[0]} tone={notice[1]} />}
 
         <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(7,26,45,0.35)] sm:p-12">
           <p className="eyebrow text-accent">Agreement</p>
@@ -127,12 +124,38 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
         )}
         {c.status === "sent" && (
           <>
-            <ConfirmButton action={resendLink.bind(null, c.id)} label="Send a new link" confirm={`Email ${first} a new signing link? The current link will stop working.`} className={plainButton} />
-            <ConfirmButton action={voidAction.bind(null, c.id)} label="Void contract" confirm="Void this contract? The signing link stops working and it can’t be signed." className={`${plainButton} text-[#b42318]`} />
+            <ConfirmButton
+              action={resendLink.bind(null, c.id)}
+              label="Send a new link"
+              title={`Send ${first} a new signing link?`}
+              message={`We’ll email a fresh link to ${c.client_email}. The link they have now will stop working.`}
+              confirmLabel="Send new link"
+              pendingLabel="Sending…"
+              className={plainButton}
+            />
+            <ConfirmButton
+              action={voidAction.bind(null, c.id)}
+              label="Void contract"
+              title="Void this contract?"
+              message="The signing link stops working and the contract can’t be signed. This can’t be undone."
+              confirmLabel="Void contract"
+              pendingLabel="Voiding…"
+              danger
+              className={`${plainButton} text-[#b42318]`}
+            />
           </>
         )}
         {c.status === "draft" && (
-          <ConfirmButton action={deleteDraftAction.bind(null, c.id)} label="Delete draft" confirm="Delete this draft? This can’t be undone." className={`${plainButton} text-[#b42318]`} />
+          <ConfirmButton
+            action={deleteDraftAction.bind(null, c.id)}
+            label="Delete draft"
+            title="Delete this draft?"
+            message="The draft and its wording are removed for good."
+            confirmLabel="Delete draft"
+            pendingLabel="Deleting…"
+            danger
+            className={`${plainButton} text-[#b42318]`}
+          />
         )}
         {c.status === "void" && <p className="text-sm text-muted">This contract was voided and can no longer be signed.</p>}
       </aside>

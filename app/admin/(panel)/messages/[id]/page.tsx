@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, FolderPlus, FolderOpen } from "lucide-react";
 import { archive } from "@/app/admin/actions";
 import { ReplyForm } from "@/components/ReplyForm";
+import { Toast } from "@/components/Toast";
 import { inManila, requireAdmin } from "@/lib/admin";
 import { projectForMessage } from "@/lib/client-projects-db";
 import { openMessage } from "@/lib/inbox";
@@ -15,7 +16,7 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
   const opened = Number.isSafeInteger(id) ? await openMessage(id) : null;
   if (!opened) notFound();
   const { message: m, replies } = opened;
-  const { sent } = await searchParams;
+  const { notice, t } = await searchParams;
   const projectId = await projectForMessage(m.id);
 
   const facts: [string, string | undefined][] =
@@ -68,7 +69,8 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
           </ol>
         )}
 
-        <ReplyForm id={m.id} firstName={m.name.split(" ")[0]} sent={Boolean(sent)} />
+        {notice === "sent" && <Toast key={String(t)} message={`Reply sent to ${m.email} from your Gmail.`} tone="success" />}
+        <ReplyForm id={m.id} firstName={m.name.split(" ")[0]} email={m.email} />
       </article>
 
       <aside className="space-y-3 lg:col-span-4 lg:pt-12">

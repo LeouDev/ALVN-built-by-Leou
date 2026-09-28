@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { removeProject, saveProject } from "@/app/admin/actions";
+import { ConfirmButton } from "@/components/ConfirmButton";
 import { STAGES, stageLabels, type ProjectInput } from "@/lib/client-projects";
 import { PROJECT_TYPES } from "@/lib/inquiry";
 import { field } from "@/lib/styles";
@@ -122,15 +123,15 @@ function Select({ name, label: text, value, options }: { name: string; label: st
 
 export function DeleteProjectButton({ id }: { id: number }) {
   return (
-    <form
+    <ConfirmButton
       action={removeProject.bind(null, id)}
-      onSubmit={(event) => {
-        if (!confirm("Delete this project? This can’t be undone.")) event.preventDefault();
-      }}
-    >
-      <button type="submit" className="w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold text-[#b42318] transition-colors hover:border-[#b42318]/40">
-        Delete project
-      </button>
-    </form>
+      label="Delete project"
+      title="Delete this project?"
+      message="The project and its details are removed for good. Its contracts are kept, without the link to it."
+      confirmLabel="Delete project"
+      pendingLabel="Deleting…"
+      danger
+      className="w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold text-[#b42318] transition-colors hover:border-[#b42318]/40"
+    />
   );
 }
