@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { StatusBadge } from "@/components/ui";
 import { type Project, categoryLabels } from "@/data/projects";
 
@@ -33,8 +33,21 @@ export function ProjectCard({ project, size = "md" }: { project: Project; size?:
           {project.name}
         </h3>
         <p className={`mt-3 text-pretty text-muted ${lg ? "text-lg" : ""}`}>{project.tagline}</p>
-        {project.technologies.length > 0 && (
-          <p className="mt-5 text-sm text-navy/70">{project.technologies.slice(0, lg ? 6 : 4).join(" · ")}</p>
+        {project.result && (
+          <p className="mt-4 flex items-start gap-2 text-sm font-semibold text-navy">
+            <Check aria-hidden className="mt-0.5 size-4 shrink-0 text-accent" strokeWidth={2.5} />
+            {project.result}
+          </p>
+        )}
+        {/* What was built, in a client's words; the tech stack is on the project page. */}
+        {project.features && (
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {project.features.slice(0, lg ? 5 : 3).map((f) => (
+              <li key={f.title} className="rounded-full border border-line bg-white/70 px-3 py-1 text-xs font-semibold text-navy/75">
+                {f.title}
+              </li>
+            ))}
+          </ul>
         )}
         <span className={`mt-auto flex items-center gap-2 pt-8 text-sm font-semibold ${lg ? "lg:mt-10" : ""}`}>
           View Project

@@ -48,6 +48,8 @@ export type Project = {
   challenge?: string;
   solution?: string;
   outcome?: string;
+  /** One short line on what was delivered, shown on the project's card. */
+  result?: string;
   /** Shown in a notice under the cover — e.g. why a private project has no link. */
   note?: string;
 };
@@ -58,6 +60,7 @@ export const projects: Project[] = [
     slug: "air-rally",
     name: "AIR/Rally",
     tagline: "Pickleball discovery and booking platform.",
+    result: "From idea to a live web + iOS product",
     description:
       "A platform designed to make discovering pickleball venues, checking availability, and booking courts simple — on the web and in the iOS app.",
     categories: ["web-app", "mobile-app"],
@@ -103,6 +106,7 @@ export const projects: Project[] = [
     slug: "aprrc-2027",
     name: "APRRC '27",
     tagline: "Event website, organizer dashboard, and QR check-in for a regional conference.",
+    result: "Designed, built, and launched for the conference organizers",
     description:
       "The official website for the Asia Pacific Regional Rotaract Conference 2027 in Cebu, Philippines — with an organizer dashboard for managing delegates and a phone-first QR check-in app for event-day staff.",
     categories: ["website", "web-app", "client"],
@@ -140,6 +144,7 @@ export const projects: Project[] = [
     slug: "roll-up-cinnamons",
     name: "Roll Up Cinnamons",
     tagline: "Website and build-your-box ordering for a homemade bakery.",
+    result: "Designed, built, and launched for the bakery",
     description:
       "A website for Roll Up Cinnamons, homemade cinnamon rolls in Lapu-Lapu City. Visitors build a box of four with their own mix of flavors, review the order, and send it through Messenger, where the bakery confirms every order.",
     categories: ["website", "client"],
@@ -177,6 +182,7 @@ export const projects: Project[] = [
     slug: "fat-fueled",
     name: "Fat Fueled",
     tagline: "Marketing website for an endurance coaching brand.",
+    result: "Designed, built, and launched for the brand",
     description:
       "A marketing site for Fat Fueled, endurance coaching for triathlon, cycling, running, and swimming led by a UESCA-certified coach. Built around the brand’s own race-day photography.",
     categories: ["website", "client"],
@@ -251,6 +257,7 @@ export const projects: Project[] = [
     slug: "dataverse",
     name: "DataVerse",
     tagline: "Turn data into clarity.",
+    result: "In development: a visual data-workflow web app",
     description:
       "A data analytics platform for building data workflows and dashboards without needing to master Excel, PivotTables, or Power Query — simplifying work normally spread across spreadsheets and data transformation tools.",
     categories: ["web-app"],
