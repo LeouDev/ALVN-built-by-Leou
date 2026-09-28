@@ -16,6 +16,7 @@ const services = [
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
+  const quoted = projects.filter((p) => p.testimonial?.quote);
   const leadIsWide = featured.length % 2 === 1;
 
   return (
@@ -120,6 +121,27 @@ export default function Home() {
             </span>
           </Link>
         </div>
+        {quoted.length > 0 && (
+          <div className="mt-16">
+            <p className="eyebrow">What clients say</p>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {quoted.map((p) => (
+                <figure key={p.slug} className="flex flex-col justify-between gap-8 rounded-[28px] border border-line bg-white/60 p-8">
+                  <blockquote className="text-lg leading-relaxed text-pretty">“{p.testimonial!.quote}”</blockquote>
+                  <figcaption className="flex items-center gap-3">
+                    {p.logo && <Image src={p.logo} alt="" width={36} height={36} className="size-9 rounded-[22%]" />}
+                    <span>
+                      <span className="block font-semibold">{p.testimonial!.name}</span>
+                      <Link href={`/projects/${p.slug}`} className="block text-sm text-muted hover:text-navy">
+                        {[p.testimonial!.role, p.name].filter(Boolean).join(", ")}
+                      </Link>
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Catalog preview */}

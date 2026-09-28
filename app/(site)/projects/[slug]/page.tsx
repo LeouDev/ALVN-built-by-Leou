@@ -222,6 +222,21 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         </section>
       )}
 
+      {project.testimonial?.quote && (
+        <section className="section pt-0 lg:pt-0">
+          <figure className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+            <h2 className="eyebrow self-start lg:col-span-3">In their words</h2>
+            <div className="lg:col-span-9">
+              <blockquote className="text-2xl leading-snug font-medium tracking-tight text-pretty">“{project.testimonial.quote}”</blockquote>
+              <figcaption className="mt-6 text-sm">
+                <span className="font-semibold">{project.testimonial.name}</span>
+                <span className="text-muted"> · {[project.testimonial.role, project.name].filter(Boolean).join(", ")}</span>
+              </figcaption>
+            </div>
+          </figure>
+        </section>
+      )}
+
       <nav aria-label="Next project" className="shell pb-24">
         <Link href={`/projects/${next.slug}`} className="group flex items-center justify-between gap-6 border-y border-line py-10">
           <span>
