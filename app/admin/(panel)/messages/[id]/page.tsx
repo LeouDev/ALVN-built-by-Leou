@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FolderPlus, FolderOpen } from "lucide-react";
 import { archive } from "@/app/admin/actions";
 import { ReplyForm } from "@/components/ReplyForm";
 import { inManila, requireAdmin } from "@/lib/admin";
+import { projectForMessage } from "@/lib/client-projects-db";
 import { openMessage } from "@/lib/inbox";
 
 const longDate = { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" } as const;
@@ -15,6 +16,7 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
   if (!opened) notFound();
   const { message: m, replies } = opened;
   const { sent } = await searchParams;
+  const projectId = await projectForMessage(m.id);
 
   const facts: [string, string | undefined][] =
     m.kind === "booking"
@@ -69,7 +71,14 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
         <ReplyForm id={m.id} firstName={m.name.split(" ")[0]} sent={Boolean(sent)} />
       </article>
 
-      <aside className="lg:col-span-4 lg:pt-12">
+      <aside className="space-y-3 lg:col-span-4 lg:pt-12">
+        <Link
+          href={projectId ? `/admin/projects/${projectId}` : `/admin/projects/new?from=${m.id}`}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d]"
+        >
+          {projectId ? <FolderOpen aria-hidden className="size-4" /> : <FolderPlus aria-hidden className="size-4" />}
+          {projectId ? "View project" : "Create project"}
+        </Link>
         <form action={archive.bind(null, m.id, !m.archived_at)}>
           <button type="submit" className="w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold transition-colors hover:border-navy/40">
             {m.archived_at ? "Move back to inbox" : "Archive"}

@@ -35,6 +35,30 @@ create table if not exists alvn.login_tokens (
   created_at timestamptz not null default now()
 );
 
+-- Client projects (phase 2): one row per project, optionally started from an inbox message.
+create table if not exists alvn.projects (
+  id bigint generated always as identity primary key,
+  name text not null,
+  client_name text not null,
+  client_email text not null default '',
+  company text not null default '',
+  type text not null default '',
+  stage text not null default 'lead'
+    check (stage in ('lead', 'proposal', 'contract', 'in_progress', 'review', 'done', 'on_hold')),
+  budget integer check (budget >= 0),
+  paid integer not null default 0 check (paid >= 0),
+  start_date date,
+  due_date date,
+  live_url text not null default '',
+  repo_url text not null default '',
+  notes text not null default '',
+  message_id bigint references alvn.messages (id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists projects_message_id on alvn.projects (message_id);
+
 alter table alvn.messages enable row level security;
 alter table alvn.replies enable row level security;
 alter table alvn.login_tokens enable row level security;
+alter table alvn.projects enable row level security;

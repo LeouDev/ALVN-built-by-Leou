@@ -14,6 +14,7 @@ export function AdminNav({ unread: initial }: { unread: number }) {
   }, [pathname]);
   const links = [
     { href: "/admin", label: "Inbox", active: pathname === "/admin" || pathname.startsWith("/admin/messages") },
+    { href: "/admin/projects", label: "Projects", active: pathname.startsWith("/admin/projects") },
     { href: "/admin/calendar", label: "Calendar", active: pathname.startsWith("/admin/calendar") },
   ];
   return (

@@ -36,3 +36,6 @@ export async function endSession() {
 /** Dates in the admin are shown in Manila time, whatever time zone the server runs in. */
 export const inManila = (date: Date | string, options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Manila", ...options }).format(new Date(date));
+
+/** Today's date in Manila as "YYYY-MM-DD", to compare with date columns. */
+export const todayInManila = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Manila" }).format(new Date());

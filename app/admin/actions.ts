@@ -3,6 +3,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { endSession, requireAdmin, startSession } from "@/lib/admin";
+import { parseProject } from "@/lib/client-projects";
+import { createProject, deleteProject, updateProject } from "@/lib/client-projects-db";
 import { sql } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { escapeHtml } from "@/lib/inquiry";
@@ -83,4 +85,20 @@ export async function reply(id: number, _state: unknown, form: FormData) {
   if (!sent?.ok) return { error: "The reply couldn’t be sent. Please try again.", text };
   await addReply(id, text);
   redirect(`/admin/messages/${id}?sent=1`);
+}
+
+/** Creates (id = null) or updates a client project. On a validation error it returns the
+ *  submitted values, so the form can put them back. */
+export async function saveProject(id: number | null, _state: unknown, form: FormData) {
+  await requireAdmin();
+  const project = parseProject(form);
+  if ("error" in project) return { error: project.error, values: Object.fromEntries(form) as Record<string, string> };
+  if (id) await updateProject(id, project);
+  redirect(`/admin/projects/${id ?? (await createProject(project))}?saved=1`);
+}
+
+export async function removeProject(id: number) {
+  await requireAdmin();
+  await deleteProject(id);
+  redirect("/admin/projects");
 }
