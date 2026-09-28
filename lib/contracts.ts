@@ -234,3 +234,20 @@ export function parseSignature(form: FormData): { name: string; image: string } 
   if (form.get("consent") !== "on") return { error: "Please confirm you agree to sign electronically." };
   return { name, image };
 }
+
+/** The contract's payment schedule as invoice lines ("From the contract" shortcuts on a new invoice). */
+export function installments(t: Pick<ContractTerms, "title" | "plan" | "price" | "domain_name" | "domain_price">) {
+  const schedule: Partial<Record<PaymentPlanId, [string[], number[]]>> = {
+    "50-50": [["50% on signing", "50% on launch"], [50, 50]],
+    "30-40-30": [["30% on signing", "40% at design approval", "30% on launch"], [30, 40, 30]],
+    "40-30-30": [["40% on signing", "30% at staging review", "30% on launch"], [40, 30, 30]],
+    "100-upfront": [["Full payment on signing"], [100]],
+    "20-installments": [["20% on signing", "Installment 1 of 3", "Installment 2 of 3", "Installment 3 of 3"], [20, 26.67, 26.67, 26.66]],
+    retainer: [["Monthly retainer"], [100]],
+  };
+  const [labels, percents] = schedule[t.plan] ?? [[], []];
+  const amounts = split(t.price, percents);
+  const lines = labels.map((label, i) => ({ description: `${t.title}: ${label}`, amount: amounts[i] }));
+  if (t.domain_price) lines.push({ description: `Domain registration, first year${t.domain_name ? ` (${t.domain_name})` : ""}`, amount: t.domain_price });
+  return lines;
+}

@@ -1,6 +1,7 @@
-import { Document, Font, Image, Page, renderToBuffer, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, renderToBuffer, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { blocks, runs } from "@/lib/contracts";
 import type { Contract } from "@/lib/contracts-db";
+import { registerPdfFonts } from "@/lib/pdf-fonts";
 
 // The signed contract as a PDF: the agreement, both signatures, and a signature certificate page.
 // Fonts and the logo load from the site's own public files, so the PDF matches the brand.
@@ -139,14 +140,8 @@ function ContractPdf({ c, logo }: { c: Contract; logo: string }) {
   );
 }
 
-let fontsFrom = "";
-
 /** Renders the signed contract. `origin` is the site's own URL, where the fonts and logo are served. */
 export async function renderContractPdf(c: Contract, origin: string) {
-  if (fontsFrom !== origin) {
-    Font.register({ family: "Manrope", fonts: [400, 600, 700].map((fontWeight) => ({ src: `${origin}/fonts/Manrope-${fontWeight}.ttf`, fontWeight })) });
-    Font.registerHyphenationCallback((word) => [word]); // no hyphenation mid-word
-    fontsFrom = origin;
-  }
+  registerPdfFonts(origin);
   return renderToBuffer(<ContractPdf c={c} logo={`${origin}/brand/alvn-wordmark.png`} />);
 }

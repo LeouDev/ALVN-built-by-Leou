@@ -97,9 +97,32 @@ create table if not exists alvn.contract_pdfs (
   created_at timestamptz not null default now()
 );
 
+-- Invoices (numbered ALVN-0001, …). The PDF is rendered from this row whenever it's needed.
+create table if not exists alvn.invoices (
+  id bigint generated always as identity primary key,
+  seq integer not null unique,
+  number text not null unique,
+  project_id bigint references alvn.projects (id) on delete set null,
+  client_name text not null,
+  client_email text not null,
+  client_company text not null default '',
+  items jsonb not null default '[]',
+  total integer not null check (total >= 0),
+  issue_date date not null,
+  due_date date not null,
+  notes text not null default '',
+  status text not null default 'draft' check (status in ('draft', 'sent', 'paid', 'void')),
+  sent_at timestamptz,
+  paid_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists invoices_project_id on alvn.invoices (project_id);
+
 alter table alvn.messages enable row level security;
 alter table alvn.replies enable row level security;
 alter table alvn.login_tokens enable row level security;
 alter table alvn.projects enable row level security;
 alter table alvn.contracts enable row level security;
 alter table alvn.contract_pdfs enable row level security;
+alter table alvn.invoices enable row level security;

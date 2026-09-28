@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --experimental-strip-types --test lib/inquiry.test.mjs lib/booking.test.mjs lib/session.test.mjs lib/client-projects.test.mjs lib/contracts.test.mjs lib/reply-email.test.mjs apps-script/code.test.mjs"
+    "test": "node --experimental-strip-types --test lib/inquiry.test.mjs lib/booking.test.mjs lib/session.test.mjs lib/client-projects.test.mjs lib/contracts.test.mjs lib/reply-email.test.mjs lib/invoices.test.mjs apps-script/code.test.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",

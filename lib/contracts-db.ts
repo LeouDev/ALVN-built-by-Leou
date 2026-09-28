@@ -129,3 +129,11 @@ export async function getPdf(id: number) {
   const [row] = await sql<{ pdf: Buffer }[]>`select pdf from alvn.contract_pdfs where contract_id = ${id}`;
   return row?.pdf ?? null;
 }
+
+/** Terms of a project's most relevant contract (signed first, then newest), for invoice shortcuts. */
+export async function latestContractTerms(projectId: number) {
+  const [row] = await sql<{ terms: Contract["terms"] }[]>`
+    select terms from alvn.contracts where project_id = ${projectId} and status <> 'void'
+    order by (status = 'signed') desc, created_at desc limit 1`;
+  return row?.terms ?? null;
+}
