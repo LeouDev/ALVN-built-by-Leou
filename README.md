@@ -50,6 +50,18 @@ The Contact page's "Book a 30-min call" calendar (`components/BookingCalendar.ts
 
 Without `BOOKING_URL`, the Contact page shows only the inquiry form.
 
+## Admin
+
+`/admin` is Leou's private area: an **Inbox** of every inquiry and booked call (reply from there; replies go out from his Gmail through the Apps Script) and a **Calendar** of booked calls read from Google Calendar. Sign-in is a one-time link emailed to `ADMIN_EMAIL`; locally, set `EMAIL_PROVIDER=console` and the link prints in the dev server log.
+
+| Variable | Value |
+| --- | --- |
+| `DATABASE_URL` | Supabase Postgres, "Transaction pooler" connection string (port 6543) |
+| `ADMIN_EMAIL` | The only address that can receive a sign-in link |
+| `ADMIN_SECRET` | 32+ random characters; signs the session cookie |
+
+Create the tables once: paste `db/schema.sql` into Supabase's SQL Editor, or run `node --env-file=.env.local scripts/db-setup.mjs`. They live in a private `alvn` schema that Supabase's public API doesn't serve.
+
 ## Brand assets
 
 - `public/brand/alvn-logo.webp`: the official logo, untouched

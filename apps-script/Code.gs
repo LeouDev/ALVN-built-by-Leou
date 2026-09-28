@@ -6,6 +6,7 @@
  *   - Booking a time creates the event with a Google Meet link. Google emails the client the
  *     invite, and you get an email about the new booking.
  *   - Each booker also gets a branded "You're booked" email from your Gmail (sendBookingEmails).
+ *   - The site's admin reads booked calls for its calendar, and sends your replies from your Gmail.
  *
  * Setup, once (the repo copy of this project lives in apps-script/):
  *   1. script.google.com → New project, named "ALVN booking emails".
@@ -83,6 +84,8 @@ function doPost(e) {
     if (!secret || body.secret !== secret) result = { error: "unauthorized" };
     else if (body.action === "slots") result = { slots: openSlots_(busyTimes_(), Date.now()) };
     else if (body.action === "book") result = book_(body);
+    else if (body.action === "bookings") result = { bookings: bookings_(body.from, body.to) };
+    else if (body.action === "reply") result = reply_(body);
     else result = { error: "unknown action" };
   } catch (err) {
     console.error(err);
@@ -162,6 +165,51 @@ function book_(body) {
   }
 }
 
+/** Booked intro calls between two dates, for the admin calendar. */
+function bookings_(from, to) {
+  const timeMin = new Date(from), timeMax = new Date(to);
+  if (!(timeMax > timeMin) || timeMax - timeMin > 100 * 864e5) throw new Error("bad range");
+  const res = Calendar.Events.list(CALENDAR_ID, {
+    timeMin: timeMin.toISOString(),
+    timeMax: timeMax.toISOString(),
+    singleEvents: true,
+    orderBy: "startTime",
+    maxResults: 250,
+  });
+  return (res.items || [])
+    .filter((e) => e.status !== "cancelled" && (e.summary || "").startsWith(SCHEDULE_TITLE) && e.start && e.start.dateTime)
+    .map((e) => {
+      const guest = (e.attendees || []).find((a) => !a.self && !a.resource) || {};
+      return {
+        id: e.id,
+        start: e.start.dateTime,
+        end: e.end.dateTime,
+        name: guest.displayName || ((e.summary.match(/\(([^()]+)\)\s*$/) || [])[1]) || "",
+        email: guest.email || "",
+        note: (e.description || "").replace(/\s*Booked on \S+$/, "").trim(),
+        meetUrl: e.hangoutLink || "",
+        link: e.htmlLink || "",
+        response: guest.responseStatus || "",
+      };
+    });
+}
+
+/** Sends Leou's reply from the admin inbox, from his Gmail. The site writes the text. */
+function reply_(body) {
+  const to = String(body.to || "").trim();
+  const subject = String(body.subject || "").replace(/\s+/g, " ").trim().slice(0, 200);
+  const text = String(body.text || "");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || !subject || !text.trim()) return { error: "invalid" };
+  MailApp.sendEmail({
+    to,
+    subject,
+    body: text,
+    name: SENDER_NAME,
+    htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#071A2D">${esc_(text).replace(/\n/g, "<br>")}</div>`,
+  });
+  return { ok: true };
+}
+
 function sendTestEmail() {
   const start = new Date(Date.now() + 864e5);
   const end = new Date(start.getTime() + 30 * 6e4);
@@ -194,8 +242,9 @@ function send_(event, guest, timeZone) {
   MailApp.sendEmail(guest.email, email.subject, email.text, { htmlBody: email.html, name: SENDER_NAME });
 }
 
+const esc_ = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
 function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const hi = name ? `Hi ${name},` : "Hi there,";
   const when = `${day} · ${start} – ${end} (${zone})`;
   const intro = "Thanks for booking a call. I’m looking forward to hearing what you’re building.";
@@ -213,9 +262,9 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
 
   const meet = meetUrl
     ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#F47721;border-radius:999px">
-            <a href="${esc(meetUrl)}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#071A2D;text-decoration:none">Join Google Meet →</a>
+            <a href="${esc_(meetUrl)}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#071A2D;text-decoration:none">Join Google Meet →</a>
           </td></tr></table>
-          <p style="margin:10px 0 0;font-size:13px;color:#5F6B7E">${esc(meetUrl.replace(/^https?:\/\//, ""))}</p>`
+          <p style="margin:10px 0 0;font-size:13px;color:#5F6B7E">${esc_(meetUrl.replace(/^https?:\/\//, ""))}</p>`
     : `<p style="margin:20px 0 0;font-size:15px;line-height:1.6;font-weight:600">The Google Meet link is in your calendar invite.</p>`;
 
   const html = `<!doctype html>
@@ -225,7 +274,7 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background:#F7F3EA">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(when)}</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc_(when)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EA;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#071A2D">
 <tr><td align="center">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
@@ -236,23 +285,23 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
     <tr><td style="background:#071A2D;padding:28px 32px">
       <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">You’re booked</div>
-      <div style="margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:#F7F3EA">${esc(SCHEDULE_TITLE)}</div>
-      <div style="margin-top:8px;font-size:15px;line-height:1.5;color:#CFCCC4">${esc(day)}<br>${esc(`${start} – ${end} (${zone})`)}</div>
+      <div style="margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:#F7F3EA">${esc_(SCHEDULE_TITLE)}</div>
+      <div style="margin-top:8px;font-size:15px;line-height:1.5;color:#CFCCC4">${esc_(day)}<br>${esc_(`${start} – ${end} (${zone})`)}</div>
     </td></tr>
     <tr><td style="padding:28px 32px 32px">
-      <p style="margin:0;font-size:16px;line-height:1.6">${esc(hi)}</p>
-      <p style="margin:12px 0 0;font-size:16px;line-height:1.6">${esc(intro)}</p>
+      <p style="margin:0;font-size:16px;line-height:1.6">${esc_(hi)}</p>
+      <p style="margin:12px 0 0;font-size:16px;line-height:1.6">${esc_(intro)}</p>
       ${meet}
-      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc(invite)}</p>
+      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc_(invite)}</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;background:#F7F3EA;border-radius:14px">
         <tr><td style="padding:20px 22px">
           <div style="font-size:14px;font-weight:700">To make the most of our 30 minutes, bring:</div>
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:4px;font-size:15px;line-height:1.5">
-            ${prep.map((p) => `<tr><td valign="top" style="padding:6px 10px 0 0;color:#F47721">✦</td><td style="padding-top:6px">${esc(p)}</td></tr>`).join("\n            ")}
+            ${prep.map((p) => `<tr><td valign="top" style="padding:6px 10px 0 0;color:#F47721">✦</td><td style="padding-top:6px">${esc_(p)}</td></tr>`).join("\n            ")}
           </table>
         </td></tr>
       </table>
-      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc(change)}</p>
+      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc_(change)}</p>
       <p style="margin:24px 0 0;font-size:16px;line-height:1.6">Talk soon,<br><strong>Leou</strong></p>
     </td></tr>
   </table>

@@ -1,4 +1,5 @@
 import { sendEmail } from "@/lib/email";
+import { saveMessage } from "@/lib/inbox";
 import { inquiryEmail, parseInquiry } from "@/lib/inquiry";
 
 // ponytail: no rate limit here; add a Vercel Firewall rate-limit rule on /api/inquiry if spam shows up.
@@ -22,6 +23,18 @@ export async function POST(request: Request) {
     console.error("Inquiry not sent: INQUIRY_EMAIL and EMAIL_FROM must be set.");
     return Response.json({ error: "The inquiry form isn’t available right now. Please try again later." }, { status: 503 });
   }
+
+  // Saved first, so the admin inbox has it even if the email fails.
+  await saveMessage({
+    kind: "inquiry",
+    name: inquiry.name,
+    email: inquiry.email,
+    subject: inquiry.projectType,
+    body: inquiry.message,
+    details: Object.fromEntries(
+      Object.entries({ company: inquiry.company, budget: inquiry.budget, timeline: inquiry.timeline }).filter(([, value]) => value),
+    ),
+  });
 
   try {
     await sendEmail({ to, from, replyTo: inquiry.email, ...inquiryEmail(inquiry) });

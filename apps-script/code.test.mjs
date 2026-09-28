@@ -149,3 +149,46 @@ test("the web app checks the secret, books only open times, and never double-boo
   assert.equal(inserted.length, 1);
   assert.ok(!call({ action: "slots" }).slots.includes(slots[0]));
 });
+
+test("lists booked calls for the admin calendar, with the guest's details", () => {
+  const { ctx, props } = load([
+    booking("call1", { description: "A shop website\n\nBooked on https://alvn-built-by-leou.vercel.app/contact", htmlLink: "https://calendar.google.com/event?eid=1" }),
+    booking("call2", { summary: "30-min intro call with Leou (Lea Fernandez)", attendees: [{ email: "lea@example.com", responseStatus: "declined" }], hangoutLink: undefined }),
+    booking("other", { summary: "Dentist" }),
+    booking("gone", { status: "cancelled" }),
+  ]);
+  props.set("BOOKING_SECRET", "s3cret");
+  const call = (body) => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify({ secret: "s3cret", ...body }) } }).content);
+
+  const { bookings } = call({ action: "bookings", from: "2026-09-01T00:00:00Z", to: "2026-10-01T00:00:00Z" });
+  assert.deepEqual(bookings.map((b) => b.id), ["call1", "call2"]);
+  assert.deepEqual(bookings[0], {
+    id: "call1",
+    start: "2026-09-28T10:00:00+08:00",
+    end: "2026-09-28T10:30:00+08:00",
+    name: "Ana<script> Cruz",
+    email: "call1@example.com",
+    note: "A shop website",
+    meetUrl: "https://meet.google.com/abc-defg-hij",
+    link: "https://calendar.google.com/event?eid=1",
+    response: "",
+  });
+  assert.equal(bookings[1].name, "Lea Fernandez");
+  assert.equal(bookings[1].response, "declined");
+  assert.deepEqual(call({ action: "bookings", from: "2026-09-01", to: "2027-09-01" }), { error: "server" }); // too wide
+});
+
+test("sends admin replies from Gmail, escaping the HTML copy", () => {
+  const { ctx, props, sent } = load();
+  props.set("BOOKING_SECRET", "s3cret");
+  const call = (body) => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify({ secret: "s3cret", action: "reply", ...body }) } }).content);
+
+  assert.deepEqual(call({ to: "nope", subject: "Re: Your project inquiry", text: "Hi" }), { error: "invalid" });
+  assert.deepEqual(call({ to: "maya@example.com", subject: "Re: Your project inquiry", text: "  " }), { error: "invalid" });
+  assert.deepEqual(call({ to: "maya@example.com", subject: "Re: Your\nproject inquiry", text: "Hi <Maya>\n> quoted" }), { ok: true });
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].to, "maya@example.com");
+  assert.equal(sent[0].subject, "Re: Your project inquiry");
+  assert.equal(sent[0].name, "Leou · ALVN");
+  assert.match(sent[0].htmlBody, /Hi &lt;Maya&gt;<br>&gt; quoted/);
+});

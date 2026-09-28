@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
-import { field } from "@/components/InquiryForm";
+import { field } from "@/lib/styles";
 import { NOTE_MAX } from "@/lib/booking";
 
 // English labels, shown in the visitor's own time zone.

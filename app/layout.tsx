@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import { Nav } from "@/components/Nav";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -28,9 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <Nav />
-        <main id="main">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
