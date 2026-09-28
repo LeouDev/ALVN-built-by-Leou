@@ -58,6 +58,49 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "kassix-pos",
+    slug: "kassix-pos",
+    name: "KASSIX POS",
+    tagline: "A point of sale for small businesses, with a Windows 98 look.",
+    result: "From idea to a live web app",
+    description:
+      "A simple point of sale for small businesses, dressed as a Windows 98 desktop. Ring up sales at a fast register, keep stock accurate, look up any past sale with its receipt, and see revenue and profit at a glance. Each store’s data is private to its own account.",
+    categories: ["web-app", "experiment"],
+    status: "live",
+    year: 2026,
+    featured: true,
+    // Screens come from a demo store (sample products and test sales); the signed-in email is hidden.
+    coverImage: "/projects/kassix-pos/desktop-1.webp",
+    logo: "/projects/kassix-pos/icon.png",
+    gallery: [
+      { src: "/projects/kassix-pos/desktop-2.webp", alt: "Dashboard with today’s sales, a 7-day chart, top sellers, and low-stock alerts", kind: "desktop" },
+      { src: "/projects/kassix-pos/desktop-3.webp", alt: "Weekly report with revenue, cost, profit margin, and sales by payment method", kind: "desktop" },
+      { src: "/projects/kassix-pos/desktop-4.webp", alt: "Inventory with stock levels and a movement log", kind: "desktop" },
+      { src: "/projects/kassix-pos/desktop-5.webp", alt: "A sale’s receipt, ready to print", kind: "desktop" },
+      { src: "/projects/kassix-pos/desktop-7.webp", alt: "Sales history with every receipt", kind: "desktop" },
+      { src: "/projects/kassix-pos/desktop-6.webp", alt: "The KASSIX sign-in window", kind: "desktop" },
+      { src: "/projects/kassix-pos/mobile-1.webp", alt: "The register on a phone", kind: "mobile" },
+      { src: "/projects/kassix-pos/mobile-2.webp", alt: "The dashboard on a phone", kind: "mobile" },
+      { src: "/projects/kassix-pos/mobile-3.webp", alt: "Inventory on a phone", kind: "mobile" },
+    ],
+    technologies: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS", "Recharts", "React Hook Form", "Zod", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "card", title: "Fast register", description: "Tap products by category or search by SKU, apply a discount, and take cash, card, or GCash, with quick cash amounts." },
+      { icon: "box", title: "Inventory", description: "Stock levels with low-stock alerts, restocks and stock counts, and a movement log of every change." },
+      { icon: "chart", title: "Reports", description: "Revenue, estimated cost and profit, and sales by payment method, for today, this week, or this month." },
+      { icon: "checklist", title: "Receipts", description: "Every sale in one history, each with a printable receipt that keeps the prices from the day it was sold." },
+      { icon: "shield", title: "Sales that add up", description: "Each sale is one database transaction that checks stock and computes totals on the server, so a retried checkout can’t record twice." },
+    ],
+    challenge:
+      "A small shop needs to know what sold, what’s left in stock, and what it actually earned, but a notebook or spreadsheet never quite adds up.",
+    solution:
+      "A register-first web app on Next.js and Supabase. Every sale runs through one Postgres function in a single transaction: it locks the products, rejects anything out of stock, computes prices, tax, and totals on the server, and logs each stock movement. Row Level Security keeps every store’s data private, and sold items keep their original names and prices, so history never changes.",
+    role: "Concept, product design, and development.",
+    liveUrl: "https://kassix-pos.vercel.app",
+    githubUrl: "https://github.com/LeouDev/POS",
+  },
+  {
     id: "air-rally",
     slug: "air-rally",
     name: "AIR/Rally",

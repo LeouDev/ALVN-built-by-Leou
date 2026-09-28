@@ -17,7 +17,6 @@ const services = [
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
   const quoted = projects.filter((p) => p.testimonial?.quote);
-  const leadIsWide = featured.length % 2 === 1;
 
   return (
     <>
@@ -69,7 +68,8 @@ export default function Home() {
         </SectionHeader>
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           {featured.map((p, i) => {
-            const wide = leadIsWide && i === 0;
+            // The lead spans the row; with an even count the last one does too, so no card sits alone.
+            const wide = i === 0 || (featured.length % 2 === 0 && i === featured.length - 1);
             return (
               <div key={p.id} className={`reveal ${wide ? "md:col-span-2" : ""}`}>
                 <ProjectCard project={p} size={wide ? "lg" : "md"} />
