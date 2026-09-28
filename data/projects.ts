@@ -215,7 +215,7 @@ export const projects: Project[] = [
     tagline: "Concept showroom website for a pre-owned car dealership.",
     description:
       "A concept website, made as a proposal, for F2A Cars, a pre-owned car dealership in Timog, Quezon City. It brings the dealership’s cars, services, and F2A Vlogs into one digital showroom: browse the inventory, start a sale, trade-in, or consignment, and catch up on the latest episodes.",
-    categories: ["website"],
+    categories: ["website", "experiment"],
     status: "concept",
     year: 2026,
     featured: false,
