@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin";
 import { provider } from "@/lib/contracts-db";
 import { renderInvoicePdf } from "@/lib/invoice-pdf";
 import { invoiceEmail, parseInvoice } from "@/lib/invoices";
-import { createInvoice, deleteDraft, getInvoice, markPaid, markSent, updateDraft, voidInvoice } from "@/lib/invoices-db";
+import { createInvoice, deleteDraft, getInvoice, getPaymentQr, markPaid, markSent, setPaymentQr, updateDraft, voidInvoice } from "@/lib/invoices-db";
 import { callScript } from "@/lib/script";
 import { site } from "@/lib/site";
 
@@ -32,13 +32,14 @@ export async function sendInvoice(id: number) {
   const inv = await getInvoice(id);
   if (!inv || (inv.status !== "draft" && inv.status !== "sent")) redirect(`/admin/invoices/${id}`);
   const reminder = inv.status === "sent";
-  const sent = await renderInvoicePdf(inv, provider(), site.url)
+  const qr = await getPaymentQr();
+  const sent = await renderInvoicePdf(inv, provider(), site.url, qr)
     .then((pdf) =>
       callScript<{ ok?: boolean }>({
         action: "send",
         to: inv.client_email,
-        ...invoiceEmail(inv, site.url, reminder),
-        attachments: [{ name: `Invoice ${inv.number}.pdf`, base64: pdf.toString("base64") }],
+        ...invoiceEmail(inv, site.url, { reminder, qr: Boolean(qr) }),
+        attachments: [{ name: `Billing Statement ${inv.number}.pdf`, base64: pdf.toString("base64") }],
       }),
     )
     .catch((err) => {
@@ -67,4 +68,23 @@ export async function deleteInvoiceDraft(id: number) {
   const inv = await getInvoice(id);
   await deleteDraft(id);
   redirect(inv?.project_id ? `/admin/projects/${inv.project_id}` : "/admin/invoices");
+}
+
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const qrNotice = (kind: "qr" | "qr-removed" | "qr-failed") => `/admin/invoices?notice=${kind}&t=${Date.now()}`;
+
+/** Saves the bank QR printed on billing statements. The browser has already turned it into a small PNG. */
+export async function uploadPaymentQr(form: FormData) {
+  await requireAdmin();
+  const file = form.get("qr");
+  const png = file instanceof File && file.size <= 900_000 ? Buffer.from(await file.arrayBuffer()) : null;
+  if (!png?.subarray(0, 8).equals(PNG_SIGNATURE)) redirect(qrNotice("qr-failed"));
+  await setPaymentQr(png);
+  redirect(qrNotice("qr"));
+}
+
+export async function removePaymentQr() {
+  await requireAdmin();
+  await setPaymentQr(null);
+  redirect(qrNotice("qr-removed"));
 }

@@ -10,7 +10,7 @@ const accent = "#F47721";
 const line = "#D7DADF";
 
 const s = StyleSheet.create({
-  page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: "Manrope", fontSize: 10, lineHeight: 1.5, color: navy },
+  page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: ["Manrope", "Geist"], fontSize: 10, lineHeight: 1.5, color: navy },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 32 },
   eyebrow: { fontSize: 7.5, letterSpacing: 1.6, textTransform: "uppercase", fontWeight: 700, color: accent },
   label: { fontSize: 7.5, letterSpacing: 1.4, textTransform: "uppercase", fontWeight: 700, color: muted, marginBottom: 4 },
@@ -18,7 +18,14 @@ const s = StyleSheet.create({
   footer: { position: "absolute", left: 56, right: 56, bottom: 28, flexDirection: "row", justifyContent: "space-between", fontSize: 7.5, color: muted },
 });
 
-function InvoicePdf({ inv, provider, logo }: { inv: Invoice; provider: Provider; logo: string }) {
+// Fits the QR in 140 × 180 pt, keeping its shape (a PNG stores its width and height at bytes 16–23).
+function qrSize(png: Buffer) {
+  const [w, h] = [png.readUInt32BE(16), png.readUInt32BE(20)];
+  const scale = Math.min(140 / w, 180 / h);
+  return { width: w * scale, height: h * scale };
+}
+
+function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provider; logo: string; qr: Buffer | null }) {
   const paid = inv.status === "paid";
   const stamp = paid
     ? { text: `PAID${inv.paid_at ? ` · ${new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "Asia/Manila" })}` : ""}`, color: "#067647" }
@@ -26,16 +33,16 @@ function InvoicePdf({ inv, provider, logo }: { inv: Invoice; provider: Provider;
       ? { text: "VOID", color: "#b42318" }
       : null;
   return (
-    <Document title={`Invoice ${inv.number}`} author={provider.name} subject={`Invoice ${inv.number}`}>
+    <Document title={`Billing Statement ${inv.number}`} author={provider.name} subject={`Billing Statement ${inv.number}`}>
       <Page size="A4" style={s.page}>
         <View style={s.header}>
           <Image src={logo} style={{ height: 18 }} />
-          <Text style={s.eyebrow}>Invoice · {inv.number}</Text>
+          <Text style={s.eyebrow}>Billing statement · {inv.number}</Text>
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View>
-            <Text style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.2 }}>Invoice</Text>
+            <Text style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.2 }}>Billing Statement</Text>
             <Text style={{ color: muted, marginTop: 2 }}>{inv.number}</Text>
           </View>
           {stamp && (
@@ -85,10 +92,14 @@ function InvoicePdf({ inv, provider, logo }: { inv: Invoice; provider: Provider;
           </View>
         </View>
 
-        {inv.notes ? (
-          <View style={{ marginTop: 30, borderLeftWidth: 3, borderLeftColor: accent, paddingLeft: 14 }} wrap={false}>
-            <Text style={s.label}>How to pay</Text>
-            <Text>{inv.notes}</Text>
+        {inv.notes || qr ? (
+          <View style={{ marginTop: 30, flexDirection: "row", gap: 20, borderLeftWidth: 3, borderLeftColor: accent, paddingLeft: 14 }} wrap={false}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.label}>How to pay</Text>
+              {inv.notes ? <Text>{inv.notes}</Text> : null}
+              {qr ? <Text style={{ color: muted, marginTop: inv.notes ? 6 : 0 }}>{inv.notes ? "Or scan" : "Scan"} the QR code with your bank or e-wallet app.</Text> : null}
+            </View>
+            {qr ? <Image src={{ data: qr, format: "png" }} style={qrSize(qr)} /> : null}
           </View>
         ) : null}
 
@@ -96,7 +107,7 @@ function InvoicePdf({ inv, provider, logo }: { inv: Invoice; provider: Provider;
 
         <View style={s.footer} fixed>
           <Text>
-            {provider.business} · Invoice {inv.number}
+            {provider.business} · Billing statement {inv.number}
           </Text>
           <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
         </View>
@@ -105,8 +116,8 @@ function InvoicePdf({ inv, provider, logo }: { inv: Invoice; provider: Provider;
   );
 }
 
-/** Renders an invoice. `origin` is the site's own URL, where the fonts and logo are served. */
-export async function renderInvoicePdf(inv: Invoice, provider: Provider, origin: string) {
+/** Renders a billing statement. `origin` is the site's own URL, where the fonts and logo are served; `qr` is the payment QR (PNG). */
+export async function renderInvoicePdf(inv: Invoice, provider: Provider, origin: string, qr: Buffer | null) {
   registerPdfFonts(origin);
-  return renderToBuffer(<InvoicePdf inv={inv} provider={provider} logo={`${origin}/brand/alvn-wordmark.png`} />);
+  return renderToBuffer(<InvoicePdf inv={inv} provider={provider} logo={`${origin}/brand/alvn-wordmark.png`} qr={qr} />);
 }

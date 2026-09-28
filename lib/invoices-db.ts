@@ -87,3 +87,23 @@ export async function deleteDraft(id: number) {
 }
 
 export { invoiceNumber };
+
+/** When the payment QR was last uploaded (null if there isn't one), for cache-busting its URL. */
+export async function paymentQrVersion() {
+  const [row] = await sql<{ updated_at: Date }[]>`select updated_at from alvn.assets where name = 'payment_qr'`;
+  return row?.updated_at.getTime() ?? null;
+}
+
+/** The bank QR printed on billing statements, as PNG bytes. */
+export async function getPaymentQr() {
+  const [row] = await sql<{ data: Buffer }[]>`select data from alvn.assets where name = 'payment_qr'`;
+  return row?.data ?? null;
+}
+
+export async function setPaymentQr(png: Buffer | null) {
+  if (!png) await sql`delete from alvn.assets where name = 'payment_qr'`;
+  else
+    await sql`
+      insert into alvn.assets (name, data) values ('payment_qr', ${png})
+      on conflict (name) do update set data = excluded.data, updated_at = now()`;
+}

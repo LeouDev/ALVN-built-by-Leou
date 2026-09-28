@@ -12,7 +12,7 @@ const accent = "#F47721";
 const line = "#D7DADF";
 
 const s = StyleSheet.create({
-  page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: "Manrope", fontSize: 10, lineHeight: 1.55, color: navy },
+  page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: ["Manrope", "Geist"], fontSize: 10, lineHeight: 1.55, color: navy },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 28 },
   eyebrow: { fontSize: 7.5, letterSpacing: 1.6, textTransform: "uppercase", fontWeight: 700, color: accent },
   title: { fontSize: 22, fontWeight: 700, lineHeight: 1.2, marginBottom: 18 },
@@ -101,7 +101,7 @@ function ContractPdf({ c, logo }: { c: Contract; logo: string }) {
             </View>
           ) : (
             <Text key={i} style={s.paragraph}>
-              <Rich text={b.lines.join(" ")} />
+              <Rich text={b.lines.join("\n")} />
             </Text>
           ),
         )}

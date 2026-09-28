@@ -24,8 +24,8 @@ export function ContractText({ body }: { body: string }) {
             ))}
           </ul>
         ) : (
-          <p key={i}>
-            <Rich text={b.lines.join(" ")} />
+          <p key={i} className="whitespace-pre-line">
+            <Rich text={b.lines.join("\n")} />
           </p>
         ),
       )}

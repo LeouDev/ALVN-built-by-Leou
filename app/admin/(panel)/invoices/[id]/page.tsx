@@ -9,7 +9,7 @@ import { Toast } from "@/components/Toast";
 import { inManila, requireAdmin, todayInManila } from "@/lib/admin";
 import { provider } from "@/lib/contracts-db";
 import { longDate, php } from "@/lib/invoices";
-import { getInvoice } from "@/lib/invoices-db";
+import { getInvoice, paymentQrVersion } from "@/lib/invoices-db";
 
 const plainButton = "w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold transition-colors hover:border-navy/40";
 const at = (d: Date | null) => (d ? inManila(d, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "");
@@ -27,6 +27,7 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
   const id = Number((await params).id);
   const inv = Number.isSafeInteger(id) ? await getInvoice(id) : null;
   if (!inv) notFound();
+  const qrVersion = await paymentQrVersion();
   const query = await searchParams;
   const notice = typeof query.notice === "string" ? notices[query.notice] : undefined;
   const p = provider();
@@ -51,7 +52,7 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
         <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(7,26,45,0.35)] sm:p-12">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="eyebrow text-accent">Invoice</p>
+              <p className="eyebrow text-accent">Billing statement</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight">{inv.number}</h2>
             </div>
             {inv.status === "paid" && <span className="rounded-lg border-2 border-[#067647] px-3 py-1 text-sm font-bold tracking-widest text-[#067647]">PAID</span>}
@@ -103,10 +104,14 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
               <span className="tabular-nums">{php(inv.total)}</span>
             </p>
           </div>
-          {inv.notes && (
-            <div className="mt-8 border-l-[3px] border-accent pl-4">
-              <p className="eyebrow">How to pay</p>
-              <p className="mt-2 text-sm whitespace-pre-wrap">{inv.notes}</p>
+          {(inv.notes || qrVersion) && (
+            <div className="mt-8 flex flex-wrap items-start gap-6 border-l-[3px] border-accent pl-4">
+              <div className="min-w-0 flex-1 basis-56">
+                <p className="eyebrow">How to pay</p>
+                {inv.notes && <p className="mt-2 text-sm whitespace-pre-wrap">{inv.notes}</p>}
+                {qrVersion && <p className="mt-2 text-sm text-muted">{inv.notes ? "Or scan" : "Scan"} the QR code with your bank or e-wallet app.</p>}
+              </div>
+              {qrVersion && <img src={`/admin/invoices/payment-qr?v=${qrVersion}`} alt="Payment QR code" className="h-44 w-36 object-contain object-top" />}
             </div>
           )}
         </article>
@@ -141,7 +146,7 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
             action={sendInvoice.bind(null, inv.id)}
             label={inv.status === "sent" ? "Send a reminder" : "Send invoice"}
             title={inv.status === "sent" ? `Send ${first} a reminder?` : `Send ${inv.number} to ${first}?`}
-            message={`${inv.status === "sent" ? "A friendly reminder with the invoice attached again" : `The invoice for ${php(inv.total)} with its PDF attached`} goes to ${inv.client_email} from your Gmail.`}
+            message={`${inv.status === "sent" ? "A friendly reminder with the invoice attached again" : `The billing statement for ${php(inv.total)}, with its PDF attached,`} goes to ${inv.client_email} from your Gmail.`}
             confirmLabel={inv.status === "sent" ? "Send reminder" : "Send invoice"}
             pendingLabel="Sending…"
             className="w-full rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d]"

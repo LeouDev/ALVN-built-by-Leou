@@ -59,13 +59,16 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 
 type Sendable = InvoiceInput & { number: string; total: number };
 
-export function invoiceEmail(inv: Sendable, siteUrl: string, reminder = false) {
+// Clients get a "billing statement" (a request for payment), not an "invoice": in the Philippines an
+// invoice is a BIR-registered document, and these PDFs aren't registered.
+export function invoiceEmail(inv: Sendable, siteUrl: string, { reminder = false, qr = false } = {}) {
   const first = inv.client_name.split(" ")[0];
   const due = longDate(inv.due_date);
-  const subject = `${reminder ? "Reminder: " : ""}Invoice ${inv.number}: ${php(inv.total)} due ${due}`;
+  const subject = `${reminder ? "Reminder: " : ""}Billing statement ${inv.number}: ${php(inv.total)} due ${due}`;
   const intro = reminder
-    ? `Just a friendly reminder about invoice ${inv.number}, due ${due}. The invoice is attached again for convenience.`
-    : `Here’s invoice ${inv.number}, due ${due}. The PDF is attached for your records.`;
+    ? `Just a friendly reminder about billing statement ${inv.number}, due ${due}. It’s attached again for convenience.`
+    : `Here’s billing statement ${inv.number}, due ${due}. The PDF is attached for your records.`;
+  const scan = qr ? `${inv.notes ? "Or scan" : "Scan"} the QR code on the attached billing statement with your bank or e-wallet app.` : "";
   const text = [
     `Hi ${first},`,
     "",
@@ -73,7 +76,7 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, reminder = false) {
     "",
     ...inv.items.map((i) => `- ${i.description}: ${php(i.amount)}`),
     `Total due: ${php(inv.total)}`,
-    ...(inv.notes ? ["", "How to pay:", inv.notes] : []),
+    ...(inv.notes || scan ? ["", "How to pay:", ...[inv.notes, scan].filter(Boolean)] : []),
     "",
     "Questions? Just reply to this email.",
     "",
@@ -91,7 +94,7 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, reminder = false) {
   </table>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
     <tr><td style="background:#071A2D;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">${reminder ? "Payment reminder" : "Invoice"} · ${esc(inv.number)}</div>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">${reminder ? "Payment reminder" : "Billing statement"} · ${esc(inv.number)}</div>
       <div style="margin-top:10px;font-size:28px;line-height:1.2;font-weight:700;color:#F7F3EA">${esc(php(inv.total))}</div>
       <div style="margin-top:6px;font-size:15px;color:#CFCCC4">Due ${esc(due)}</div>
     </td></tr>
@@ -103,10 +106,11 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, reminder = false) {
         <tr><td style="padding:12px 0 0;font-weight:700">Total due</td><td align="right" style="padding:12px 0 0 16px;font-weight:700;white-space:nowrap">${esc(php(inv.total))}</td></tr>
       </table>
       ${
-        inv.notes
+        inv.notes || scan
           ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#F7F3EA;border-radius:14px"><tr><td style="padding:18px 20px">
         <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#5F6B7E">How to pay</div>
-        <div style="margin-top:8px;font-size:15px;line-height:1.6">${esc(inv.notes).replace(/\n/g, "<br>")}</div>
+        ${inv.notes ? `<div style="margin-top:8px;font-size:15px;line-height:1.6">${esc(inv.notes).replace(/\n/g, "<br>")}</div>` : ""}
+        ${scan ? `<div style="margin-top:8px;font-size:14px;line-height:1.6;color:#5F6B7E">${scan}</div>` : ""}
       </td></tr></table>`
           : ""
       }

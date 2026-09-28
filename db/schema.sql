@@ -119,6 +119,13 @@ create table if not exists alvn.invoices (
 );
 create index if not exists invoices_project_id on alvn.invoices (project_id);
 
+-- PNG images uploaded in the admin: 'payment_qr' is the bank QR printed on billing statements.
+create table if not exists alvn.assets (
+  name text primary key,
+  data bytea not null,
+  updated_at timestamptz not null default now()
+);
+
 alter table alvn.messages enable row level security;
 alter table alvn.replies enable row level security;
 alter table alvn.login_tokens enable row level security;
@@ -126,3 +133,4 @@ alter table alvn.projects enable row level security;
 alter table alvn.contracts enable row level security;
 alter table alvn.contract_pdfs enable row level security;
 alter table alvn.invoices enable row level security;
+alter table alvn.assets enable row level security;
