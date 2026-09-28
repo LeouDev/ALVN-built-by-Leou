@@ -60,6 +60,8 @@ Without `BOOKING_URL`, the Contact page shows only the inquiry form.
 | `ADMIN_EMAIL` | The only address that can receive a sign-in link |
 | `ADMIN_SECRET` | 32+ random characters; signs the session cookie |
 
+**Projects** tracks each client project (stage, budget and payments, dates, links), and can be started from any inbox message. **Contracts** are generated from a project with a choice of payment terms (`lib/contracts.ts`). Leou signs, the text's SHA-256 is frozen, and the client signs through a one-time link at `/contracts/[token]`. The signed PDF (`lib/contract-pdf.tsx`, with a signature certificate page) is stored in the database and emailed to both sides from his Gmail. The `CONTRACT_*` variables hold his legal details.
+
 Create the tables once: paste `db/schema.sql` into Supabase's SQL Editor, or run `node --env-file=.env.local scripts/db-setup.mjs`. They live in a private `alvn` schema that Supabase's public API doesn't serve.
 
 ## Brand assets

@@ -21,4 +21,5 @@ export function verifySession(secret: string, value: string | undefined, now = D
 
 /** One-time sign-in links: the email carries the token, the database keeps only its hash. */
 export const newLoginToken = () => randomBytes(32).toString("base64url");
-export const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
+export const sha256 = (text: string) => createHash("sha256").update(text, "utf8").digest("hex");
+export const hashToken = sha256;

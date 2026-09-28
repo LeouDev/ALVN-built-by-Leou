@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Mail, MessageSquareText } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, FilePlus2, Mail, MessageSquareText } from "lucide-react";
+import { StatusPill } from "@/components/ContractStatus";
 import { DeleteProjectButton, ProjectForm } from "@/components/ProjectForm";
 import { inManila, requireAdmin } from "@/lib/admin";
 import { peso, stageLabels } from "@/lib/client-projects";
 import { getProject } from "@/lib/client-projects-db";
+import { listContracts } from "@/lib/contracts-db";
 
 const side =
   "inline-flex w-full items-center justify-between gap-2 rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold transition-colors hover:border-navy/40";
@@ -16,6 +18,7 @@ export default async function ProjectPage({ params, searchParams }: PageProps<"/
   if (!project) notFound();
   const { saved } = await searchParams;
   const { id: _id, created_at: _created, updated_at: _updated, ...values } = project;
+  const contracts = await listContracts(project.id);
   const balance = project.budget != null ? project.budget - project.paid : null;
 
   return (
@@ -48,6 +51,27 @@ export default async function ProjectPage({ params, searchParams }: PageProps<"/
             </div>
           </div>
         )}
+        <div className="mb-6 rounded-[22px] border border-line bg-white/60 p-5">
+          <p className="eyebrow">Contracts</p>
+          {contracts.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {contracts.map((c) => (
+                <li key={c.id}>
+                  <Link href={`/admin/contracts/${c.id}`} className="flex items-center justify-between gap-3 rounded-xl px-2 py-1.5 text-sm font-semibold hover:bg-white">
+                    <span className="truncate">{c.title}</span>
+                    <StatusPill status={c.status} viewed={Boolean(c.viewed_at)} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <Link
+            href={`/admin/contracts/new?project=${project.id}`}
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-semibold text-cream hover:bg-navy-soft"
+          >
+            <FilePlus2 aria-hidden className="size-4" /> New contract
+          </Link>
+        </div>
         {project.message_id && (
           <Link href={`/admin/messages/${project.message_id}`} className={side}>
             Original message <MessageSquareText aria-hidden className="size-4" />

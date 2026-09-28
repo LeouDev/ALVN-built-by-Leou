@@ -58,7 +58,48 @@ create table if not exists alvn.projects (
 );
 create index if not exists projects_message_id on alvn.projects (message_id);
 
+-- Contracts (phase 3). The text is frozen (body_hash) when Leou signs and sends it; the client
+-- signs through a one-time link (only token_hash is stored).
+create table if not exists alvn.contracts (
+  id bigint generated always as identity primary key,
+  project_id bigint references alvn.projects (id) on delete set null,
+  title text not null,
+  client_name text not null,
+  client_email text not null,
+  client_company text not null default '',
+  terms jsonb not null default '{}',
+  body text not null,
+  status text not null default 'draft' check (status in ('draft', 'sent', 'signed', 'void')),
+  token_hash text unique,
+  body_hash text,
+  provider_name text,
+  provider_signature text,
+  provider_signed_at timestamptz,
+  provider_ip text,
+  provider_ua text,
+  sent_at timestamptz,
+  viewed_at timestamptz,
+  viewed_ip text,
+  client_signer_name text,
+  client_signature text,
+  client_signed_at timestamptz,
+  client_ip text,
+  client_ua text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists contracts_project_id on alvn.contracts (project_id);
+
+-- The signed PDF, kept apart so contract rows stay light.
+create table if not exists alvn.contract_pdfs (
+  contract_id bigint primary key references alvn.contracts (id) on delete cascade,
+  pdf bytea not null,
+  created_at timestamptz not null default now()
+);
+
 alter table alvn.messages enable row level security;
 alter table alvn.replies enable row level security;
 alter table alvn.login_tokens enable row level security;
 alter table alvn.projects enable row level security;
+alter table alvn.contracts enable row level security;
+alter table alvn.contract_pdfs enable row level security;

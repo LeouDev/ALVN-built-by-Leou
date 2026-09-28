@@ -6,7 +6,8 @@
  *   - Booking a time creates the event with a Google Meet link. Google emails the client the
  *     invite, and you get an email about the new booking.
  *   - Each booker also gets a branded "You're booked" email from your Gmail (sendBookingEmails).
- *   - The site's admin reads booked calls for its calendar, and sends your replies from your Gmail.
+ *   - The site's admin reads booked calls for its calendar, and sends email from your Gmail:
+ *     inbox replies and contracts (with the signed PDF attached).
  *
  * Setup, once (the repo copy of this project lives in apps-script/):
  *   1. script.google.com → New project, named "ALVN booking emails".
@@ -85,7 +86,7 @@ function doPost(e) {
     else if (body.action === "slots") result = { slots: openSlots_(busyTimes_(), Date.now()) };
     else if (body.action === "book") result = book_(body);
     else if (body.action === "bookings") result = { bookings: bookings_(body.from, body.to) };
-    else if (body.action === "reply") result = reply_(body);
+    else if (body.action === "send" || body.action === "reply") result = sendEmail_(body);
     else result = { error: "unknown action" };
   } catch (err) {
     console.error(err);
@@ -194,18 +195,25 @@ function bookings_(from, to) {
     });
 }
 
-/** Sends Leou's reply from the admin inbox, from his Gmail. The site writes the text. */
-function reply_(body) {
+/** Sends an email from Leou's Gmail for the admin (inbox replies, contracts). The site writes the
+ *  text, and optionally the HTML and PDF attachments ({ name, base64 }). */
+function sendEmail_(body) {
   const to = String(body.to || "").trim();
   const subject = String(body.subject || "").replace(/\s+/g, " ").trim().slice(0, 200);
   const text = String(body.text || "");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || !subject || !text.trim()) return { error: "invalid" };
+  const attachments = (body.attachments || [])
+    .slice(0, 3)
+    .map((a) => Utilities.newBlob(Utilities.base64Decode(String(a.base64)), "application/pdf", String(a.name || "document.pdf")));
   MailApp.sendEmail({
     to,
     subject,
     body: text,
     name: SENDER_NAME,
-    htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#071A2D">${esc_(text).replace(/\n/g, "<br>")}</div>`,
+    htmlBody: body.html
+      ? String(body.html)
+      : `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#071A2D">${esc_(text).replace(/\n/g, "<br>")}</div>`,
+    attachments,
   });
   return { ok: true };
 }

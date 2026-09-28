@@ -24,7 +24,12 @@ function load(items = [], busy = []) {
     MailApp: { sendEmail: (to, subject, text, opts) => sent.push(typeof to === "object" ? { ...to } : { to, subject, text, ...opts }) },
     PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => props.get(k) ?? null, setProperty: (k, v) => props.set(k, v) }) },
     LockService: { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) },
-    Utilities: { formatDate: (d, tz, pattern) => `${pattern}`, getUuid: () => "uuid" },
+    Utilities: {
+      formatDate: (d, tz, pattern) => `${pattern}`,
+      getUuid: () => "uuid",
+      base64Decode: (b64) => [...Buffer.from(b64, "base64")],
+      newBlob: (bytes, type, name) => ({ bytes: bytes.length, type, name }),
+    },
     console: { error() {} },
     ScriptApp: {
       getProjectTriggers: () => [...triggers],
@@ -191,4 +196,14 @@ test("sends admin replies from Gmail, escaping the HTML copy", () => {
   assert.equal(sent[0].subject, "Re: Your project inquiry");
   assert.equal(sent[0].name, "Leou · ALVN");
   assert.match(sent[0].htmlBody, /Hi &lt;Maya&gt;<br>&gt; quoted/);
+});
+
+test("sends contract emails with custom HTML and a PDF attachment", () => {
+  const { ctx, props, sent } = load();
+  props.set("BOOKING_SECRET", "s3cret");
+  const call = (body) => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify({ secret: "s3cret", ...body }) } }).content);
+  const pdf = Buffer.from("%PDF-1.4 test").toString("base64");
+  assert.deepEqual(call({ action: "send", to: "maya@example.com", subject: "Signed: Website Agreement", text: "Here’s your copy.", html: "<p>Branded</p>", attachments: [{ name: "Agreement.pdf", base64: pdf }] }), { ok: true });
+  assert.equal(sent[0].htmlBody, "<p>Branded</p>");
+  assert.deepEqual([...sent[0].attachments], [{ bytes: 13, type: "application/pdf", name: "Agreement.pdf" }]);
 });

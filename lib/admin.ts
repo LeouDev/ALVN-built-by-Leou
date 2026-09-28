@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSession, SESSION_DAYS, verifySession } from "@/lib/session";
 
@@ -39,3 +39,10 @@ export const inManila = (date: Date | string, options: Intl.DateTimeFormatOption
 
 /** Today's date in Manila as "YYYY-MM-DD", to compare with date columns. */
 export const todayInManila = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Manila" }).format(new Date());
+
+/** The visitor's IP and browser, recorded with each signature. */
+export async function requestMeta() {
+  const h = await headers();
+  const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || h.get("x-real-ip") || "unknown";
+  return { ip, ua: (h.get("user-agent") ?? "").slice(0, 300) };
+}
