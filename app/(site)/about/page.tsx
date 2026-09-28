@@ -35,7 +35,7 @@ export default function AboutPage() {
               I enjoy taking an idea from a rough concept and turning it into something people can actually use.
             </p>
             <ButtonLink href={site.resumeUrl} external variant="outline" className="mt-8">
-              View my résumé
+              More about the developer
             </ButtonLink>
           </div>
         </div>
