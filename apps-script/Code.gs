@@ -5,7 +5,8 @@
  *   - The site asks this web app for open 30-minute times. Anything on your calendar is skipped.
  *   - Booking a time creates the event with a Google Meet link. Google emails the client the
  *     invite, and you get an email about the new booking.
- *   - Each booker also gets a branded "You're booked" email from your Gmail (sendBookingEmails).
+ *   - Each booker also gets a branded "You're booked" email from your Gmail, sent with Google's
+ *     invite. If the Meet link isn't ready yet, sendBookingEmails sends it once the link lands.
  *   - The site's admin reads booked calls for its calendar, and sends email from your Gmail:
  *     inbox replies and contracts (with the signed PDF attached).
  *
@@ -148,6 +149,16 @@ function book_(body) {
       CALENDAR_ID,
       { conferenceDataVersion: 1, sendUpdates: "all" },
     );
+    // Google is emailing its invite now: send the branded email alongside it. If this fails, or the
+    // Meet link isn't ready, sendBookingEmails sends it later (the "sent:" mark stops a second copy).
+    if (event.hangoutLink) {
+      try {
+        send_({ start: { dateTime: start }, end: { dateTime: end }, hangoutLink: event.hangoutLink }, { email, displayName: name }, TIME_ZONE);
+        PropertiesService.getScriptProperties().setProperty("sent:" + event.id, new Date().toISOString());
+      } catch (err) {
+        console.error(err);
+      }
+    }
     const when = Utilities.formatDate(new Date(start), TIME_ZONE, "EEE, MMM d 'at' h:mm a");
     MailApp.sendEmail({
       to: Session.getEffectiveUser().getEmail(),

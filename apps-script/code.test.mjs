@@ -140,6 +140,10 @@ test("the web app checks the secret, books only open times, and never double-boo
   assert.deepEqual(call({ ...booking, start: "2026-01-01T00:00:00.000Z" }), { error: "taken" });
 
   assert.equal(call(booking).ok, true);
+  assert.equal(sent[0].to, "maya@example.com"); // the branded email goes out with Google's invite…
+  assert.match(sent[0].text, /^Hi Maya,/);
+  assert.ok(props.get("sent:evt1")); // …and is marked, so sendBookingEmails won't send it again
+  sent.shift();
   const [event, calendarId, options] = inserted[0];
   assert.equal(calendarId, "primary");
   assert.equal(event.summary, "30-min intro call with Leou (Maya Reyes)");
@@ -153,6 +157,17 @@ test("the web app checks the secret, books only open times, and never double-boo
   assert.deepEqual(call(booking), { error: "taken" });
   assert.equal(inserted.length, 1);
   assert.ok(!call({ action: "slots" }).slots.includes(slots[0]));
+});
+
+test("a booking's email isn't sent again by the background check", () => {
+  const { ctx, props, sent } = load([booking("evt1")]); // Calendar lists the event the booking creates
+  props.set("BOOKING_SECRET", "s3cret");
+  props.set("since", ago(60));
+  const call = (body) => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify({ secret: "s3cret", ...body }) } }).content);
+  const { slots } = call({ action: "slots" });
+  call({ action: "book", start: slots[0], name: "Maya Reyes", email: "maya@example.com" });
+  ctx.sendBookingEmails();
+  assert.deepEqual(sent.map((m) => m.to), ["maya@example.com", "leou@example.com"]);
 });
 
 test("lists booked calls for the admin calendar, with the guest's details", () => {
