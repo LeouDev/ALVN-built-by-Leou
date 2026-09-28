@@ -8,7 +8,8 @@ import { createProject, deleteProject, updateProject } from "@/lib/client-projec
 import { sql } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { escapeHtml } from "@/lib/inquiry";
-import { addReply, getMessage, replyEmail, setArchived, unreadCount } from "@/lib/inbox";
+import { addReply, getMessage, setArchived, unreadCount } from "@/lib/inbox";
+import { replyEmail } from "@/lib/reply-email";
 import { callScript } from "@/lib/script";
 import { hashToken, newLoginToken } from "@/lib/session";
 import { site } from "@/lib/site";

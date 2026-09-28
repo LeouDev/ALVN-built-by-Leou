@@ -66,11 +66,3 @@ export async function setArchived(id: number, archived: boolean) {
 export async function addReply(id: number, body: string) {
   await sql`insert into alvn.replies (message_id, body) values (${id}, ${body})`;
 }
-
-/** The email that goes out when Leou replies: his text, a signature, and their original message quoted. */
-export function replyEmail(m: Pick<Message, "kind" | "name" | "body" | "created_at">, reply: string, siteUrl: string) {
-  const subject = m.kind === "booking" ? "Re: Our 30-min intro call" : "Re: Your project inquiry";
-  const when = new Date(m.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "Asia/Manila" });
-  const quoted = m.body.trim() ? `\n\nOn ${when}, ${m.name} wrote:\n${m.body.trim().replace(/^/gm, "> ")}` : "";
-  return { subject, text: `${reply.trim()}\n\n— Leou\nALVN — Built by Leou · ${siteUrl}${quoted}` };
-}

@@ -80,7 +80,18 @@ export type ContractTerms = {
   due_date: string | null;
   revisions: number;
   warranty_days: number;
+  /** Optional: when Leou pays for the domain's first year himself and bills it with the first payment. */
+  domain_name?: string;
+  domain_price?: number | null;
 };
+
+/** The domain sentence for "Fees and payment", or "" when there's no domain cost. */
+export function domainTerms(t: Pick<ContractTerms, "plan" | "price" | "domain_name" | "domain_price">) {
+  if (!t.domain_price) return "";
+  const domain = t.domain_name ? `the domain ${t.domain_name}` : "the project’s domain";
+  const total = t.plan === "retainer" ? "" : `, bringing the total to ${php(t.price + t.domain_price)}`;
+  return `The Provider will also register ${domain} for its first year on the Client’s behalf, for ${php(t.domain_price)}, due with the first payment${total}. The domain is registered in the Client’s name, and renewing it after the first year is the Client’s responsibility.`;
+}
 
 const longDate = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -108,7 +119,7 @@ Work starts on ${t.start_date ? longDate(t.start_date) : "the day the first paym
 
 ## 3. Fees and payment
 ${retainer ? "" : `The total fee for the project is ${php(t.price)}. `}${payment}
-
+${domainTerms(t) ? `\n${domainTerms(t)}\n` : ""}
 Payments are made by bank transfer or GCash to the account the Provider specifies, within 7 days of each invoice. Work may pause while a payment is overdue.
 
 ## 4. Revisions and changes
@@ -124,7 +135,7 @@ Once the Client has paid in full, the Client owns the final deliverables made fo
 Both parties will keep each other’s non-public business information confidential, during and after this Agreement.
 
 ## 8. Hosting and third-party costs
-Domains, hosting, paid plugins, app store accounts, and other third-party services are paid for by the Client and held in the Client’s name, unless agreed otherwise in writing.
+${t.domain_price ? "Apart from the domain’s first year (see section 3), domains" : "Domains"}, hosting, paid plugins, app store accounts, and other third-party services are paid for by the Client and held in the Client’s name, unless agreed otherwise in writing.
 
 ## 9. Warranty and liability
 For ${t.warranty_days} days after launch, the Provider will fix bugs in the work as delivered at no extra cost. This doesn’t cover changes made by others, new requests, or problems caused by third-party services. The Provider’s total liability under this Agreement is limited to the fees the Client has paid.
@@ -191,6 +202,8 @@ export function parseTerms(form: FormData): ContractTerms | { error: string } {
     due_date: date("due_date"),
     revisions: whole("revisions", 2),
     warranty_days: whole("warranty_days", 30),
+    domain_name: get("domain_name").toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, ""),
+    domain_price: get("domain_price") ? whole("domain_price", NaN) : null,
   };
 
   if (!t.title || t.title.length > 120) return { error: "Please give the contract a title." };
@@ -206,6 +219,9 @@ export function parseTerms(form: FormData): ContractTerms | { error: string } {
   if (t.start_date && t.due_date && t.due_date < t.start_date) return { error: "The completion date can’t be before the start date." };
   if (Number.isNaN(t.revisions) || t.revisions > 20) return { error: "Revisions must be a whole number up to 20." };
   if (Number.isNaN(t.warranty_days) || t.warranty_days > 365) return { error: "The bug-fix period must be up to 365 days." };
+  if (t.domain_name && !/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(t.domain_name)) return { error: "Please enter the domain like mayasbakery.com, or leave it blank." };
+  if (Number.isNaN(t.domain_price)) return { error: "The domain cost needs to be a whole peso amount." };
+  if (t.domain_name && !t.domain_price) return { error: "Add the domain’s first-year cost, or clear the domain name." };
   return t as ContractTerms;
 }
 

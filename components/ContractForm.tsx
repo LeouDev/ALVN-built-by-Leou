@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { saveContract, saveContractText } from "@/app/admin/contract-actions";
-import { PAYMENT_PLANS, type ContractTerms } from "@/lib/contracts";
+import { domainTerms, PAYMENT_PLANS, type ContractTerms } from "@/lib/contracts";
 import { field } from "@/lib/styles";
 
 export type TermsValues = Partial<Record<keyof ContractTerms, string | number | null>>;
@@ -18,8 +18,12 @@ export function ContractForm({ projectId, id, initial }: { projectId: number | n
   const v = (key: keyof ContractTerms) => String(values[key] ?? "");
   const [plan, setPlan] = useState(v("plan") || "50-50");
   const [price, setPrice] = useState(v("price"));
-  const amount = Number(price.replace(/[₱,\s]|PHP/gi, ""));
+  const [domainName, setDomainName] = useState(v("domain_name"));
+  const [domainPrice, setDomainPrice] = useState(v("domain_price"));
+  const pesos = (s: string) => Number(s.replace(/[₱,\s]|PHP/gi, ""));
+  const amount = pesos(price);
   const preview = PAYMENT_PLANS.find((p) => p.id === plan);
+  const domain = domainTerms({ plan: plan as ContractTerms["plan"], price: amount, domain_name: domainName.trim(), domain_price: pesos(domainPrice) || null });
 
   return (
     <form key={state ? JSON.stringify(state.values) : "initial"} action={action} className="space-y-8 rounded-[28px] border border-line bg-white/45 p-6 sm:p-10">
@@ -85,8 +89,17 @@ export function ContractForm({ projectId, id, initial }: { projectId: number | n
         ) : (
           <p className="rounded-2xl bg-cream/70 px-5 py-4 text-sm leading-relaxed text-navy/80 sm:col-span-2">
             {amount > 0 && preview ? preview.text(amount) : "Enter a price to see the payment wording."}
+            {amount > 0 && domain && <span className="mt-2 block">{domain}</span>}
           </p>
         )}
+        <label className="block">
+          <span className={label}>Domain you’re paying for {optional}</span>
+          <input name="domain_name" placeholder="mayasbakery.com" value={domainName} onChange={(e) => setDomainName(e.target.value)} className={field} />
+        </label>
+        <label className="block">
+          <span className={label}>Domain’s first-year cost (₱) {optional}</span>
+          <input name="domain_price" inputMode="numeric" placeholder="1,500" value={domainPrice} onChange={(e) => setDomainPrice(e.target.value)} className={field} />
+        </label>
       </fieldset>
 
       <fieldset className="grid gap-6 sm:grid-cols-2">
