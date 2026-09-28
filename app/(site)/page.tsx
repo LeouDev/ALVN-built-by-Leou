@@ -8,9 +8,10 @@ import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/da
 
 // Written from a client's side: what they need, what they get, and a real example.
 const services = [
-  { icon: Globe, title: "Need a website?", body: "Modern websites that make your business look credible and turn visitors into inquiries.", example: "roll-up-cinnamons" },
-  { icon: LayoutDashboard, title: "Need an internal tool?", body: "Dashboards, automation, portals, and systems built around your workflow.", example: "prior-authorization-emr" },
-  { icon: Smartphone, title: "Have an app idea?", body: "From prototype to production, I’ll take your idea and turn it into a working product.", example: "air-rally" },
+  // Prices are Leou's starting rates; keep them in step with the budgets in lib/inquiry.ts.
+  { icon: Globe, title: "Need a website?", body: "Modern websites that make your business look credible and turn visitors into inquiries.", price: "Starting at ₱25,000", priceNote: "up to 5 pages", example: "roll-up-cinnamons" },
+  { icon: LayoutDashboard, title: "Need an internal tool?", body: "Dashboards, automation, portals, and systems built around your workflow.", price: "Starting at ₱50,000", example: "prior-authorization-emr" },
+  { icon: Smartphone, title: "Have an app idea?", body: "From prototype to production, I’ll take your idea and turn it into a working product.", price: "Custom pricing", priceNote: "let’s scope it together", example: "air-rally" },
 ];
 
 export default function Home() {
@@ -83,7 +84,7 @@ export default function Home() {
           Whether you’re launching, streamlining how your team works, or starting from an idea.
         </SectionHeader>
         <div className="reveal mt-12 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2">
-          {services.map(({ icon: Icon, title, body, example }, i) => {
+          {services.map(({ icon: Icon, title, body, price, priceNote, example }, i) => {
             const project = getProject(example)!;
             const cut = project.name.lastIndexOf(" ") + 1; // the arrow wraps with the last word, never alone
             return (
@@ -94,6 +95,10 @@ export default function Home() {
                 </div>
                 <h3 className="mt-12 text-2xl font-semibold tracking-tight">{title}</h3>
                 <p className="mt-3 text-pretty text-muted">{body}</p>
+                <p className="mt-5 text-sm">
+                  <span className="font-semibold text-navy">{price}</span>
+                  {priceNote && <span className="text-muted"> · {priceNote}</span>}
+                </p>
                 <Link href={`/projects/${project.slug}`} className="group mt-auto w-fit pt-8 text-sm font-semibold">
                   See an example: {project.name.slice(0, cut)}
                   <span className="whitespace-nowrap">
