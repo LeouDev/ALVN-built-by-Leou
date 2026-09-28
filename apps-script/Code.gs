@@ -30,7 +30,7 @@
 
 const SCHEDULE_TITLE = "30-min intro call with Leou"; // booked events are titled "<this> (<name>)"
 const CALENDAR_ID = "primary";
-const SITE_URL = "https://alvn-built-by-leou.vercel.app";
+const SITE_URL = "https://www.builtbyleou.info";
 const SENDER_NAME = "ALVN Built by Leou"; // plain ASCII: some Gmail paths garble symbols in sender names
 
 // Bookable times: weekdays, 9:00 AM–5:00 PM Manila time, in 30-minute calls.
