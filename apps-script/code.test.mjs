@@ -86,7 +86,7 @@ test("emails each new booking once, and only bookings", () => {
 
   assert.deepEqual(sent.map((m) => m.to), ["new@example.com", "meet-never@example.com"]);
   const [withMeet, noMeet] = sent;
-  assert.equal(withMeet.name, "Leou · ALVN");
+  assert.equal(withMeet.name, "ALVN Built by Leou");
   assert.match(withMeet.htmlBody, /href="https:\/\/meet\.google\.com\/abc-defg-hij"/);
   assert.match(withMeet.htmlBody, /Hi Ana&lt;script&gt;,/);
   assert.doesNotMatch(withMeet.htmlBody, /<script>/);
@@ -194,7 +194,7 @@ test("sends admin replies from Gmail, escaping the HTML copy", () => {
   assert.equal(sent.length, 1);
   assert.equal(sent[0].to, "maya@example.com");
   assert.equal(sent[0].subject, "Re: Your project inquiry");
-  assert.equal(sent[0].name, "Leou · ALVN");
+  assert.equal(sent[0].name, "ALVN Built by Leou");
   assert.match(sent[0].htmlBody, /Hi &lt;Maya&gt;<br>&gt; quoted/);
 });
 

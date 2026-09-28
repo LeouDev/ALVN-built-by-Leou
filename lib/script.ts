@@ -9,7 +9,7 @@ export async function callScript<T>(payload: object): Promise<T | null> {
     method: "POST",
     body: JSON.stringify({ secret, ...payload }),
     cache: "no-store",
-    signal: AbortSignal.timeout(25_000),
+    signal: AbortSignal.timeout(45_000), // the script can take a while to start after an update
   });
   return res.json();
 }

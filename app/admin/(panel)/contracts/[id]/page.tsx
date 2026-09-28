@@ -18,7 +18,7 @@ const flashes: Record<string, [string, string]> = {
   saved: ["Draft saved.", "text-[#067647]"],
   sent: ["Signed and sent. Your client has the signing link.", "text-[#067647]"],
   resent: ["A new signing link is on its way. The old one no longer works.", "text-[#067647]"],
-  failed: ["Saved, but the email couldn’t be sent. Try “Send a new link”.", "text-[#b42318]"],
+  failed: ["The email couldn’t be sent. Google can be slow for a minute after the script is updated, so try “Send a new link” again shortly. Any link already sent still works.", "text-[#b42318]"],
 };
 
 function Timeline({ c }: { c: Contract }) {

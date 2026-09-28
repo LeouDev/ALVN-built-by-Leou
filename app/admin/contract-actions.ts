@@ -58,9 +58,13 @@ export async function signAndSend(id: number, _state: FormState, form: FormData)
 /** A new link (the old one stops working), e.g. if the client lost the email. */
 export async function resendLink(id: number) {
   await requireAdmin();
+  const c = await getContract(id);
   const token = newLoginToken();
-  if (!(await replaceToken(id, hashToken(token)))) redirect(`/admin/contracts/${id}`);
-  redirect(`/admin/contracts/${id}?${(await emailSigningLink(id, token)) ? "resent=1" : "email=failed"}`);
+  if (!c?.token_hash || !(await replaceToken(id, hashToken(token)))) redirect(`/admin/contracts/${id}`);
+  if (await emailSigningLink(id, token)) redirect(`/admin/contracts/${id}?resent=1`);
+  // The new link never reached them, so keep the one they already have working.
+  await replaceToken(id, c.token_hash);
+  redirect(`/admin/contracts/${id}?email=failed`);
 }
 
 export async function voidAction(id: number) {

@@ -31,7 +31,7 @@
 const SCHEDULE_TITLE = "30-min intro call with Leou"; // booked events are titled "<this> (<name>)"
 const CALENDAR_ID = "primary";
 const SITE_URL = "https://alvn-built-by-leou.vercel.app";
-const SENDER_NAME = "Leou · ALVN";
+const SENDER_NAME = "ALVN Built by Leou"; // plain ASCII: some Gmail paths garble symbols in sender names
 
 // Bookable times: weekdays, 9:00 AM–5:00 PM Manila time, in 30-minute calls.
 const TIME_ZONE = "Asia/Manila";
@@ -205,10 +205,7 @@ function sendEmail_(body) {
   const attachments = (body.attachments || [])
     .slice(0, 3)
     .map((a) => Utilities.newBlob(Utilities.base64Decode(String(a.base64)), "application/pdf", String(a.name || "document.pdf")));
-  MailApp.sendEmail({
-    to,
-    subject,
-    body: text,
+  MailApp.sendEmail(to, subject, text, {
     name: SENDER_NAME,
     htmlBody: body.html
       ? String(body.html)
