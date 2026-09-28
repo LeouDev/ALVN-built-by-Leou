@@ -34,10 +34,10 @@ export default function Home() {
               <span className="pb-1 text-xs font-bold tracking-[0.24em] uppercase sm:text-sm">Built by Leou</span>
             </p>
             <h1 className="headline mt-8 animate-fade-up text-[clamp(2.75rem,5.4vw,4.75rem)] [animation-delay:160ms]">
-              I build digital products, websites, and apps<span className="text-accent">.</span>
+              I turn business ideas into websites, apps, and digital products<span className="text-accent">.</span>
             </h1>
             <p className="mt-7 max-w-xl animate-fade-up text-lg text-pretty text-muted [animation-delay:240ms] sm:text-xl">
-              A growing collection of websites, applications, experiments, and digital experiences I’ve designed and built.
+              From concept to launch, I design and build digital experiences that are made to actually work.
             </p>
             <div className="mt-10 flex animate-fade-up flex-wrap gap-3 [animation-delay:320ms]">
               <ButtonLink href="#work">Explore My Work</ButtonLink>
