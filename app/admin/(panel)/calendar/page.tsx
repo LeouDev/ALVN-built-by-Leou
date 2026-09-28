@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Video } from "lucide-react";
 import { inManila, requireAdmin } from "@/lib/admin";
@@ -14,24 +15,9 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
   await requireAdmin();
   const { month } = await searchParams;
   const thisMonth = inManila(new Date(), { year: "numeric", month: "2-digit" }).replace(/(\d+)\/(\d+)/, "$2-$1"); // "2026-09"
-  const [year, monthIndex] = (typeof month === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(month) ? month : thisMonth).split("-").map(Number);
-
-  const from = Date.UTC(year, monthIndex - 1, 1) - MANILA_OFFSET; // midnight on the 1st, Manila time
-  const to = Date.UTC(year, monthIndex, 1) - MANILA_OFFSET;
-  const reply = await callScript<{ bookings?: Call[] }>({ action: "bookings", from: new Date(from).toISOString(), to: new Date(to).toISOString() }).catch(
-    () => null,
-  );
-  const calls = reply?.bookings;
-
-  const days = new Date(Date.UTC(year, monthIndex, 0)).getUTCDate();
-  const lead = new Date(Date.UTC(year, monthIndex - 1, 1)).getUTCDay();
-  const cells = Array.from({ length: Math.ceil((lead + days) / 7) * 7 }, (_, i) => i - lead + 1);
-  const byDay = new Map<number, Call[]>();
-  for (const call of calls ?? []) {
-    const day = Number(inManila(call.start, { day: "numeric" }));
-    byDay.set(day, [...(byDay.get(day) ?? []), call]);
-  }
-  const today = thisMonth === `${year}-${String(monthIndex).padStart(2, "0")}` ? Number(inManila(new Date(), { day: "numeric" })) : 0;
+  const shown = typeof month === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(month) ? month : thisMonth;
+  const [year, monthIndex] = shown.split("-").map(Number);
+  const today = shown === thisMonth ? Number(inManila(new Date(), { day: "numeric" })) : 0;
   const shift = (n: number) => {
     const d = new Date(Date.UTC(year, monthIndex - 1 + n, 1));
     return `/admin/calendar?month=${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
@@ -55,13 +41,45 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
         </nav>
       </div>
 
-      {!calls && (
+      {/* Google takes a second or two: show the month right away and fill in the calls when they arrive. */}
+      <Suspense key={shown} fallback={<Month year={year} monthIndex={monthIndex} today={today} />}>
+        <MonthWithCalls year={year} monthIndex={monthIndex} today={today} />
+      </Suspense>
+    </>
+  );
+}
+
+type MonthProps = { year: number; monthIndex: number; today: number };
+
+async function MonthWithCalls(props: MonthProps) {
+  const from = Date.UTC(props.year, props.monthIndex - 1, 1) - MANILA_OFFSET; // midnight on the 1st, Manila time
+  const to = Date.UTC(props.year, props.monthIndex, 1) - MANILA_OFFSET;
+  const reply = await callScript<{ bookings?: Call[] }>({ action: "bookings", from: new Date(from).toISOString(), to: new Date(to).toISOString() }).catch(
+    () => null,
+  );
+  return <Month {...props} calls={reply?.bookings ?? null} />;
+}
+
+/** `calls` is undefined while loading and null when Google couldn’t be reached. */
+function Month({ year, monthIndex, today, calls }: MonthProps & { calls?: Call[] | null }) {
+  const days = new Date(Date.UTC(year, monthIndex, 0)).getUTCDate();
+  const lead = new Date(Date.UTC(year, monthIndex - 1, 1)).getUTCDay();
+  const cells = Array.from({ length: Math.ceil((lead + days) / 7) * 7 }, (_, i) => i - lead + 1);
+  const byDay = new Map<number, Call[]>();
+  for (const call of calls ?? []) {
+    const day = Number(inManila(call.start, { day: "numeric" }));
+    byDay.set(day, [...(byDay.get(day) ?? []), call]);
+  }
+
+  return (
+    <>
+      {calls === null && (
         <p role="alert" className="mt-6 text-sm font-semibold text-[#b42318]">
           Couldn’t load calls from Google Calendar. Refresh to try again.
         </p>
       )}
 
-      <div className="mt-8 overflow-hidden rounded-[28px] border border-line bg-white/60">
+      <div aria-busy={calls === undefined} className="mt-8 overflow-hidden rounded-[28px] border border-line bg-white/60">
         <div className="grid grid-cols-7 border-b border-line text-center text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">
           {WEEKDAYS.map((d) => (
             <div key={d} className="py-3">
@@ -96,7 +114,9 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
 
       <section className="mt-14">
         <h2 className="eyebrow">Calls this month</h2>
-        {calls?.length ? (
+        {calls === undefined ? (
+          <p className="mt-6 animate-pulse text-muted motion-reduce:animate-none">Loading calls from Google Calendar…</p>
+        ) : calls?.length ? (
           <ol className="mt-6 space-y-4">
             {calls.map((call) => (
               <li key={call.id} id={`call-${call.id}`} className="scroll-mt-24 rounded-[28px] border border-line bg-white/60 p-6 sm:p-8">
