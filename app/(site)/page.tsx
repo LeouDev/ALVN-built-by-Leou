@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Boxes, FlaskConical, Globe, LayoutDashboard, Smartphone } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, LayoutDashboard, Smartphone } from "lucide-react";
 import { AppCard } from "@/components/AppCard";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ButtonLink, Emblem, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
-import { categoryLabels, getStack, mobileApps, projects } from "@/data/projects";
+import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/data/projects";
 
-const capabilities = [
-  { icon: Globe, title: "Websites", body: "Marketing websites, portfolios, landing pages, and business websites." },
-  { icon: LayoutDashboard, title: "Web Applications", body: "Dashboards, platforms, internal tools, SaaS concepts, and data applications." },
-  { icon: Smartphone, title: "Mobile Apps", body: "iOS and cross-platform mobile experiences." },
-  { icon: Boxes, title: "Digital Products", body: "From concept and UX to development and deployment." },
-  { icon: FlaskConical, title: "Experiments", body: "Ideas, prototypes, and things built simply to explore what’s possible." },
+// Written from a client's side: what they need, what they get, and a real example.
+const services = [
+  { icon: Globe, title: "Need a website?", body: "Modern websites that make your business look credible and turn visitors into inquiries.", example: "roll-up-cinnamons" },
+  { icon: LayoutDashboard, title: "Need an internal tool?", body: "Dashboards, automation, portals, and systems built around your workflow.", example: "prior-authorization-emr" },
+  { icon: Smartphone, title: "Have an app idea?", body: "From prototype to production, I’ll take your idea and turn it into a working product.", example: "air-rally" },
 ];
 
 export default function Home() {
@@ -78,10 +77,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Services */}
+      <section className="section">
+        <SectionHeader eyebrow="02 — Services" title="How I Can Help">
+          Whether you’re launching, streamlining how your team works, or starting from an idea.
+        </SectionHeader>
+        <div className="reveal mt-12 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2">
+          {services.map(({ icon: Icon, title, body, example }, i) => {
+            const project = getProject(example)!;
+            const cut = project.name.lastIndexOf(" ") + 1; // the arrow wraps with the last word, never alone
+            return (
+              <div key={title} className="flex flex-col bg-cream p-8 lg:p-10">
+                <div className="flex items-center justify-between">
+                  <Icon aria-hidden className="size-6" strokeWidth={1.5} />
+                  <span className="text-xs font-semibold text-muted tabular-nums">0{i + 1}</span>
+                </div>
+                <h3 className="mt-12 text-2xl font-semibold tracking-tight">{title}</h3>
+                <p className="mt-3 text-pretty text-muted">{body}</p>
+                <Link href={`/projects/${project.slug}`} className="group mt-auto w-fit pt-8 text-sm font-semibold">
+                  See an example: {project.name.slice(0, cut)}
+                  <span className="whitespace-nowrap">
+                    {project.name.slice(cut)}
+                    <ArrowRight aria-hidden className="ml-2 inline-block size-4 align-[-3px] text-accent transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </div>
+            );
+          })}
+          <Link href="/contact" className="group on-dark flex flex-col justify-between gap-12 bg-navy p-8 text-cream lg:p-10">
+            <span className="eyebrow text-cream/60!">Something else?</span>
+            <span>
+              <span className="block text-2xl font-semibold tracking-tight text-balance">Have an idea that doesn’t fit a box?</span>
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold">
+                Start a Project
+                <ArrowRight aria-hidden className="size-4 text-accent transition-transform group-hover:translate-x-1" />
+              </span>
+            </span>
+          </Link>
+        </div>
+      </section>
+
       {/* Catalog preview */}
       <section className="section">
         <SectionHeader
-          eyebrow="02 — Catalog"
+          eyebrow="03 — Catalog"
           title="Project Catalog"
           action={
             <ButtonLink href="/projects" variant="outline">
@@ -118,33 +157,6 @@ export default function Home() {
             </li>
           ))}
         </ul>
-      </section>
-
-      {/* What I build */}
-      <section className="section">
-        <SectionHeader eyebrow="03 — Capabilities" title="What I Build" />
-        <div className="reveal mt-12 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {capabilities.map(({ icon: Icon, title, body }, i) => (
-            <div key={title} className="bg-cream p-8 lg:p-10">
-              <div className="flex items-center justify-between">
-                <Icon aria-hidden className="size-6" strokeWidth={1.5} />
-                <span className="text-xs font-semibold text-muted tabular-nums">0{i + 1}</span>
-              </div>
-              <h3 className="mt-12 text-2xl font-semibold tracking-tight">{title}</h3>
-              <p className="mt-3 text-pretty text-muted">{body}</p>
-            </div>
-          ))}
-          <Link href="/contact" className="group on-dark flex flex-col justify-between gap-12 bg-navy p-8 text-cream lg:p-10">
-            <span className="eyebrow text-cream/60!">Something else?</span>
-            <span>
-              <span className="block text-2xl font-semibold tracking-tight text-balance">Have an idea that doesn’t fit a box?</span>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold">
-                Start a Project
-                <ArrowRight aria-hidden className="size-4 text-accent transition-transform group-hover:translate-x-1" />
-              </span>
-            </span>
-          </Link>
-        </div>
       </section>
 
       {/* Mobile apps */}
