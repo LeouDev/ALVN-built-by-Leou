@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { NavLink } from "@/components/NavLink";
 import { ButtonLink } from "@/components/ui";
 import { navLinks, site } from "@/lib/site";
 
@@ -10,9 +10,9 @@ export function Footer() {
     <footer className="border-t border-line">
       <div className="shell grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-6">
-          <Link href="/" className="block w-fit">
+          <NavLink href="/" className="block w-fit">
             <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={137} height={40} className="h-10 w-auto" />
-          </Link>
+          </NavLink>
           <p className="eyebrow mt-6">{site.descriptor}</p>
           <p className="mt-2 text-lg font-semibold">Built by Leou.</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
@@ -30,9 +30,9 @@ export function Footer() {
                 .filter((l) => l.href !== "/contact")
                 .map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className={link}>
+                    <NavLink href={l.href} className={link}>
                       {l.label}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
             </ul>
@@ -41,9 +41,9 @@ export function Footer() {
             <p className="eyebrow">Connect</p>
             <ul className="mt-4 space-y-3">
               <li>
-                <Link href="/contact" className={link}>
+                <NavLink href="/contact" className={link}>
                   Contact
-                </Link>
+                </NavLink>
               </li>
               <li>
                 <a href={site.resumeUrl} target="_blank" rel="noopener noreferrer" className={link}>

@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
+import { NavLink } from "@/components/NavLink";
 import { navLinks } from "@/lib/site";
 
 // The floating capsule; the mobile menu reuses it so its close button lands where the menu button was.
@@ -35,32 +35,32 @@ export function Nav() {
             scrolled ? "bg-paper/85 shadow-[0_12px_40px_-16px_rgba(7,26,45,0.35)]" : "bg-paper/60"
           }`}
         >
-          <Link href="/" className="shrink-0">
+          <NavLink href="/" className="shrink-0">
             <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} preload className="h-6 w-auto md:h-7" />
-          </Link>
+          </NavLink>
 
           <ul className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link
+                <NavLink
                   href={link.href}
                   aria-current={current(link.href)}
                   className="group relative block rounded-full px-4 py-2 text-sm font-semibold text-navy/65 transition-colors hover:text-navy aria-[current=page]:text-navy"
                 >
                   {link.label}
                   <span aria-hidden className="absolute inset-x-0 bottom-0 mx-auto hidden size-1 rounded-full bg-accent group-aria-[current=page]:block" />
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>
 
-          <Link
+          <NavLink
             href="/contact"
             className="group hidden items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d] md:inline-flex"
           >
             Start a Project
             <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </NavLink>
 
           <button
             type="button"
@@ -107,24 +107,24 @@ export function Nav() {
           <ul>
             {navLinks.map((link, i) => (
               <li key={link.href} className="border-b border-line">
-                <Link
+                <NavLink
                   href={link.href}
                   aria-current={current(link.href)}
                   className="flex items-baseline gap-5 py-4 text-5xl font-semibold tracking-[-0.04em] aria-[current=page]:text-navy-soft"
                 >
                   <span className="text-xs font-semibold tracking-normal text-muted tabular-nums">0{i + 1}</span>
                   {link.label}
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>
           <div className="space-y-6">
-            <Link
+            <NavLink
               href="/contact"
               className="flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-semibold text-navy"
             >
               Start a Project <ArrowRight aria-hidden className="size-4" />
-            </Link>
+            </NavLink>
             <p className="eyebrow">ALVN — Built by Leou</p>
           </div>
         </nav>
