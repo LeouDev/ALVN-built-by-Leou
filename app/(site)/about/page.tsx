@@ -4,6 +4,7 @@ import { ButtonLink, Eyebrow, StartProject } from "@/components/ui";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description:
     "ALVN is Leou’s digital product portfolio — websites, applications, experiments, and ideas turned into working products.",

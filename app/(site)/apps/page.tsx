@@ -4,6 +4,7 @@ import { Eyebrow, StartProject } from "@/components/ui";
 import { mobileApps } from "@/data/projects";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/apps" },
   title: "Apps",
   description: "Mobile experiences — apps I’ve designed, developed, and experimented with.",
 };

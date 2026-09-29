@@ -3,6 +3,7 @@ import { ProjectCatalog } from "@/components/ProjectCatalog";
 import { Eyebrow, StartProject } from "@/components/ui";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/projects" },
   title: "Work",
   description: "Everything I’ve built — websites, applications, experiments, and digital products.",
 };

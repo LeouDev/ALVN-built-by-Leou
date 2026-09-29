@@ -3,6 +3,7 @@ import { ContactOptions } from "@/components/ContactOptions";
 import { Emblem, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description: "Have an idea? Tell me what you’re thinking — let’s turn it into something real.",
 };

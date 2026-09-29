@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Globe, LayoutDashboard, Smartphone } from "lucide-react";
@@ -5,6 +6,8 @@ import { AppCard } from "@/components/AppCard";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ButtonLink, Emblem, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
 import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/data/projects";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // Written from a client's side: what they need, what they get, and a real example.
 const services = [
