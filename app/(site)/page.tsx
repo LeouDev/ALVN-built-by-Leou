@@ -203,8 +203,9 @@ export default function Home() {
           Apps I’ve designed, developed, and experimented with.
         </SectionHeader>
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          {mobileApps.map((p) => (
-            <div key={p.id} className="reveal">
+          {mobileApps.map((p, i) => (
+            // An odd one out spans the row, where the card switches to its side-by-side layout.
+            <div key={p.id} className={`reveal ${mobileApps.length % 2 === 1 && i === mobileApps.length - 1 ? "lg:col-span-2" : ""}`}>
               <AppCard project={p} />
             </div>
           ))}

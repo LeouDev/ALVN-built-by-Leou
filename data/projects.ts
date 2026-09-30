@@ -415,6 +415,45 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/LeouDev/dicta",
   },
   {
+    id: "gastos",
+    slug: "gastos",
+    name: "gastos",
+    tagline: "A calm, simple money tracker for iPhone.",
+    description:
+      "A native iOS money tracker built around three questions: how much, what was it for, and which wallet paid. Add an expense in seconds, see where your money went, and know how much you can still spend today. Everything stays on your iPhone, with optional sync through Sign in with Apple.",
+    categories: ["mobile-app"],
+    status: "coming-soon",
+    year: 2026,
+    featured: false, // shown in the home page's Mobile Apps section instead
+    coverImage: "/projects/gastos/cover.webp",
+    logo: "/projects/gastos/icon.png",
+    // appStoreUrl: "https://apps.apple.com/…", // once it's on the App Store
+    gallery: [
+      // The app's own screenshots from its website (sample data).
+      { src: "/projects/gastos/ios-1.webp", alt: "Home: total money, this month’s income and spending, and what’s left to spend today", kind: "mobile" },
+      { src: "/projects/gastos/ios-2.webp", alt: "Adding an expense with a category and the wallet that paid", kind: "mobile" },
+      { src: "/projects/gastos/ios-3.webp", alt: "Wallets for a bank, an e-wallet, cash, and a credit card, stacked like Apple Wallet", kind: "mobile" },
+      { src: "/projects/gastos/ios-4.webp", alt: "Insights with this month’s spending and a daily chart", kind: "mobile" },
+    ],
+    technologies: ["Swift", "SwiftUI", "SwiftData", "Swift Charts", "WidgetKit", "Supabase"],
+    platforms: ["iOS"],
+    features: [
+      { icon: "zap", title: "Add in seconds", description: "The amount is ready to type the moment you tap +. Pick a category and a wallet, and you’re done." },
+      { icon: "chart", title: "Where did it go?", description: "Spending by category, and which wallet or card paid for it." },
+      { icon: "card", title: "Credit cards, done right", description: "A card purchase counts as spending, and paying the card is a transfer, so nothing is counted twice." },
+      { icon: "gauge", title: "Safe to spend today", description: "Your money minus upcoming bills, spread over the days until payday." },
+      { icon: "calendar", title: "Bills and salary on autopilot", description: "Rent, subscriptions, and payday are added on their date and show up in Coming Up." },
+      { icon: "shield", title: "Private by default", description: "Works fully without an account, with Face ID lock and no ads, trackers, or analytics." },
+    ],
+    challenge:
+      "Most money apps want your bank login, an account, and an accounting degree, when all you want to know is where your money went.",
+    solution:
+      "A local-first SwiftUI app where every entry answers how much, what for, and which wallet. A tested finance engine handles wallets, credit cards, transfers, and recurring bills, a home-screen widget shows what’s safe to spend, and Supabase sync is optional.",
+    role: "Concept, product design, and development.",
+    liveUrl: "https://gastos-eta-one.vercel.app",
+    githubUrl: "https://github.com/LeouDev/gastos",
+  },
+  {
     id: "prior-authorization-emr",
     slug: "prior-authorization-emr",
     name: "Prior Authorization EMR",
@@ -479,6 +518,7 @@ export const mobileApps = projects.filter((p) => p.categories.includes("mobile-a
 // Tech section groups. Anything not listed here counts as Frontend.
 const techGroups: Record<string, string> = {
   "React Native": "Mobile", Expo: "Mobile", iOS: "Mobile", Swift: "Mobile", "React Native Skia": "Mobile",
+  SwiftUI: "Mobile", SwiftData: "Mobile", "Swift Charts": "Mobile", WidgetKit: "Mobile",
   PayMongo: "Backend", "Drizzle ORM": "Backend",
   Supabase: "Backend", PostgreSQL: "Backend", Prisma: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
   Resend: "Backend", Brevo: "Backend", "Auth.js": "Backend",
