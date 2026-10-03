@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2, Download } from "lucide-react";
 import { signAsClient } from "@/app/contracts/[token]/actions";
 import { ContractText, SignatureCard } from "@/components/ContractText";
+import { Logo } from "@/components/Logo";
 import { SignForm } from "@/components/SignForm";
 import { inManila, requestMeta } from "@/lib/admin";
 import { getContractByToken, markViewed } from "@/lib/contracts-db";
@@ -21,7 +21,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <main id="main" className="min-h-dvh pb-24">
       <header className="shell flex h-20 items-center justify-between">
         <Link href="/">
-          <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} className="h-7 w-auto" />
+          <Logo className="text-[32px]" />
         </Link>
         <span className="eyebrow">Agreement</span>
       </header>

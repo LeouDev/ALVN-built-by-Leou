@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Globe, LayoutDashboard, Smartphone } from "lucide-react";
 import { AppCard } from "@/components/AppCard";
+import { Logo, LogoLockup } from "@/components/Logo";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ButtonLink, Emblem, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
 import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/data/projects";
@@ -33,7 +34,7 @@ export default function Home() {
               ALVN / Digital Products &amp; Experiences
             </p>
             <p className="mt-10 flex animate-fade-up items-end gap-4 [animation-delay:80ms]">
-              <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={219} height={64} preload className="h-12 w-auto sm:h-16" />
+              <Logo className="text-[56px] sm:text-[72px]" />
               <span className="pb-1 text-xs font-bold tracking-[0.24em] uppercase sm:text-sm">Built by Leou</span>
             </p>
             <h1 className="headline mt-8 animate-fade-up text-[clamp(2.75rem,5.4vw,4.75rem)] [animation-delay:160ms]">
@@ -236,16 +237,8 @@ export default function Home() {
       {/* About ALVN */}
       <section className="section">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="reveal rounded-[32px] border border-line bg-paper p-8 sm:p-12 lg:col-span-5">
-            <Image
-              src="/brand/alvn-lockup.png"
-              alt="ALVN — Digital Products & Experiences"
-              width={921}
-              height={399}
-              sizes="(min-width: 1024px) 400px, 85vw"
-              className="h-auto w-full"
-            />
-            <p className="mt-10 border-t border-line pt-8 text-3xl font-semibold tracking-tight">Built by Leou.</p>
+          <div className="reveal grid place-items-center rounded-[32px] bg-navy px-6 py-16 sm:py-20 lg:col-span-5">
+            <LogoLockup className="text-[clamp(88px,26vw,150px)]" />
           </div>
           <div className="lg:col-span-7">
             <Eyebrow>06 — About ALVN</Eyebrow>

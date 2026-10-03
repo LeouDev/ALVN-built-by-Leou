@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { NavLink } from "@/components/NavLink";
 import { navLinks } from "@/lib/site";
 
@@ -36,7 +36,7 @@ export function Nav() {
           }`}
         >
           <NavLink href="/" className="shrink-0">
-            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} preload className="h-6 w-auto md:h-7" />
+            <Logo className="text-[32px]" />
           </NavLink>
 
           <ul className="hidden items-center gap-1 md:flex">
@@ -92,7 +92,7 @@ export function Nav() {
       >
         <div className="px-4 pt-3">
           <div className={`${pill} justify-between bg-paper/60`}>
-            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={96} height={28} className="h-6 w-auto" />
+            <Logo className="text-[32px]" />
             <button
               type="button"
               aria-label="Close menu"

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/Logo";
 import { NavLink } from "@/components/NavLink";
 import { ButtonLink } from "@/components/ui";
 import { navLinks, site } from "@/lib/site";
@@ -11,7 +11,7 @@ export function Footer() {
       <div className="shell grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-6">
           <NavLink href="/" className="block w-fit">
-            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={137} height={40} className="h-10 w-auto" />
+            <Logo className="text-[44px]" />
           </NavLink>
           <p className="eyebrow mt-6">{site.descriptor}</p>
           <p className="mt-2 text-lg font-semibold">Built by Leou.</p>

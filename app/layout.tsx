@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Manrope, Oleo_Script } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
+const oleo = Oleo_Script({ weight: "700", subsets: ["latin"], variable: "--font-oleo" }); // the logo face
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -18,7 +19,7 @@ export const viewport: Viewport = { themeColor: "#F7F3EA" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={manrope.variable} data-scroll-behavior="smooth">
+    <html lang="en" className={`${manrope.variable} ${oleo.variable}`} data-scroll-behavior="smooth">
       <body>
         <a
           href="#main"

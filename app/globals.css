@@ -8,6 +8,8 @@
   --color-paper: #fefbf0; /* the logo artwork's own background */
   --color-muted: #5f6b7e; /* brand #667085, nudged darker to keep 4.5:1 contrast on cream */
   --color-line: rgb(7 26 45 / 0.12);
+  --color-logo-cream: #ede4d3; /* the wordmark on navy */
+  --color-tag-grey: #c9c3b6; /* the logo tagline on navy */
 
   --animate-fade-up: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-fade-in: fade-in 1.4s ease-out both;
@@ -18,6 +20,7 @@
 
 @theme inline {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-oleo), cursive;
 }
 
 @keyframes fade-up {

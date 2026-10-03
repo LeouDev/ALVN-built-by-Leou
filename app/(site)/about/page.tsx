@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LogoAnimation } from "@/components/LogoAnimation";
+import { LogoLockup } from "@/components/Logo";
 import { ButtonLink, Eyebrow, StartProject } from "@/components/ui";
 import { site } from "@/lib/site";
 
@@ -44,7 +44,9 @@ export default function AboutPage() {
 
       <section className="shell py-16 lg:py-24">
         <figure className="overflow-hidden rounded-[36px] border border-line bg-paper">
-          <LogoAnimation />
+          <div className="grid place-items-center bg-navy px-6 py-20 sm:py-28">
+            <LogoLockup className="text-[clamp(88px,26vw,190px)]" />
+          </div>
           <figcaption className="relative flex flex-col gap-2 border-t border-line px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <span className="eyebrow">ALVN · Digital Products &amp; Experiences</span>
             <span className="text-lg font-semibold">Built by Leou.</span>

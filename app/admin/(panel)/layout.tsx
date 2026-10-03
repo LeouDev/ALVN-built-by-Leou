@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { signOut } from "@/app/admin/actions";
 import { AdminNav } from "@/components/AdminNav";
+import { Logo } from "@/components/Logo";
 import { requireAdmin } from "@/lib/admin";
 import { unreadCount } from "@/lib/inbox";
 
@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* One row from sm up; on phones the tabs drop to a second row so nothing collides. */}
         <div className="shell flex flex-wrap items-center gap-x-8 gap-y-2 py-3 sm:h-16 sm:flex-nowrap sm:py-0">
           <Link href="/admin" className="flex shrink-0 items-center gap-3">
-            <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={96} height={28} className="h-6 w-auto" />
+            <Logo className="text-[32px]" />
             <span className="eyebrow max-md:hidden">Admin</span>
           </Link>
           <div className="order-last w-full sm:order-none sm:w-auto">

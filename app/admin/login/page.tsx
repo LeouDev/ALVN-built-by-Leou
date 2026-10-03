@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { sendLoginLink, signIn } from "@/app/admin/actions";
+import { Logo } from "@/components/Logo";
 import { field } from "@/lib/styles";
 import { isAdmin } from "@/lib/admin";
 
@@ -22,7 +22,7 @@ export default async function AdminLogin({ searchParams }: PageProps<"/admin/log
   return (
     <main id="main" className="grid min-h-dvh place-items-center px-4 py-16">
       <div className="w-full max-w-md rounded-[28px] border border-line bg-white/60 p-8 sm:p-10">
-        <Image src="/brand/alvn-wordmark.png" alt="ALVN" width={110} height={32} className="h-7 w-auto" />
+        <Logo className="text-[32px]" />
         <h1 className="mt-8 text-3xl font-semibold tracking-tight">Admin</h1>
 
         {typeof token === "string" ? (
