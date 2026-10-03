@@ -425,12 +425,12 @@ export const projects: Project[] = [
     description:
       "An iOS-first social network where every post is a designed quote card: write a thought, then choose its typography, colors, background, and layout. Followers see the card, not plain text.",
     categories: ["mobile-app"],
-    status: "coming-soon",
+    status: "live",
     year: 2026,
     featured: false, // shown in the home page's Mobile Apps section instead
     coverImage: "/projects/dicta/cover.webp",
     logo: "/projects/dicta/icon.png",
-    // appStoreUrl: "https://apps.apple.com/…", // once it's on the App Store
+    appStoreUrl: "https://apps.apple.com/app/id6816172939",
     gallery: [
       // Screens cropped from the app's App Store screenshots.
       { src: "/projects/dicta/ios-1.webp", alt: "The DICTA feed of designed quote cards", kind: "mobile" },
