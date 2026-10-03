@@ -78,7 +78,7 @@ function ContractPdf({ c, logo }: { c: Contract; logo: string }) {
     <Document title={c.title} author={c.provider_name ?? undefined} subject={`Contract #${c.id}`}>
       <Page size="A4" style={s.page}>
         <View style={s.header} fixed>
-          <Image src={logo} style={{ height: 18 }} />
+          <Image src={logo} style={{ height: 24 }} />
           <Text style={s.eyebrow}>Agreement · #{c.id}</Text>
         </View>
         <Text style={s.title}>{c.title}</Text>
@@ -118,7 +118,7 @@ function ContractPdf({ c, logo }: { c: Contract; logo: string }) {
 
       <Page size="A4" style={s.page}>
         <View style={s.header}>
-          <Image src={logo} style={{ height: 18 }} />
+          <Image src={logo} style={{ height: 24 }} />
           <Text style={s.eyebrow}>Signature certificate</Text>
         </View>
         <Text style={s.title}>Signature certificate</Text>

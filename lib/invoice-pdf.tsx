@@ -36,7 +36,7 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
     <Document title={`Billing Statement ${inv.number}`} author={provider.name} subject={`Billing Statement ${inv.number}`}>
       <Page size="A4" style={s.page}>
         <View style={s.header}>
-          <Image src={logo} style={{ height: 18 }} />
+          <Image src={logo} style={{ height: 24 }} />
           <Text style={s.eyebrow}>Billing statement · {inv.number}</Text>
         </View>
 
