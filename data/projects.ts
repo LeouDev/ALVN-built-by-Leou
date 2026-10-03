@@ -58,6 +58,48 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "13c",
+    slug: "13c",
+    name: "13C",
+    tagline: "Cebu’s car rental marketplace, with a branded online store for every rental business.",
+    result: "From idea to a live platform for renters, businesses, and admins",
+    description:
+      "A two-sided platform for Cebu’s car rental businesses. Every business gets its own branded storefront at 13c.online/their-name, and renters search across all of them, message owners, request bookings, and e-sign rental agreements. Businesses run their fleet, bookings, contracts, customers, and team from one dashboard, while 13C stays the technology platform and the business stays the rental provider.",
+    categories: ["web-app"],
+    status: "live",
+    year: 2026,
+    featured: true,
+    coverImage: "/projects/13c/desktop-1.webp",
+    logo: "/projects/13c/icon.png",
+    gallery: [
+      { src: "/projects/13c/desktop-2.webp", alt: "The 13C marketplace home page with a search for cars across Cebu", kind: "desktop" },
+      { src: "/projects/13c/desktop-3.webp", alt: "Cars across Cebu with filters for location, dates, type, price, and service", kind: "desktop" },
+      { src: "/projects/13c/desktop-4.webp", alt: "A rental business’s branded storefront on 13C", kind: "desktop" },
+      { src: "/projects/13c/desktop-5.webp", alt: "A car’s page with photos, specs, and a booking request", kind: "desktop" },
+      { src: "/projects/13c/mobile-1.webp", alt: "The 13C home page on a phone", kind: "mobile" },
+      { src: "/projects/13c/mobile-2.webp", alt: "Searching cars on a phone", kind: "mobile" },
+      { src: "/projects/13c/mobile-3.webp", alt: "A business storefront on a phone", kind: "mobile" },
+      { src: "/projects/13c/mobile-4.webp", alt: "A car’s page on a phone", kind: "mobile" },
+    ],
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "Supabase", "PostgreSQL", "pdf-lib", "Zod", "PayMongo", "Resend", "Vitest", "Vercel"],
+    platforms: ["Web"],
+    features: [
+      { icon: "globe", title: "A storefront for every business", description: "Each rental business gets its own branded site, with its fleet, policies, reviews, and contact details." },
+      { icon: "compass", title: "Search across Cebu", description: "Renters compare cars by city, dates, type, price, transmission, seats, and service, from verified businesses only." },
+      { icon: "chat", title: "Messages and bookings", description: "Realtime chat with the business and booking requests that move through steps the database enforces." },
+      { icon: "checklist", title: "E-signed rental agreements", description: "Contracts generated from each booking, signed by both sides, with a signed PDF and a signature certificate." },
+      { icon: "dashboard", title: "Business dashboard", description: "Fleet, photos, pricing, availability, inquiries, bookings, customers, reviews, analytics, and team roles in one place." },
+      { icon: "card", title: "Plans and payments", description: "Pro and Business plans paid through PayMongo checkout with GCash, Maya, cards, or QR Ph." },
+    ],
+    challenge:
+      "Most small car rental businesses in Cebu run on Facebook, Messenger, and paper contracts, which makes them hard to find and compare, and every booking slow to confirm.",
+    solution:
+      "One Next.js app serves both the 13C marketplace and every business storefront, on Supabase with row-level security, database-enforced booking steps, realtime chat, generated contracts with e-signatures, an email outbox that never sends twice, and PayMongo subscriptions.",
+    role: "Concept, product design, and development.",
+    liveUrl: "https://www.13c.online",
+    githubUrl: "https://github.com/LeouDev/13C",
+  },
+  {
     id: "air-rally",
     slug: "air-rally",
     name: "AIR/Rally",
@@ -521,8 +563,8 @@ const techGroups: Record<string, string> = {
   SwiftUI: "Mobile", SwiftData: "Mobile", "Swift Charts": "Mobile", WidgetKit: "Mobile",
   PayMongo: "Backend", "Drizzle ORM": "Backend",
   Supabase: "Backend", PostgreSQL: "Backend", Prisma: "Backend", "Node.js": "Backend", APIs: "Backend", Authentication: "Backend",
-  Resend: "Backend", Brevo: "Backend", "Auth.js": "Backend",
-  Vercel: "Tools", GitHub: "Tools", Figma: "Tools", "AI development tools": "Tools",
+  Resend: "Backend", Brevo: "Backend", "Auth.js": "Backend", "pdf-lib": "Backend",
+  Vercel: "Tools", GitHub: "Tools", Figma: "Tools", "AI development tools": "Tools", Vitest: "Tools",
 };
 
 /** Technologies actually used across the projects above, grouped for display. */
