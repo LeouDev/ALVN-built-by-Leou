@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Globe, LayoutDashboard, Smartphone } from "lucide-react";
 import { AppCard } from "@/components/AppCard";
-import { Logo, LogoLockup } from "@/components/Logo";
+import { HomeHero } from "@/components/HomeHero";
+import { LogoLockup } from "@/components/Logo";
 import { ProjectCard } from "@/components/ProjectCard";
-import { ButtonLink, Emblem, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
+import { ButtonLink, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
 import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/data/projects";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -24,38 +25,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="bg-grid absolute inset-0 animate-grid-in" />
-        <div className="shell relative grid items-center gap-14 pt-10 pb-20 lg:grid-cols-12 lg:gap-8 lg:pt-16 lg:pb-28">
-          <div className="lg:col-span-7">
-            <p className="eyebrow animate-fade-up">
-              <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-              ALVN / Digital Products &amp; Experiences
-            </p>
-            <p className="mt-10 flex animate-fade-up items-end gap-4 [animation-delay:80ms]">
-              <Logo className="text-[56px] sm:text-[72px]" />
-              <span className="pb-1 text-xs font-bold tracking-[0.24em] uppercase sm:text-sm">Built by Leou</span>
-            </p>
-            <h1 className="headline mt-8 animate-fade-up text-[clamp(2.75rem,5.4vw,4.75rem)] [animation-delay:160ms]">
-              I turn business ideas into websites, apps, and digital products<span className="text-accent">.</span>
-            </h1>
-            <p className="mt-7 max-w-xl animate-fade-up text-lg text-pretty text-muted [animation-delay:240ms] sm:text-xl">
-              From concept to launch, I design and build digital experiences that are made to actually work.
-            </p>
-            <div className="mt-10 flex animate-fade-up flex-wrap gap-3 [animation-delay:320ms]">
-              <ButtonLink href="#work">Explore My Work</ButtonLink>
-              <ButtonLink href="/contact" variant="outline">
-                Start a Project
-              </ButtonLink>
-            </div>
-            <p className="mt-14 animate-fade-up text-[11px] font-bold tracking-[0.32em] text-muted [animation-delay:400ms]">
-              WEB · MOBILE · PRODUCT · EXPERIMENTS
-            </p>
-          </div>
-          <Emblem preload className="mx-auto w-full max-w-[520px] lg:col-span-5" />
-        </div>
-      </section>
+      <HomeHero clients={quoted.map((p) => p.name)} />
 
       {/* Selected work */}
       <section id="work" className="section pt-8 lg:pt-12">
@@ -126,7 +96,7 @@ export default function Home() {
           </Link>
         </div>
         {quoted.length > 0 && (
-          <div className="mt-16">
+          <div id="testimonials" className="mt-16">
             <p className="eyebrow">What clients say</p>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {quoted.map((p) => (

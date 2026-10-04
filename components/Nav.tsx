@@ -10,17 +10,47 @@ import { navLinks } from "@/lib/site";
 // The floating capsule; the mobile menu reuses it so its close button lands where the menu button was.
 const pill = "pointer-events-auto flex h-14 items-center rounded-full border border-line pr-2 pl-5 backdrop-blur-xl transition-[background-color,box-shadow] duration-300";
 
+// The home hero has its own top bar; its MENU button (phones) opens this menu through this event.
+const MENU_EVENT = "alvn:menu";
+
+export function MenuButton({ className = "" }: { className?: string }) {
+  return (
+    <button type="button" aria-haspopup="dialog" aria-controls="mobile-menu" onClick={() => window.dispatchEvent(new Event(MENU_EVENT))} className={className}>
+      <span aria-hidden className="flex w-[18px] flex-col gap-[5px]">
+        <span className="h-px bg-current" />
+        <span className="h-px bg-current" />
+      </span>
+      Menu
+    </button>
+  );
+}
+
 export function Nav() {
   const pathname = usePathname();
   const menu = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  // On the home page the pill waits until the full-screen hero has scrolled away.
+  const hidden = pathname === "/" && !pastHero;
+
+  const openMenu = () => {
+    menu.current?.showModal();
+    setOpen(true);
+  };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      setPastHero(window.scrollY > window.innerHeight - 120);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener(MENU_EVENT, openMenu);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener(MENU_EVENT, openMenu);
+    };
   }, []);
 
   const current = (href: string) => (pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined);
@@ -28,7 +58,11 @@ export function Nav() {
   return (
     <>
       {/* Only the pill takes clicks; the rest of the sticky strip lets them through to the page. */}
-      <header className="pointer-events-none sticky top-0 z-40 px-4 pt-3 md:pt-4">
+      <header
+        className={`pointer-events-none top-0 z-40 px-4 pt-3 transition-[translate,opacity,visibility] duration-300 md:pt-4 ${
+          pathname === "/" ? "fixed inset-x-0" : "sticky"
+        } ${hidden ? "invisible -translate-y-3 opacity-0" : ""}`}
+      >
         <nav
           aria-label="Main"
           className={`${pill} mx-auto w-full justify-between gap-2 md:w-fit md:gap-8 ${
@@ -68,10 +102,7 @@ export function Nav() {
             aria-haspopup="dialog"
             aria-expanded={open}
             aria-controls="mobile-menu"
-            onClick={() => {
-              menu.current?.showModal();
-              setOpen(true);
-            }}
+            onClick={openMenu}
             className="grid size-10 place-items-center rounded-full md:hidden"
           >
             <span aria-hidden className="flex w-5 flex-col gap-[5px]">

@@ -20,17 +20,24 @@ export function Logo({ className = "" }: { className?: string }) {
   );
 }
 
-/** The full lockup for navy grounds: wordmark, sparkle, swash and “Built by Leou”. Designed at 190px. */
+/** The wordmark with its sparkle and swash, designed at 190px. Colour or fill the letters via `className`. */
+export function LogoMark({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${word} px-[0.105em] ${className}`}>
+      alvn
+      <Sparkle className="top-[0.116em] -right-[0.032em] size-[0.242em]" />
+      <svg aria-hidden viewBox="0 0 380 34" className="absolute -bottom-[0.032em] left-[0.21em] h-[0.179em] w-[2em]">
+        <path d="M4 26 Q190 2 376 18" fill="none" strokeWidth="7" strokeLinecap="round" className="stroke-accent" />
+      </svg>
+    </span>
+  );
+}
+
+/** The full lockup for navy grounds: wordmark, sparkle, swash and “Built by Leou”. */
 export function LogoLockup({ className = "" }: { className?: string }) {
   return (
     <div role="img" aria-label="ALVN — Built by Leou" className={`flex flex-col items-center ${className}`}>
-      <span className={`${word} mb-[0.2em] px-[0.105em] text-logo-cream`}>
-        alvn
-        <Sparkle className="top-[0.116em] -right-[0.032em] size-[0.242em]" />
-        <svg aria-hidden viewBox="0 0 380 34" className="absolute -bottom-[0.032em] left-[0.21em] h-[0.179em] w-[2em]">
-          <path d="M4 26 Q190 2 376 18" fill="none" strokeWidth="7" strokeLinecap="round" className="stroke-accent" />
-        </svg>
-      </span>
+      <LogoMark className="mb-[0.2em] text-logo-cream" />
       <span className="text-[13px] font-bold tracking-[0.32em] text-tag-grey">BUILT BY LEOU</span>
     </div>
   );
