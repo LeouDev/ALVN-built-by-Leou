@@ -100,9 +100,15 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(to bottom, rgb(4 8 14 / 0.8), rgb(4 8 14 / 0.5) 34%, rgb(4 8 14 / 0) 56%),
-    linear-gradient(to top, rgb(4 8 14 / 0.7), rgb(4 8 14 / 0) 24%);
+  background: linear-gradient(
+    to bottom,
+    rgb(4 8 14 / 0.8),
+    rgb(4 8 14 / 0.5) 34%,
+    rgb(4 8 14 / 0) 56%,
+    rgb(4 8 14 / 0.12) 64%,
+    rgb(4 8 14 / 0.62) 82%,
+    rgb(4 8 14 / 0.92)
+  );
 }
 .hero-sub,
 .hero-more,
