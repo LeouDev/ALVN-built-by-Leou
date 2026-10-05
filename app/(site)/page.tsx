@@ -24,7 +24,9 @@ export default function Home() {
   const quoted = projects.filter((p) => p.testimonial?.quote);
 
   return (
-    <>
+    // A plain wrapper first: Next.js skips the sticky hero when deciding whether a navigation needs to scroll
+    // to the top, and would otherwise check the half-visible sheet and leave you mid-page.
+    <div>
       <HomeHero clients={quoted.map((p) => p.name)} />
 
       {/* Everything below the hero slides up over it like a sheet (globals.css, “Home hero”). */}
@@ -231,6 +233,6 @@ export default function Home() {
 
         <StartProject />
       </div>
-    </>
+    </div>
   );
 }
