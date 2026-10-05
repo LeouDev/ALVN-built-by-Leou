@@ -94,8 +94,33 @@
   object-position: 50% 0;
   translate: -50% 0;
 }
+/* Pause / play for the video (bottom-right, clear of the Trusted by row). */
+.hero-pause {
+  position: absolute;
+  right: calc(17 * var(--u));
+  bottom: calc(24 * var(--u));
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: max(32px, calc(40 * var(--u)));
+  aspect-ratio: 1;
+  border: 1px solid rgb(237 228 211 / 0.35);
+  border-radius: 50%;
+  background: rgb(4 8 14 / 0.35);
+  color: var(--hero-text);
+  transition: color 0.15s, border-color 0.15s;
+}
+.hero-pause:hover {
+  border-color: rgb(237 228 211 / 0.7);
+  color: #fff;
+}
+.hero-pause svg {
+  width: 40%;
+  height: 40%;
+}
 @media (prefers-reduced-motion: reduce) {
-  .hero-video {
+  .hero-video,
+  .hero-pause {
     display: none;
   }
 }
@@ -296,6 +321,13 @@
   }
   .hero-bg {
     height: 165svh; /* horizon ~80% down, below the buttons */
+  }
+  .hero-video {
+    height: 118svh; /* the portrait cut: its horizon is 67% down it, so it lands in the same place */
+  }
+  .hero-pause {
+    right: 16px;
+    bottom: 58px; /* level with the Trusted by label, right of its rules */
   }
   .hero::after {
     background: linear-gradient(

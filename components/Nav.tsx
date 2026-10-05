@@ -15,7 +15,8 @@ const MENU_EVENT = "alvn:menu";
 
 export function MenuButton({ className = "" }: { className?: string }) {
   return (
-    <button type="button" aria-haspopup="dialog" aria-controls="mobile-menu" onClick={() => window.dispatchEvent(new Event(MENU_EVENT))} className={className}>
+    // Always "false": while the menu is open it's modal, so this button can't be reached.
+    <button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="mobile-menu" onClick={() => window.dispatchEvent(new Event(MENU_EVENT))} className={className}>
       <span aria-hidden className="flex w-[18px] flex-col gap-[5px]">
         <span className="h-px bg-current" />
         <span className="h-px bg-current" />

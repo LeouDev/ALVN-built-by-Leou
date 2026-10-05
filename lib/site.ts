@@ -4,7 +4,7 @@ export const site = {
   descriptor: "Digital Products & Experiences",
   resumeUrl: "https://leoudev.github.io/LeouComendador/",
   description:
-    "Ideas, designed and built into digital experiences. A growing collection of websites, apps, experiments, and digital products built by Leou.",
+    "I build digital products that turn ideas into businesses: websites, apps, and custom digital experiences, designed and built from the ground up.",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_PROJECT_PRODUCTION_URL

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { HeroVideo } from "@/components/HeroVideo";
 import { LogoMark } from "@/components/Logo";
 import { MenuButton } from "@/components/Nav";
 import { navLinks, site } from "@/lib/site";
@@ -22,7 +23,7 @@ export function HomeHero({ clients }: { clients: string[] }) {
     <section className="hero on-dark">
       <Image src={space} alt="" priority sizes="250vh" className="hero-bg" />
       {/* The same scene, moving. It fades in over the still; with reduced motion the still stays. */}
-      <video src="/hero/space.mp4" autoPlay muted loop playsInline aria-hidden className="hero-bg hero-video animate-fade-in" />
+      <HeroVideo />
 
       <div className="hero-bar animate-fade-in">
         <MenuButton className="hero-menu" />
