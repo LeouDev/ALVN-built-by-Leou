@@ -8,8 +8,19 @@ export function HeroVideo() {
   const video = useRef<HTMLVideoElement>(null);
   const [motion, setMotion] = useState(false);
   const [paused, setPaused] = useState(true); // flips on the first "play"; stays true if autoplay is blocked
+  const userPaused = useRef(false);
   // Added after hydration, and only when motion is welcome: the still paints first, and reduced motion downloads nothing.
   useEffect(() => setMotion(!matchMedia("(prefers-reduced-motion: reduce)").matches), []);
+  // Rest while the page's sheet fully covers the pinned hero (its top edge has passed the top of the screen).
+  useEffect(() => {
+    const v = video.current, sheet = document.querySelector(".home-sheet");
+    if (!v || !sheet) return;
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? v.pause() : !userPaused.current && v.play().catch(() => {})), {
+      rootMargin: "0px 0px -100% 0px",
+    });
+    io.observe(sheet);
+    return () => io.disconnect();
+  }, [motion]);
   if (!motion) return null;
 
   return (
@@ -21,7 +32,13 @@ export function HeroVideo() {
       </video>
       <button
         type="button"
-        onClick={() => (video.current?.paused ? video.current.play().catch(() => {}) : video.current?.pause())}
+        onClick={() => {
+          const v = video.current;
+          if (!v) return;
+          userPaused.current = !v.paused;
+          if (v.paused) v.play().catch(() => {});
+          else v.pause();
+        }}
         aria-label={paused ? "Play the background video" : "Pause the background video"}
         className="hero-pause"
       >

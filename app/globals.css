@@ -309,6 +309,23 @@
   content: "·";
   margin: 0 calc(48 * var(--u));
 }
+/* The hero stays pinned while the rest of the home page slides up over it as a sheet. Short screens
+   skip the pin, so a hero taller than the screen can still scroll fully into view. */
+.home-sheet {
+  position: relative;
+  z-index: 1;
+  border-radius: 40px 40px 0 0;
+  background: var(--color-cream);
+}
+@media (min-height: 600px) {
+  .hero {
+    position: sticky;
+    top: 0;
+  }
+  .hero:focus-within {
+    z-index: 2; /* keyboard focus inside the covered hero brings it back on top */
+  }
+}
 /* Phones and portrait tablets: one column in real px, growing past the screen if it has to. */
 @media (max-width: 767.98px), (max-aspect-ratio: 4/5) {
   .hero {
@@ -324,6 +341,9 @@
   }
   .hero-video {
     height: 118svh; /* the portrait cut: its horizon is 67% down it, so it lands in the same place */
+  }
+  .home-sheet {
+    border-radius: 28px 28px 0 0;
   }
   .hero-pause {
     right: 16px;
