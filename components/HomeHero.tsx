@@ -21,6 +21,8 @@ export function HomeHero({ clients }: { clients: string[] }) {
   return (
     <section className="hero on-dark">
       <Image src={space} alt="" priority sizes="250vh" className="hero-bg" />
+      {/* The same scene, moving. It fades in over the still; with reduced motion the still stays. */}
+      <video src="/hero/space.mp4" autoPlay muted loop playsInline aria-hidden className="hero-bg hero-video animate-fade-in" />
 
       <div className="hero-bar animate-fade-in">
         <MenuButton className="hero-menu" />

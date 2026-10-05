@@ -94,6 +94,11 @@
   object-position: 50% 0;
   translate: -50% 0;
 }
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
+}
 /* Fades the light pillar out above the copy; the sunrise and the Earth stay bright. */
 .hero::after {
   content: "";
