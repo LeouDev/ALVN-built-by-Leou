@@ -67,6 +67,20 @@
   html:has(dialog[open]) {
     overflow: hidden;
   }
+  /* Admin only (app/admin/layout.tsx): no pinch or double-tap zoom. Opened from the Home Screen it also
+     drops the page bounce, the grey tap flash and long-press link previews. The public site keeps the browser's defaults. */
+  html:has(.admin-app) {
+    touch-action: pan-x pan-y;
+  }
+  @media (display-mode: standalone) {
+    html:has(.admin-app) {
+      overscroll-behavior-y: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html:has(.admin-app) :is(a, img) {
+      -webkit-touch-callout: none;
+    }
+  }
 }
 
 /* Home hero: full screen, laid out in px of the 1586 × 992 design (one px = --u), so it scales like a poster. */
