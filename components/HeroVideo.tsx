@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 
+// The two-column hero (globals.css): anything else gets the portrait cut.
+const WIDE = "(min-width: 768px) and (min-aspect-ratio: 4/5)";
+
 /** The hero's moving background, with the pause control that motion running past 5 seconds needs. */
 export function HeroVideo() {
   const video = useRef<HTMLVideoElement>(null);
@@ -26,8 +29,11 @@ export function HeroVideo() {
   return (
     <>
       <video ref={video} autoPlay muted loop playsInline aria-hidden onPlay={() => setPaused(false)} onPause={() => setPaused(true)} className="hero-bg hero-video animate-fade-in">
-        {/* Phones and portrait tablets (the one-column hero) only show a middle strip, so they get a cropped portrait cut. */}
-        <source src="/hero/space.mp4" media="(min-width: 768px) and (min-aspect-ratio: 4/5)" type="video/mp4" />
+        {/* HEVC first (same quality at about half the size), H.264 for browsers without it. Phones and portrait
+            tablets (the one-column hero) only show a middle strip, so they get a cropped portrait cut. */}
+        <source src="/hero/space-hevc.mp4" media={WIDE} type='video/mp4; codecs="hvc1.1.6.L150.B0"' />
+        <source src="/hero/space.mp4" media={WIDE} type="video/mp4" />
+        <source src="/hero/space-mobile-hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L120.B0"' />
         <source src="/hero/space-mobile.mp4" type="video/mp4" />
       </video>
       <button
