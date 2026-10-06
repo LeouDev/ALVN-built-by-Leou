@@ -1,6 +1,8 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { createSession, SESSION_DAYS, verifySession } from "@/lib/session";
+import { sql } from "@/lib/db";
+import { rpIdFor } from "@/lib/passkeys";
+import { createChallenge, createSession, SESSION_DAYS, verifyChallenge, verifySession } from "@/lib/session";
 
 export const SESSION_COOKIE = "alvn_admin";
 
@@ -18,6 +20,19 @@ export async function isAdmin() {
 export async function requireAdmin() {
   if (!(await isAdmin())) redirect("/admin/login");
 }
+
+/** A signed passkey challenge, and the check for one coming back (its expiry, or 0). */
+export const passkeyChallenge = () => createChallenge(secret());
+export const checkPasskeyChallenge = (value: string) => verifyChallenge(secret(), value);
+
+/** This site's passkey ID, for pages (server actions read it from the Origin header instead). */
+export const siteRpId = async () => rpIdFor(`http://${(await headers()).get("host")}`);
+
+/** Whether a passkey has been saved; false while the passkeys table doesn't exist yet. */
+export const hasPasskeys = () => sql`select 1 from alvn.passkeys limit 1`.then((rows) => rows.length > 0, () => false);
+
+/** Set when "Not now" is chosen on the inbox's passkey offer. */
+export const PASSKEY_PROMPT_COOKIE = "alvn_passkey_prompt";
 
 export async function startSession() {
   (await cookies()).set(SESSION_COOKIE, createSession(secret()), {

@@ -35,6 +35,24 @@ create table if not exists alvn.login_tokens (
   created_at timestamptz not null default now()
 );
 
+-- Passkeys: Face ID / Touch ID / fingerprint sign-in for the admin. The device keeps each private key;
+-- this keeps the public half (SPKI, base64url) and its COSE algorithm (-7 ES256, -8 Ed25519, -257 RS256).
+create table if not exists alvn.passkeys (
+  id text primary key,
+  public_key text not null,
+  algorithm int not null,
+  sign_count bigint not null default 0,
+  created_at timestamptz not null default now(),
+  last_used_at timestamptz
+);
+
+-- Passkey challenges are signed tokens (lib/session.ts), so handing one out needs no row. Each works once:
+-- its hash is recorded here when it's used, until it expires.
+create table if not exists alvn.used_passkey_challenges (
+  hash text primary key,
+  expires_at timestamptz not null
+);
+
 -- Client projects (phase 2): one row per project, optionally started from an inbox message.
 create table if not exists alvn.projects (
   id bigint generated always as identity primary key,
@@ -129,6 +147,8 @@ create table if not exists alvn.assets (
 alter table alvn.messages enable row level security;
 alter table alvn.replies enable row level security;
 alter table alvn.login_tokens enable row level security;
+alter table alvn.passkeys enable row level security;
+alter table alvn.used_passkey_challenges enable row level security;
 alter table alvn.projects enable row level security;
 alter table alvn.contracts enable row level security;
 alter table alvn.contract_pdfs enable row level security;

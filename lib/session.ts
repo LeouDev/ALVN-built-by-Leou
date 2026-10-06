@@ -19,6 +19,21 @@ export function verifySession(secret: string, value: string | undefined, now = D
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
+/** Passkey challenges: "<expiry ms>.<nonce>.<HMAC>", so handing one out needs no database row. */
+export function createChallenge(secret: string, now = Date.now()) {
+  const body = `${now + 15 * 60e3}.${randomBytes(16).toString("base64url")}`;
+  return `${body}.${hmac(secret, `passkey:${body}`)}`;
+}
+
+/** A genuine, unexpired challenge's expiry (ms); 0 otherwise. */
+export function verifyChallenge(secret: string, value: string, now = Date.now()) {
+  const [expires, nonce, mac = ""] = value.split(".");
+  if (!(Number(expires) > now) || !nonce) return 0;
+  const expected = Buffer.from(hmac(secret, `passkey:${expires}.${nonce}`));
+  const given = Buffer.from(mac);
+  return given.length === expected.length && timingSafeEqual(given, expected) ? Number(expires) : 0;
+}
+
 /** One-time sign-in links: the email carries the token, the database keeps only its hash. */
 export const newLoginToken = () => randomBytes(32).toString("base64url");
 export const sha256 = (text: string) => createHash("sha256").update(text, "utf8").digest("hex");

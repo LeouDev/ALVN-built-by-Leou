@@ -1,14 +1,16 @@
 "use server";
 
-import { headers } from "next/headers";
+import { createPublicKey } from "node:crypto";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { endSession, requireAdmin, startSession } from "@/lib/admin";
+import { checkPasskeyChallenge, endSession, PASSKEY_PROMPT_COOKIE, passkeyChallenge, requireAdmin, startSession } from "@/lib/admin";
 import { parseProject } from "@/lib/client-projects";
 import { createProject, deleteProject, updateProject } from "@/lib/client-projects-db";
 import { sql } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { escapeHtml } from "@/lib/inquiry";
 import { addReply, getMessage, setArchived, unreadCount } from "@/lib/inbox";
+import { checkCeremony, counterOk, KEY_TYPES, newCredentialId, verifySignature } from "@/lib/passkeys";
 import { replyEmail } from "@/lib/reply-email";
 import { callScript } from "@/lib/script";
 import { hashToken, newLoginToken } from "@/lib/session";
@@ -55,6 +57,81 @@ export async function signIn(form: FormData) {
 export async function signOut() {
   await endSession();
   redirect("/admin/login");
+}
+
+// Passkeys (Face ID / Touch ID / fingerprint). Pages hand out signed challenge tokens (lib/session.ts); the
+// browser signs one, and each works once: it's recorded in used_passkey_challenges when it's spent.
+
+// Server actions only run when Origin matches the host, so it names this site.
+const requestOrigin = async () => (await headers()).get("origin") ?? site.url;
+
+/** A fresh challenge, for a page that has been open longer than its challenge lasts. */
+export async function newPasskeyChallenge() {
+  return passkeyChallenge();
+}
+
+/** Spends a challenge the browser signed: it must be ours, unexpired and unused. */
+async function spendChallenge(challenge: string) {
+  const expires = checkPasskeyChallenge(challenge);
+  if (!expires) throw new Error("Challenge expired or not ours");
+  await sql`delete from alvn.used_passkey_challenges where expires_at < now()`;
+  const [fresh] = await sql`insert into alvn.used_passkey_challenges (hash, expires_at)
+    values (${hashToken(challenge)}, ${new Date(expires)}) on conflict do nothing returning hash`;
+  if (!fresh) throw new Error("Challenge already used");
+}
+
+export type NewPasskey = { id: string; clientDataJSON: string; authenticatorData: string; publicKey: string; algorithm: number };
+
+/** Saves a passkey made on this device. Returns an error message instead of throwing, for the page to show. */
+export async function savePasskey(passkey: NewPasskey) {
+  await requireAdmin();
+  try {
+    const { challenge, signCount } = checkCeremony("webauthn.create", await requestOrigin(), passkey.clientDataJSON, passkey.authenticatorData);
+    const key = createPublicKey({ key: Buffer.from(passkey.publicKey, "base64url"), format: "der", type: "spki" }); // throws unless it's a public key
+    if (newCredentialId(passkey.authenticatorData) !== passkey.id || key.asymmetricKeyType !== KEY_TYPES[passkey.algorithm])
+      throw new Error("Unexpected passkey");
+    await spendChallenge(challenge);
+    await sql`insert into alvn.passkeys (id, public_key, algorithm, sign_count)
+              values (${passkey.id}, ${passkey.publicKey}, ${passkey.algorithm}, ${signCount}) on conflict (id) do nothing`;
+    return {};
+  } catch (error) {
+    console.error("[passkey] setup failed:", error);
+    return { error: "That didn’t work. Try again." };
+  }
+}
+
+/** Hides the inbox's passkey offer on this device. */
+export async function dismissPasskeyPrompt() {
+  await requireAdmin();
+  (await cookies()).set(PASSKEY_PROMPT_COOKIE, "dismissed", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/admin",
+    maxAge: 365 * 86400,
+  });
+}
+
+export type PasskeyAssertion = { id: string; clientDataJSON: string; authenticatorData: string; signature: string };
+
+/** Signs in with a passkey. Returns an error message instead of throwing, for the page to show. */
+export async function passkeySignIn(assertion: PasskeyAssertion) {
+  try {
+    const { challenge, signCount } = checkCeremony("webauthn.get", await requestOrigin(), assertion.clientDataJSON, assertion.authenticatorData);
+    const [key] = await sql<{ public_key: string; algorithm: number; sign_count: string }[]>`
+      select public_key, algorithm, sign_count from alvn.passkeys where id = ${assertion.id}`;
+    if (!key) throw new Error("Unknown passkey");
+    if (!verifySignature(key.public_key, key.algorithm, assertion.clientDataJSON, assertion.authenticatorData, assertion.signature))
+      throw new Error("Bad signature");
+    if (!counterOk(Number(key.sign_count), signCount)) throw new Error("Counter went backwards (cloned passkey?)");
+    await spendChallenge(challenge);
+    await sql`update alvn.passkeys set sign_count = ${signCount}, last_used_at = now() where id = ${assertion.id}`;
+  } catch (error) {
+    console.error("[passkey] sign-in failed:", error);
+    return { error: "That passkey didn’t work. Try again, or use the email link." };
+  }
+  await startSession();
+  return {};
 }
 
 /** Fresh unread count for the admin nav, which stays mounted between pages. */

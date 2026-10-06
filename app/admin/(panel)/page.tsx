@@ -1,6 +1,9 @@
+import { cookies, headers } from "next/headers";
 import Link from "next/link";
-import { inManila, requireAdmin } from "@/lib/admin";
+import { PasskeySetup } from "@/components/Passkey";
+import { hasPasskeys, inManila, PASSKEY_PROMPT_COOKIE, passkeyChallenge, requireAdmin, siteRpId } from "@/lib/admin";
 import { listMessages, type Message } from "@/lib/inbox";
+import { ALGORITHMS, passkeyName } from "@/lib/passkeys";
 
 const KIND_LABELS = { inquiry: "Inquiry", booking: "Call" } as const;
 
@@ -23,6 +26,11 @@ export default async function Inbox({ searchParams }: PageProps<"/admin">) {
   const archived = params.view === "archived";
   const kind = params.kind === "inquiry" || params.kind === "booking" ? params.kind : undefined;
   const messages = await listMessages({ archived, kind });
+  // Offer Face ID sign-in until a passkey is saved, unless "Not now" was chosen on this device.
+  const passkeyOffer =
+    !(await cookies()).get(PASSKEY_PROMPT_COOKIE) && !(await hasPasskeys())
+      ? { name: passkeyName((await headers()).get("user-agent") ?? ""), challenge: passkeyChallenge(), rpId: await siteRpId(), algorithms: ALGORITHMS }
+      : null;
 
   const href = (next: { view?: string; kind?: string }) => {
     const query = new URLSearchParams();
@@ -32,6 +40,7 @@ export default async function Inbox({ searchParams }: PageProps<"/admin">) {
 
   return (
     <>
+      {passkeyOffer && <PasskeySetup {...passkeyOffer} />}
       <div className="flex flex-wrap items-end justify-between gap-6">
         <h1 className="headline text-[clamp(2.5rem,5vw,3.5rem)]">{archived ? "Archived" : "Inbox"}</h1>
         <div className="flex flex-wrap gap-2">
