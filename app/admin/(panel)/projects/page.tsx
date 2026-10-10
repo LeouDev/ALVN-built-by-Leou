@@ -28,7 +28,7 @@ export default async function Projects() {
         <h1 className="headline text-[clamp(2.5rem,5vw,3.5rem)]">Projects</h1>
         <Link
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d]"
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-on-accent transition-colors hover:bg-accent/85"
         >
           <Plus aria-hidden className="size-4" /> New project
         </Link>

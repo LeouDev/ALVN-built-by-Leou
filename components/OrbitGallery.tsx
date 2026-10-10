@@ -93,7 +93,7 @@ export function OrbitGallery({
           >
             <span
               className="relative block h-[94px] w-[150px] overflow-hidden rounded-[10px] bg-navy-soft shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]"
-              style={{ outline: "1px solid rgb(247 243 234 / 0.1)" }}
+              style={{ outline: "1px solid rgb(242 239 232 / 0.1)" }}
             >
               <Image src={item.image} alt="" fill sizes="256px" className="object-cover" />
             </span>

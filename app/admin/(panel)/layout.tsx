@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* One row from sm up; on phones the tabs drop to a second row so nothing collides. */}
         <div className="shell flex flex-wrap items-center gap-x-8 gap-y-2 py-3 sm:h-16 sm:flex-nowrap sm:py-0">
           <Link href="/admin" className="flex shrink-0 items-center gap-3">
-            <Logo className="text-[32px]" />
+            <Logo className="h-8 w-auto" />
             <span className="eyebrow max-md:hidden">Admin</span>
           </Link>
           <div className="order-last w-full sm:order-none sm:w-auto">

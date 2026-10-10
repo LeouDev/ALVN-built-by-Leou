@@ -33,11 +33,11 @@ export async function sendLoginLink(form: FormData) {
   await sendEmail({
     to: admin!,
     from: process.env.EMAIL_FROM!,
-    subject: "Your ALVN admin sign-in link",
-    text: `Sign in to the ALVN admin:\n\n${link}\n\nThe link works once and expires in 15 minutes. If you didn't ask for it, ignore this email.`,
-    html: `<p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;color:#071A2D">
-      <a href="${escapeHtml(link)}" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#071A2D;color:#F7F3EA;font-weight:600;text-decoration:none">Sign in to ALVN admin</a>
-      <br><br><span style="color:#5F6B7E">The link works once and expires in 15 minutes. If you didn’t ask for it, ignore this email.</span></p>`,
+    subject: "Your build admin sign-in link",
+    text: `Sign in to the build admin:\n\n${link}\n\nThe link works once and expires in 15 minutes. If you didn't ask for it, ignore this email.`,
+    html: `<p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;color:#0E0E0E">
+      <a href="${escapeHtml(link)}" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#0E0E0E;color:#F2EFE8;font-weight:600;text-decoration:none">Sign in to build admin</a>
+      <br><br><span style="color:#66635C">The link works once and expires in 15 minutes. If you didn’t ask for it, ignore this email.</span></p>`,
   });
   done();
 }

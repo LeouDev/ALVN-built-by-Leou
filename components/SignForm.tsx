@@ -71,7 +71,7 @@ function SignaturePad({ fontFamily, defaultText, onChange }: { fontFamily: strin
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.strokeStyle = "#071A2D";
+    ctx.strokeStyle = "#0E0E0E";
   }, []);
 
   function clear() {
@@ -93,7 +93,7 @@ function SignaturePad({ fontFamily, defaultText, onChange }: { fontFamily: strin
       if (!text) return onChange("");
       await document.fonts.load(`56px ${fontFamily}`);
       if (cancelled) return;
-      ctx.fillStyle = "#071A2D";
+      ctx.fillStyle = "#0E0E0E";
       ctx.textBaseline = "middle";
       let size = 56;
       do ctx.font = `${size}px ${fontFamily}`;

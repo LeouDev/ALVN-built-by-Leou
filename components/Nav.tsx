@@ -67,11 +67,11 @@ export function Nav() {
         <nav
           aria-label="Main"
           className={`${pill} mx-auto w-full justify-between gap-2 md:w-fit md:gap-8 ${
-            scrolled ? "bg-paper/85 shadow-[0_12px_40px_-16px_rgba(7,26,45,0.35)]" : "bg-paper/60"
+            scrolled ? "bg-paper/85 shadow-[0_12px_40px_-16px_rgba(14,14,14,0.35)]" : "bg-paper/60"
           }`}
         >
           <NavLink href="/" className="shrink-0">
-            <Logo className="text-[32px]" />
+            <Logo className="h-8 w-auto" />
           </NavLink>
 
           <ul className="hidden items-center gap-1 md:flex">
@@ -91,7 +91,7 @@ export function Nav() {
 
           <NavLink
             href="/contact"
-            className="group hidden items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d] md:inline-flex"
+            className="group hidden items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent transition-colors hover:bg-accent/85 md:inline-flex"
           >
             Start a Project
             <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -124,7 +124,7 @@ export function Nav() {
       >
         <div className="px-4 pt-3">
           <div className={`${pill} justify-between bg-paper/60`}>
-            <Logo className="text-[32px]" />
+            <Logo className="h-8 w-auto" />
             <button
               type="button"
               aria-label="Close menu"
@@ -153,11 +153,11 @@ export function Nav() {
           <div className="space-y-6">
             <NavLink
               href="/contact"
-              className="flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-semibold text-navy"
+              className="flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 font-semibold text-on-accent"
             >
               Start a Project <ArrowRight aria-hidden className="size-4" />
             </NavLink>
-            <p className="eyebrow">ALVN — Built by Leou</p>
+            <p className="eyebrow">build — Built by Leou</p>
           </div>
         </nav>
       </dialog>

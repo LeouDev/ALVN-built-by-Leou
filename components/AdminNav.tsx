@@ -33,7 +33,7 @@ export function AdminNav({ unread: initial }: { unread: number }) {
         >
           {label}
           {label === "Inbox" && unread > 0 && (
-            <span className="rounded-full bg-accent px-1.5 text-xs leading-5 text-navy tabular-nums">
+            <span className="rounded-full bg-accent px-1.5 text-xs leading-5 text-on-accent tabular-nums">
               {unread}
               <span className="sr-only"> unread</span>
             </span>

@@ -85,8 +85,9 @@ export function PasskeySetup({ name, challenge, rpId, algorithms }: { name: stri
       const credential = (await navigator.credentials.create({
         publicKey: {
           challenge: utf8(typeof value === "string" ? value : await value),
-          rp: { id: rpId, name: "ALVN Admin" },
-          user: { id: utf8("alvn-admin"), name: "ALVN Admin", displayName: "ALVN Admin" },
+          rp: { id: rpId, name: "build admin" },
+          // the id stays "alvn-admin": a new one would orphan passkeys already saved
+          user: { id: utf8("alvn-admin"), name: "build admin", displayName: "build admin" },
           pubKeyCredParams: algorithms.map((alg) => ({ type: "public-key" as const, alg })),
           authenticatorSelection: { residentKey: "required", userVerification: "required" },
           attestation: "none",

@@ -1,6 +1,6 @@
 export const site = {
-  name: "ALVN",
-  title: "ALVN — Built by Leou",
+  name: "build",
+  title: "build — Built by Leou",
   descriptor: "Digital Products & Experiences",
   resumeUrl: "https://leoudev.github.io/LeouComendador/",
   description:

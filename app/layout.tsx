@@ -1,25 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Oleo_Script } from "next/font/google";
+import { Jost, Manrope } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
-const oleo = Oleo_Script({ weight: "700", subsets: ["latin"], variable: "--font-oleo" }); // the logo face
+const jost = Jost({ subsets: ["latin"], variable: "--font-jost" }); // headings and labels, the logo's typeface
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: site.title, template: "%s — ALVN" },
+  title: { default: site.title, template: "%s — build" },
   description: site.description,
   applicationName: site.name,
   openGraph: { type: "website", siteName: site.title },
   twitter: { card: "summary_large_image" },
 };
 
-export const viewport: Viewport = { themeColor: "#F7F3EA" };
+export const viewport: Viewport = { themeColor: "#F2EFE8" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${oleo.variable}`} data-scroll-behavior="smooth">
+    <html lang="en" className={`${manrope.variable} ${jost.variable}`} data-scroll-behavior="smooth">
       <body>
         <a
           href="#main"

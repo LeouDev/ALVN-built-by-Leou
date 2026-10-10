@@ -25,7 +25,7 @@ export function InquiryForm() {
   if (state.status === "sent")
     return (
       <div role="status" tabIndex={-1} ref={(el) => el?.focus()} className="rounded-[28px] border border-line bg-white/70 p-8 outline-none sm:p-12">
-        <span className="grid size-12 place-items-center rounded-full bg-accent text-navy">
+        <span className="grid size-12 place-items-center rounded-full bg-accent text-on-accent">
           <Check aria-hidden className="size-5" />
         </span>
         <h2 className="mt-8 text-3xl font-semibold tracking-tight">Thanks — your inquiry is on its way.</h2>

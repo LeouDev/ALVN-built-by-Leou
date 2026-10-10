@@ -70,7 +70,7 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
         </p>
         {notice && <Toast key={String(query.t)} message={notice[0]} tone={notice[1]} />}
 
-        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(7,26,45,0.35)] sm:p-12">
+        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(14,14,14,0.35)] sm:p-12">
           <p className="eyebrow text-accent">Agreement</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight">{c.title}</h2>
           <div className="mt-6">
@@ -118,7 +118,7 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
           </a>
         )}
         {c.status === "signed" && (
-          <a href={`/admin/contracts/${c.id}/pdf`} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-navy hover:bg-[#ff8a3d]">
+          <a href={`/admin/contracts/${c.id}/pdf`} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent hover:bg-accent/85">
             <Download aria-hidden className="size-4" /> Download signed PDF
           </a>
         )}

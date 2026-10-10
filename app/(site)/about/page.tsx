@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LogoLockup } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { ButtonLink, Eyebrow, StartProject } from "@/components/ui";
 import { site } from "@/lib/site";
 
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
   title: "About",
   description:
-    "ALVN is Leou’s digital product portfolio — websites, applications, experiments, and ideas turned into working products.",
+    "build is Leou’s digital product portfolio: websites, applications, experiments, and ideas turned into working products.",
 };
 
 const practice = [
@@ -28,7 +28,7 @@ export default function AboutPage() {
         <h1 className="headline mt-6 text-[clamp(3rem,9vw,7rem)] leading-[0.9]">Built by Leou.</h1>
         <div className="mt-12 grid gap-8 lg:grid-cols-12">
           <p className="text-2xl leading-snug font-medium tracking-tight text-balance sm:text-3xl lg:col-span-7">
-            ALVN is my digital product portfolio — a place where I showcase the websites, applications, experiments, and ideas I’ve
+            This is build, my digital product portfolio: a place where I showcase the websites, applications, experiments, and ideas I’ve
             turned into working products.
           </p>
           <div className="lg:col-span-4 lg:col-start-9 lg:pt-2">
@@ -45,15 +45,15 @@ export default function AboutPage() {
       <section className="shell py-16 lg:py-24">
         <figure className="overflow-hidden rounded-[36px] border border-line bg-paper">
           <div className="grid place-items-center bg-navy px-6 py-20 sm:py-28">
-            <LogoLockup className="text-[clamp(88px,26vw,190px)]" />
+            <Logo weight="regular" tagline className="w-full max-w-[480px] text-cream" />
           </div>
           <figcaption className="relative flex flex-col gap-2 border-t border-line px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-            <span className="eyebrow">ALVN · Digital Products &amp; Experiences</span>
+            <span className="eyebrow">build · Digital Products &amp; Experiences</span>
             <span className="text-lg font-semibold">Built by Leou.</span>
           </figcaption>
         </figure>
         <p className="mt-6 max-w-2xl text-muted">
-          ALVN is the brand; Leou is the person behind it. It’s a personal digital product brand — not an agency.
+          The brand is build; Leou is the person behind it. It’s a personal digital product brand — not an agency.
         </p>
       </section>
 

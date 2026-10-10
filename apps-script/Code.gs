@@ -1,5 +1,5 @@
 /**
- * ALVN bookings (Google Apps Script)
+ * build bookings (Google Apps Script)
  *
  * Runs in Leou's Google account and powers the "Book a call" calendar on the site's Contact page:
  *   - The site asks this web app for open 30-minute times. Anything on your calendar is skipped.
@@ -11,7 +11,7 @@
  *     inbox replies and contracts (with the signed PDF attached).
  *
  * Setup, once (the repo copy of this project lives in apps-script/):
- *   1. script.google.com → New project, named "ALVN booking emails".
+ *   1. script.google.com → New project, named "build booking emails".
  *   2. Replace everything in Code.gs with this file, then click Save.
  *   3. Add the Google Calendar API service: Services + → Google Calendar API → Add. If the + won't
  *      respond: Project Settings (gear) → tick "Show appsscript.json manifest file in editor", then
@@ -20,7 +20,7 @@
  *      BOOKING_SECRET in Vercel.
  *   5. Choose `setup` in the toolbar and click Run, then allow the permissions it asks for.
  *      "Google hasn't verified this app" is expected for your own script:
- *      click Advanced → Go to ALVN booking emails.
+ *      click Advanced → Go to build booking emails.
  *   6. Deploy → New deployment → Web app. Execute as: Me. Who has access: Anyone. Deploy, and put
  *      the Web app URL (it ends in /exec) in the site's BOOKING_URL in Vercel.
  *
@@ -32,7 +32,7 @@
 const SCHEDULE_TITLE = "30-min intro call with Leou"; // booked events are titled "<this> (<name>)"
 const CALENDAR_ID = "primary";
 const SITE_URL = "https://www.builtbyleou.info";
-const SENDER_NAME = "ALVN Built by Leou"; // plain ASCII: some Gmail paths garble symbols in sender names
+const SENDER_NAME = "build by Leou"; // plain ASCII: some Gmail paths garble symbols in sender names
 
 // Bookable times: weekdays, 9:00 AM–5:00 PM Manila time, in 30-minute calls.
 const TIME_ZONE = "Asia/Manila";
@@ -50,7 +50,7 @@ function setup() {
   ScriptApp.newTrigger("sendBookingEmails").timeBased().everyMinutes(5).create();
   // Only bookings made from now on get the email.
   PropertiesService.getScriptProperties().setProperty("since", new Date().toISOString());
-  Logger.log("All set: new bookings get the ALVN email right after Google's invite.");
+  Logger.log("All set: new bookings get the build email right after Google's invite.");
 }
 
 function sendBookingEmails() {
@@ -220,7 +220,7 @@ function sendEmail_(body) {
     name: SENDER_NAME,
     htmlBody: body.html
       ? String(body.html)
-      : `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#071A2D">${esc_(text).replace(/\n/g, "<br>")}</div>`,
+      : `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#0E0E0E">${esc_(text).replace(/\n/g, "<br>")}</div>`,
     attachments,
   });
   return { ok: true };
@@ -273,14 +273,14 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
     hi, "", intro, "",
     SCHEDULE_TITLE, `When: ${when}`, `Google Meet: ${meetUrl || "the link is in your calendar invite"}`, "", invite, "",
     "To make the most of our 30 minutes, bring:", ...prep.map((p) => `- ${p}`), "",
-    change, "", "Talk soon,", "Leou", `ALVN — Built by Leou · ${SITE_URL}`,
+    change, "", "Talk soon,", "Leou", `build — Built by Leou · ${SITE_URL}`,
   ].join("\n");
 
   const meet = meetUrl
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#F47721;border-radius:999px">
-            <a href="${esc_(meetUrl)}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#071A2D;text-decoration:none">Join Google Meet →</a>
+    ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#0E0E0E;border-radius:999px">
+            <a href="${esc_(meetUrl)}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#0E0E0E;text-decoration:none">Join Google Meet →</a>
           </td></tr></table>
-          <p style="margin:10px 0 0;font-size:13px;color:#5F6B7E">${esc_(meetUrl.replace(/^https?:\/\//, ""))}</p>`
+          <p style="margin:10px 0 0;font-size:13px;color:#66635C">${esc_(meetUrl.replace(/^https?:\/\//, ""))}</p>`
     : `<p style="margin:20px 0 0;font-size:15px;line-height:1.6;font-weight:600">The Google Meet link is in your calendar invite.</p>`;
 
   const html = `<!doctype html>
@@ -289,39 +289,39 @@ function bookingEmail_({ name, day, start, end, zone, meetUrl }) {
 <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="margin:0;padding:0;background:#F7F3EA">
+<body style="margin:0;padding:0;background:#F2EFE8">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc_(when)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EA;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#071A2D">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EFE8;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0E0E0E">
 <tr><td align="center">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
     <tr><td style="padding:0 4px 20px">
-      <a href="${SITE_URL}"><img src="${SITE_URL}/brand/alvn-wordmark.png" width="112" height="33" alt="ALVN" style="display:block;border:0"></a>
+      <a href="${SITE_URL}"><img src="${SITE_URL}/brand/alvn-wordmark.png" width="112" height="33" alt="build" style="display:block;border:0"></a>
     </td></tr>
   </table>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
-    <tr><td style="background:#071A2D;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">You’re booked</div>
-      <div style="margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:#F7F3EA">${esc_(SCHEDULE_TITLE)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
+    <tr><td style="background:#0E0E0E;padding:28px 32px">
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0E0E0E">You’re booked</div>
+      <div style="margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:#F2EFE8">${esc_(SCHEDULE_TITLE)}</div>
       <div style="margin-top:8px;font-size:15px;line-height:1.5;color:#CFCCC4">${esc_(day)}<br>${esc_(`${start} – ${end} (${zone})`)}</div>
     </td></tr>
     <tr><td style="padding:28px 32px 32px">
       <p style="margin:0;font-size:16px;line-height:1.6">${esc_(hi)}</p>
       <p style="margin:12px 0 0;font-size:16px;line-height:1.6">${esc_(intro)}</p>
       ${meet}
-      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc_(invite)}</p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;background:#F7F3EA;border-radius:14px">
+      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#66635C">${esc_(invite)}</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;background:#F2EFE8;border-radius:14px">
         <tr><td style="padding:20px 22px">
           <div style="font-size:14px;font-weight:700">To make the most of our 30 minutes, bring:</div>
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:4px;font-size:15px;line-height:1.5">
-            ${prep.map((p) => `<tr><td valign="top" style="padding:6px 10px 0 0;color:#F47721">✦</td><td style="padding-top:6px">${esc_(p)}</td></tr>`).join("\n            ")}
+            ${prep.map((p) => `<tr><td valign="top" style="padding:6px 10px 0 0;color:#0E0E0E">✦</td><td style="padding-top:6px">${esc_(p)}</td></tr>`).join("\n            ")}
           </table>
         </td></tr>
       </table>
-      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">${esc_(change)}</p>
+      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#66635C">${esc_(change)}</p>
       <p style="margin:24px 0 0;font-size:16px;line-height:1.6">Talk soon,<br><strong>Leou</strong></p>
     </td></tr>
   </table>
-  <p style="margin:16px 0 0;font-size:12px;color:#5F6B7E">ALVN — Built by Leou · <a href="${SITE_URL}" style="color:#5F6B7E">${SITE_URL.replace("https://", "")}</a></p>
+  <p style="margin:16px 0 0;font-size:12px;color:#66635C">build — Built by Leou · <a href="${SITE_URL}" style="color:#66635C">${SITE_URL.replace("https://", "")}</a></p>
 </td></tr>
 </table>
 </body></html>`;

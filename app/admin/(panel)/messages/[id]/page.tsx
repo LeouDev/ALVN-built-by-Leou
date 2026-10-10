@@ -59,7 +59,7 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
         {replies.length > 0 && (
           <ol className="mt-8 space-y-4">
             {replies.map((r) => (
-              <li key={r.id} className="rounded-[28px] bg-navy p-6 text-cream sm:p-8">
+              <li key={r.id} className="on-dark rounded-[28px] bg-navy p-6 text-cream sm:p-8">
                 <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
                   You replied · {inManila(r.sent_at, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                 </p>
@@ -76,7 +76,7 @@ export default async function MessagePage({ params, searchParams }: PageProps<"/
       <aside className="space-y-3 lg:col-span-4 lg:pt-12">
         <Link
           href={projectId ? `/admin/projects/${projectId}` : `/admin/projects/new?from=${m.id}`}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d]"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent transition-colors hover:bg-accent/85"
         >
           {projectId ? <FolderOpen aria-hidden className="size-4" /> : <FolderPlus aria-hidden className="size-4" />}
           {projectId ? "View project" : "Create project"}

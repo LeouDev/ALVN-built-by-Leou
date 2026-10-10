@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroVideo } from "@/components/HeroVideo";
-import { LogoMark } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { MenuButton } from "@/components/Nav";
 import { navLinks, site } from "@/lib/site";
 import space from "@/public/hero/space.webp";
@@ -46,9 +46,7 @@ export function HomeHero({ clients }: { clients: string[] }) {
       </div>
 
       <div className="hero-body">
-        <span role="img" aria-label="ALVN" className="hero-logo animate-fade-up">
-          <LogoMark className="bg-[url(/hero/letters.webp)] bg-cover bg-center bg-clip-text text-transparent" />
-        </span>
+        <Logo weight="regular" className="hero-logo animate-fade-up" />
         <h1 className="hero-title animate-fade-up [animation-delay:120ms]">
           I build digital products <br className="max-md:hidden" />
           that turn <span className="text-accent">ideas into businesses</span>.

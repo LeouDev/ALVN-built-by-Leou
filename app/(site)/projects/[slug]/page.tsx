@@ -245,7 +245,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
             <span className="eyebrow">Next project</span>
             <span className="headline mt-3 block text-4xl sm:text-6xl">{next.name}</span>
           </span>
-          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-navy text-cream transition-colors group-hover:bg-accent group-hover:text-navy">
+          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-navy text-cream transition-colors group-hover:bg-navy-soft">
             <ArrowRight aria-hidden className="size-5 transition-transform group-hover:translate-x-0.5" />
           </span>
         </Link>

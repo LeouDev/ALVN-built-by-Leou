@@ -94,7 +94,7 @@ function Month({ year, monthIndex, today, calls }: MonthProps & { calls?: Call[]
               <div key={i} className={`min-h-24 p-1.5 sm:min-h-28 sm:p-2 ${i % 7 ? "border-l border-line" : ""} ${i >= 7 ? "border-t border-line" : ""} ${inMonth ? "" : "bg-navy/[0.025]"}`}>
                 {inMonth && (
                   <>
-                    <span className={`grid size-7 place-items-center rounded-full text-sm ${day === today ? "bg-accent font-semibold text-navy" : "text-muted"}`}>{day}</span>
+                    <span className={`grid size-7 place-items-center rounded-full text-sm ${day === today ? "bg-accent font-semibold text-on-accent" : "text-muted"}`}>{day}</span>
                     <ul className="mt-1 space-y-1">
                       {byDay.get(day)?.map((call) => (
                         <li key={call.id}>
@@ -135,7 +135,7 @@ function Month({ year, monthIndex, today, calls }: MonthProps & { calls?: Call[]
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {call.meetUrl && (
-                      <a href={call.meetUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-navy">
+                      <a href={call.meetUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent">
                         <Video aria-hidden className="size-4" /> Join Meet
                       </a>
                     )}

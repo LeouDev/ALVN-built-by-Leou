@@ -5,7 +5,7 @@ import { AdminAppBehavior } from "@/components/AdminAppBehavior";
 // Admin only: the public site stays zoomable (blocking zoom there would fail accessibility checks).
 export const metadata: Metadata = {
   manifest: "/admin/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "ALVN Admin", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "build admin", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, maximumScale: 1, userScalable: false };

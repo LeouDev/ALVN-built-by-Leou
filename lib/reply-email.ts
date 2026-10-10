@@ -13,7 +13,7 @@ function paragraphs(text: string, style: string) {
     .split(/\n\s*\n/)
     .map((p) => {
       const html = esc(p)
-        .replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"]/g, (url) => `<a href="${url}" style="color:#071A2D;text-decoration:underline">${url}</a>`)
+        .replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"]/g, (url) => `<a href="${url}" style="color:#0E0E0E;text-decoration:underline">${url}</a>`)
         .replace(/\n/g, "<br>");
       return `<p style="${style}">${html}</p>`;
     })
@@ -26,7 +26,7 @@ export function replyEmail(m: Original, reply: string, siteUrl: string) {
   const original = m.body.trim();
   const site = siteUrl.replace(/^https?:\/\//, "");
 
-  const text = `${reply.trim()}\n\n— Leou\nALVN — Built by Leou · ${siteUrl}${original ? `\n\nOn ${when}, ${m.name} wrote:\n${original.replace(/^/gm, "> ")}` : ""}`;
+  const text = `${reply.trim()}\n\n— Leou\nbuild — Built by Leou · ${siteUrl}${original ? `\n\nOn ${when}, ${m.name} wrote:\n${original.replace(/^/gm, "> ")}` : ""}`;
 
   const html = `<!doctype html>
 <html><head>
@@ -34,39 +34,39 @@ export function replyEmail(m: Original, reply: string, siteUrl: string) {
 <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="margin:0;padding:0;background:#F7F3EA">
+<body style="margin:0;padding:0;background:#F2EFE8">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(reply.trim().slice(0, 140))}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EA;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#071A2D">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EFE8;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0E0E0E">
 <tr><td align="center">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
     <tr><td style="padding:0 4px 20px">
-      <a href="${esc(siteUrl)}"><img src="${esc(siteUrl)}/brand/alvn-wordmark.png" width="112" height="33" alt="ALVN" style="display:block;border:0"></a>
+      <a href="${esc(siteUrl)}"><img src="${esc(siteUrl)}/brand/alvn-wordmark.png" width="112" height="33" alt="build" style="display:block;border:0"></a>
     </td></tr>
   </table>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
-    <tr><td style="height:4px;background:#F47721;font-size:0;line-height:0">&nbsp;</td></tr>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
+    <tr><td style="height:4px;background:#0E0E0E;font-size:0;line-height:0">&nbsp;</td></tr>
     <tr><td style="padding:32px 32px 28px">
           ${paragraphs(reply, "margin:0 0 14px;font-size:16px;line-height:1.7")}
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:26px;border-top:1px solid rgba(7,26,45,0.12)">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:26px;border-top:1px solid rgba(14,14,14,0.12)">
         <tr><td style="padding-top:18px">
           <div style="font-size:16px;font-weight:700">Leou</div>
-          <div style="margin-top:2px;font-size:13px;color:#5F6B7E">ALVN — Built by Leou · Digital Products &amp; Experiences</div>
-          <a href="${esc(siteUrl)}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#F47721;text-decoration:none">${esc(site)} →</a>
+          <div style="margin-top:2px;font-size:13px;color:#66635C">build — Built by Leou · Digital Products &amp; Experiences</div>
+          <a href="${esc(siteUrl)}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#0E0E0E;text-decoration:none">${esc(site)} →</a>
         </td></tr>
       </table>${
         original
           ? `
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;background:#F7F3EA;border-radius:14px">
-        <tr><td style="padding:18px 20px;border-left:3px solid #F47721;border-radius:14px">
-          <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#5F6B7E">On ${esc(when)}, ${esc(m.name)} wrote</div>
-          ${paragraphs(original, "margin:8px 0 0;font-size:14px;line-height:1.6;color:#44516A")}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;background:#F2EFE8;border-radius:14px">
+        <tr><td style="padding:18px 20px;border-left:3px solid #0E0E0E;border-radius:14px">
+          <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#66635C">On ${esc(when)}, ${esc(m.name)} wrote</div>
+          ${paragraphs(original, "margin:8px 0 0;font-size:14px;line-height:1.6;color:#4A4842")}
         </td></tr>
       </table>`
           : ""
       }
     </td></tr>
   </table>
-  <p style="margin:16px 0 0;font-size:12px;color:#5F6B7E">Just reply to this email to write back.</p>
+  <p style="margin:16px 0 0;font-size:12px;color:#66635C">Just reply to this email to write back.</p>
 </td></tr>
 </table>
 </body></html>`;

@@ -6,7 +6,7 @@ import { type Project, type Status, projects, statusLabels } from "@/data/projec
 
 const buttonStyles = {
   primary: "bg-navy text-cream hover:bg-navy-soft",
-  accent: "bg-accent text-navy hover:bg-[#ff8a3d]",
+  accent: "bg-accent text-on-accent hover:bg-accent/85",
   outline: "border border-navy/15 bg-white/40 text-navy hover:border-navy/40 hover:bg-white/80",
   light: "border border-cream/25 text-cream hover:border-cream/60",
 };
@@ -52,7 +52,7 @@ export function ButtonLink({
 }
 
 const statusDot: Record<Status, string> = {
-  live: "bg-accent shadow-[0_0_0_3px_rgb(244_119_33/0.22)]",
+  live: "bg-accent shadow-[0_0_0_3px_rgb(14_14_14/0.15)]",
   "in-development": "border-[1.5px] border-accent",
   "coming-soon": "bg-navy/45",
   concept: "border-[1.5px] border-navy/45",
@@ -102,10 +102,11 @@ export function SectionHeader({
   );
 }
 
-export function Sparkle({ className = "" }: { className?: string }) {
+/** The logo's diamond (the dot of its i). */
+export function Diamond({ className = "" }: { className?: string }) {
   return (
     <svg aria-hidden viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M12 0c.6 7 5 11.4 12 12-7 .6-11.4 5-12 12-.6-7-5-11.4-12-12C7 11.4 11.4 7 12 0z" />
+      <path d="M12 2 22 12 12 22 2 12z" />
     </svg>
   );
 }
@@ -130,24 +131,24 @@ export function Orbits({ className = "", children }: { className?: string; child
   );
 }
 
-/** The ALVN emblem, shown on its own paper-coloured disc (the artwork's faces are drawn in that colour). */
+/** The build icon on its own paper-coloured disc (the icon's cut-outs are drawn in that colour). */
 export function Emblem({ className = "", preload = false }: { className?: string; preload?: boolean }) {
   return (
     <div className={`relative aspect-square ${className}`}>
       <Orbits className="absolute inset-0 size-full text-navy/15" />
-      <div className="absolute inset-[9%] rounded-full bg-paper shadow-[0_40px_80px_-40px_rgb(7_26_45/0.35)] ring-1 ring-navy/8" />
+      <div className="absolute inset-[9%] rounded-full bg-paper shadow-[0_40px_80px_-40px_rgb(14_14_14/0.35)] ring-1 ring-navy/8" />
       <Image
-        src="/brand/alvn-emblem.png"
-        alt="ALVN emblem: Gemini twins and an astronaut in orbit"
-        width={491}
-        height={492}
+        src="/brand/build-icon.svg"
+        alt="build icon: a b inside an orbit"
+        width={180}
+        height={180}
         preload={preload}
-        sizes="(min-width: 1024px) 460px, 80vw"
-        className="absolute inset-[12%] size-[76%] animate-fade-in object-contain"
+        unoptimized
+        className="absolute inset-[22%] size-[56%] animate-fade-in"
       />
-      <Sparkle className="absolute top-[14%] left-[3%] size-3.5 text-navy" />
-      <Sparkle className="absolute right-[4%] bottom-[20%] size-5 text-accent" />
-      <span aria-hidden className="absolute top-[5%] right-[16%] size-4 rounded-full bg-linear-to-br from-[#ffc596] to-accent" />
+      <Diamond className="absolute top-[14%] left-[3%] size-3.5 text-navy" />
+      <Diamond className="absolute right-[4%] bottom-[20%] size-5 text-navy" />
+      <span aria-hidden className="absolute top-[5%] right-[16%] size-4 rounded-full bg-navy" />
     </div>
   );
 }

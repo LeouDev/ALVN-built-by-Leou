@@ -49,7 +49,7 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
           {php(inv.total)} · for {inv.client_name} · due {longDate(inv.due_date)}
         </p>
 
-        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(7,26,45,0.35)] sm:p-12">
+        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(14,14,14,0.35)] sm:p-12">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="eyebrow text-accent">Billing statement</p>
@@ -149,7 +149,7 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
             message={`${inv.status === "sent" ? "A friendly reminder with the invoice attached again" : `The billing statement for ${php(inv.total)}, with its PDF attached,`} goes to ${inv.client_email} from your Gmail.`}
             confirmLabel={inv.status === "sent" ? "Send reminder" : "Send invoice"}
             pendingLabel="Sending…"
-            className="w-full rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-navy transition-colors hover:bg-[#ff8a3d]"
+            className="w-full rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent transition-colors hover:bg-accent/85"
           />
         )}
         {inv.status === "sent" && (

@@ -6,10 +6,10 @@ import { registerPdfFonts } from "@/lib/pdf-fonts";
 // The signed contract as a PDF: the agreement, both signatures, and a signature certificate page.
 // Fonts and the logo load from the site's own public files, so the PDF matches the brand.
 
-const navy = "#071A2D";
-const muted = "#5F6B7E";
-const accent = "#F47721";
-const line = "#D7DADF";
+const navy = "#0E0E0E";
+const muted = "#66635C";
+const accent = "#0E0E0E";
+const line = "#DAD7D0";
 
 const s = StyleSheet.create({
   page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: ["Manrope", "Geist"], fontSize: 10, lineHeight: 1.55, color: navy },

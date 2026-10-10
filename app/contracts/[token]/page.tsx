@@ -21,7 +21,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <main id="main" className="min-h-dvh pb-24">
       <header className="shell flex h-20 items-center justify-between">
         <Link href="/">
-          <Logo className="text-[32px]" />
+          <Logo className="h-8 w-auto" />
         </Link>
         <span className="eyebrow">Agreement</span>
       </header>
@@ -54,7 +54,7 @@ export default async function SignContract({ params }: PageProps<"/contracts/[to
     <Shell>
       <div className="pt-6">
         {signed ? (
-          <div role="status" className="flex flex-col gap-4 rounded-[28px] bg-navy p-6 text-cream sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div role="status" className="on-dark flex flex-col gap-4 rounded-[28px] bg-navy p-6 text-cream sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <p className="flex items-start gap-3">
               <CheckCircle2 aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
               <span>
@@ -64,7 +64,7 @@ export default async function SignContract({ params }: PageProps<"/contracts/[to
                 </span>
               </span>
             </p>
-            <a href={`/contracts/${token}/pdf`} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-navy">
+            <a href={`/contracts/${token}/pdf`} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-on-accent">
               <Download aria-hidden className="size-4" /> Download PDF
             </a>
           </div>
@@ -74,7 +74,7 @@ export default async function SignContract({ params }: PageProps<"/contracts/[to
           </p>
         )}
 
-        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(7,26,45,0.35)] sm:p-12">
+        <article className="mt-8 rounded-[28px] border border-line bg-white p-7 shadow-[0_24px_60px_-40px_rgba(14,14,14,0.35)] sm:p-12">
           <p className="eyebrow text-accent">Agreement · #{c.id}</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{c.title}</h1>
           <div className="mt-6">

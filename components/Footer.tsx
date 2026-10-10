@@ -11,7 +11,7 @@ export function Footer() {
       <div className="shell grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-6">
           <NavLink href="/" className="block w-fit">
-            <Logo className="text-[44px]" />
+            <Logo className="h-11 w-auto" />
           </NavLink>
           <p className="eyebrow mt-6">{site.descriptor}</p>
           <p className="mt-2 text-lg font-semibold">Built by Leou.</p>
@@ -56,7 +56,7 @@ export function Footer() {
       </div>
       <div className="border-t border-line">
         <div className="shell flex flex-col gap-2 py-6 text-xs text-muted sm:flex-row sm:justify-between">
-          <p>© {new Date().getFullYear()} ALVN — Built by Leou</p>
+          <p>© {new Date().getFullYear()} build — Built by Leou</p>
           <p>Ideas, designed and built into digital experiences.</p>
         </div>
       </div>

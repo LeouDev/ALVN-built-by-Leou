@@ -30,7 +30,7 @@ export default async function AdminLogin({ searchParams }: PageProps<"/admin/log
   return (
     <main id="main" className="grid min-h-dvh place-items-center px-4 py-16">
       <div className="w-full max-w-md rounded-[28px] border border-line bg-white/60 p-8 sm:p-10">
-        <Logo className="text-[32px]" />
+        <Logo className="h-8 w-auto" />
         <h1 className="mt-8 text-3xl font-semibold tracking-tight">Admin</h1>
 
         {typeof token === "string" ? (

@@ -1,4 +1,4 @@
-# ALVN — Built by Leou
+# build — Built by Leou
 
 Digital Products & Experiences. Leou's portfolio of websites, apps, experiments, and digital products.
 
@@ -66,6 +66,7 @@ Create the tables once: paste `db/schema.sql` into Supabase's SQL Editor, or run
 
 ## Brand assets
 
-- `public/brand/alvn-logo.webp`: the official logo, untouched
-- `public/brand/alvn-wordmark.png`, `alvn-emblem.png`, `alvn-lockup.png`: transparent crops of the original artwork
-- `app/icon.png`, `app/apple-icon.png`, `app/opengraph-image.png`: generated from the original
+- `components/Logo.tsx`: the build wordmark as SVG (from the "build logo" design handoff)
+- `public/brand/build-icon.svg`: the "b" icon on paper, used by the Contact page emblem
+- `public/brand/alvn-wordmark.png`: the wordmark for emails and PDFs (old name kept so sent emails and Apps Script still load it)
+- `app/icon.png`, `app/apple-icon.png`, `app/opengraph-image.png`, `public/admin/icon-*.png`: rendered from the design's SVGs

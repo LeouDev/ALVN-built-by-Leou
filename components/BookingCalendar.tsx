@@ -62,7 +62,7 @@ export function BookingCalendar() {
   if (sending.status === "booked")
     return (
       <div role="status" tabIndex={-1} ref={(el) => el?.focus()} className="rounded-[28px] border border-line bg-white/70 p-8 outline-none sm:p-12">
-        <span className="grid size-12 place-items-center rounded-full bg-accent text-navy">
+        <span className="grid size-12 place-items-center rounded-full bg-accent text-on-accent">
           <Check aria-hidden className="size-5" />
         </span>
         <h2 className="mt-8 text-3xl font-semibold tracking-tight">You’re booked.</h2>
@@ -147,7 +147,7 @@ export function BookingCalendar() {
               {times.map((s) => (
                 <label key={s} className="cursor-pointer">
                   <input type="radio" name="start" value={s} required checked={s === start} onChange={() => setStart(s)} className="peer sr-only" />
-                  <span className={`${choice} rounded-full py-2.5 text-sm font-semibold peer-checked:border-accent peer-checked:bg-accent peer-checked:text-navy`}>
+                  <span className={`${choice} rounded-full py-2.5 text-sm font-semibold peer-checked:border-accent peer-checked:bg-accent peer-checked:text-on-accent`}>
                     {time(s)}
                   </span>
                 </label>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Globe, LayoutDashboard, Smartphone } from "lucide-react";
 import { AppCard } from "@/components/AppCard";
 import { HomeHero } from "@/components/HomeHero";
-import { LogoLockup } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ButtonLink, Eyebrow, SectionHeader, StartProject, StatusBadge } from "@/components/ui";
 import { categoryLabels, getProject, getStack, mobileApps, projects } from "@/data/projects";
@@ -208,24 +208,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* About ALVN */}
+        {/* About build */}
         <section className="section">
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="reveal grid place-items-center rounded-[32px] bg-navy px-6 py-16 sm:py-20 lg:col-span-5">
-              <LogoLockup className="text-[clamp(88px,26vw,150px)]" />
+              <Logo weight="regular" tagline className="w-full max-w-[360px] text-cream" />
             </div>
             <div className="lg:col-span-7">
-              <Eyebrow>06 — About ALVN</Eyebrow>
-              <h2 className="headline mt-5 text-4xl sm:text-5xl">About ALVN</h2>
+              <Eyebrow>06 — About build</Eyebrow>
+              <h2 className="headline mt-5 text-4xl sm:text-5xl">About build</h2>
               <p className="mt-8 max-w-2xl text-xl leading-relaxed text-pretty sm:text-2xl">
-                ALVN is my digital product portfolio — a place where I showcase the websites, applications, experiments, and ideas I’ve
+                This is build, my digital product portfolio: a place where I showcase the websites, applications, experiments, and ideas I’ve
                 turned into working products.
               </p>
               <p className="mt-5 max-w-xl text-lg text-muted">
                 I enjoy taking an idea from a rough concept and turning it into something people can actually use.
               </p>
               <ButtonLink href="/about" variant="outline" className="mt-10">
-                More about ALVN
+                More about build
               </ButtonLink>
             </div>
           </div>

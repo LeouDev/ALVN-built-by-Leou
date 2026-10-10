@@ -4,10 +4,10 @@ import type { Invoice } from "@/lib/invoices-db";
 import { longDate, php } from "@/lib/invoices";
 import { registerPdfFonts } from "@/lib/pdf-fonts";
 
-const navy = "#071A2D";
-const muted = "#5F6B7E";
-const accent = "#F47721";
-const line = "#D7DADF";
+const navy = "#0E0E0E";
+const muted = "#66635C";
+const accent = "#0E0E0E";
+const line = "#DAD7D0";
 
 const s = StyleSheet.create({
   page: { paddingTop: 48, paddingBottom: 64, paddingHorizontal: 56, fontFamily: ["Manrope", "Geist"], fontSize: 10, lineHeight: 1.5, color: navy },
@@ -85,7 +85,7 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
             </View>
           ))}
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 14 }}>
-            <View style={{ width: 240, backgroundColor: "#F7F3EA", borderRadius: 10, padding: 14, flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ width: 240, backgroundColor: "#F2EFE8", borderRadius: 10, padding: 14, flexDirection: "row", justifyContent: "space-between" }}>
               <Text style={{ fontWeight: 700 }}>{paid ? "Total paid" : "Total due"}</Text>
               <Text style={{ fontWeight: 700, fontSize: 13 }}>{php(inv.total)}</Text>
             </View>

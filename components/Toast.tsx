@@ -16,7 +16,7 @@ export function Toast({ message, tone }: { message: string; tone: "success" | "e
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className="fixed inset-x-4 top-20 z-50 mx-auto flex max-w-md animate-[fade-up_300ms_ease-out] items-start gap-3 rounded-2xl bg-navy px-5 py-4 text-cream shadow-2xl"
+      className="fixed inset-x-4 top-20 z-50 mx-auto flex max-w-md animate-[fade-up_300ms_ease-out] items-start gap-3 rounded-2xl bg-navy on-dark px-5 py-4 text-cream shadow-2xl"
     >
       <Icon aria-hidden className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-accent" : "text-[#ffb4a9]"}`} />
       <p className="flex-1 text-sm leading-relaxed">{message}</p>

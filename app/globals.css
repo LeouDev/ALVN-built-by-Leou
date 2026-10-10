@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
+/* The build palette: black ink on off-white. The token names are the ALVN ones, kept so no class had to change:
+   "navy" is the ink, "cream" the off-white. "accent" is the contrast colour of the surface it's on: ink on light
+   pages, off-white inside .on-dark sections (see below), with "on-accent" as the text on top of it. */
 @theme {
-  --color-navy: #071a2d;
-  --color-navy-soft: #0d2942;
-  --color-accent: #f47721;
-  --color-cream: #f7f3ea;
-  --color-paper: #fefbf0; /* the logo artwork's own background */
-  --color-muted: #5f6b7e; /* brand #667085, nudged darker to keep 4.5:1 contrast on cream */
-  --color-line: rgb(7 26 45 / 0.12);
-  --color-logo-cream: #ede4d3; /* the wordmark on navy */
-  --color-tag-grey: #c9c3b6; /* the logo tagline on navy */
+  --color-navy: #0e0e0e;
+  --color-navy-soft: #2b2b2a;
+  --color-accent: #0e0e0e;
+  --color-on-accent: #f2efe8;
+  --color-cream: #f2efe8;
+  --color-paper: #faf8f3;
+  --color-muted: #66635c; /* 5:1 on cream */
+  --color-line: rgb(14 14 14 / 0.12);
 
   --animate-fade-up: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-fade-in: fade-in 1.4s ease-out both;
@@ -19,7 +21,7 @@
 
 @theme inline {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-logo: var(--font-oleo), cursive;
+  --font-display: var(--font-jost), var(--font-manrope), ui-sans-serif, sans-serif;
 }
 
 @keyframes fade-up {
@@ -39,10 +41,10 @@
   @apply mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28;
 }
 @utility eyebrow {
-  @apply inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.22em] text-muted uppercase;
+  @apply inline-flex items-center gap-3 font-display text-[11px] font-semibold tracking-[0.22em] text-muted uppercase;
 }
 @utility headline {
-  @apply font-semibold leading-[0.95] tracking-[-0.045em] text-balance;
+  @apply font-display font-medium leading-[0.95] tracking-[-0.03em] text-balance;
 }
 
 @layer base {
@@ -53,13 +55,22 @@
     @apply bg-cream text-navy antialiased;
     overflow-x: clip;
   }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
   ::selection {
-    background: var(--color-accent);
-    color: var(--color-navy);
+    background: var(--color-navy);
+    color: var(--color-cream);
   }
   :focus-visible {
     outline: 2px solid var(--color-navy);
     outline-offset: 3px;
+  }
+  .on-dark {
+    --color-accent: #f2efe8;
+    --color-on-accent: #0e0e0e;
   }
   .on-dark :focus-visible {
     outline-color: var(--color-cream);
@@ -86,13 +97,13 @@
 /* Home hero: full screen, laid out in px of the 1586 × 992 design (one px = --u), so it scales like a poster. */
 .hero {
   --u: min(calc(100vw / 1586), calc(100svh / 992));
-  --hero-text: rgb(237 228 211 / 0.78);
+  --hero-text: rgb(242 239 232 / 0.78);
   position: relative;
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  background: #04080e;
-  color: #f3ecdf;
+  background: #050505;
+  color: #f2efe8;
 }
 /* 125% of the screen tall, from its top edge, so the image's horizon (48% down it) sits ~60% down the screen. */
 .hero-bg {
@@ -118,14 +129,14 @@
   place-items: center;
   width: max(32px, calc(40 * var(--u)));
   aspect-ratio: 1;
-  border: 1px solid rgb(237 228 211 / 0.35);
+  border: 1px solid rgb(242 239 232 / 0.35);
   border-radius: 50%;
-  background: rgb(4 8 14 / 0.35);
+  background: rgb(5 5 5 / 0.35);
   color: var(--hero-text);
   transition: color 0.15s, border-color 0.15s;
 }
 .hero-pause:hover {
-  border-color: rgb(237 228 211 / 0.7);
+  border-color: rgb(242 239 232 / 0.7);
   color: #fff;
 }
 .hero-pause svg {
@@ -146,18 +157,18 @@
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    rgb(4 8 14 / 0.8),
-    rgb(4 8 14 / 0.5) 34%,
-    rgb(4 8 14 / 0) 56%,
-    rgb(4 8 14 / 0.12) 64%,
-    rgb(4 8 14 / 0.62) 82%,
-    rgb(4 8 14 / 0.92)
+    rgb(5 5 5 / 0.8),
+    rgb(5 5 5 / 0.5) 34%,
+    rgb(5 5 5 / 0) 56%,
+    rgb(5 5 5 / 0.12) 64%,
+    rgb(5 5 5 / 0.62) 82%,
+    rgb(5 5 5 / 0.92)
   );
 }
 .hero-sub,
 .hero-more,
 .hero-proof {
-  text-shadow: 0 1px 14px rgb(4 8 14 / 0.75);
+  text-shadow: 0 1px 14px rgb(5 5 5 / 0.75);
 }
 .hero-bar {
   position: absolute;
@@ -212,11 +223,11 @@
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--color-navy);
+  color: var(--color-on-accent);
   transition: background-color 0.15s;
 }
 .hero-cta:hover {
-  background: #ff8a3d;
+  background: color-mix(in oklab, var(--color-accent) 85%, transparent);
 }
 .hero-bar .hero-cta {
   position: absolute;
@@ -242,12 +253,12 @@
 }
 .hero-logo {
   display: block;
-  font-size: calc(180 * var(--u));
+  width: calc(470 * var(--u));
 }
 .hero-title {
   margin-top: calc(12 * var(--u));
   font-size: calc(58 * var(--u));
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.07;
   letter-spacing: -0.025em;
 }
@@ -275,7 +286,7 @@
   align-items: center;
   gap: calc(30 * var(--u));
   padding: calc(8 * var(--u)) 0;
-  border-bottom: 1px solid rgb(237 228 211 / 0.7);
+  border-bottom: 1px solid rgb(242 239 232 / 0.7);
   font-size: calc(20 * var(--u));
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -310,14 +321,14 @@
   content: "";
   width: calc(290 * var(--u));
   height: 1px;
-  background: rgb(237 228 211 / 0.4);
+  background: rgb(242 239 232 / 0.4);
 }
 .hero-proof-names {
   display: flex;
   font-size: calc(20 * var(--u));
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: rgb(237 228 211 / 0.88);
+  color: rgb(242 239 232 / 0.88);
 }
 .hero-proof-names span + span::before {
   content: "·";
@@ -366,11 +377,11 @@
   .hero::after {
     background: linear-gradient(
       to bottom,
-      rgb(4 8 14 / 0.82),
-      rgb(4 8 14 / 0.72) 45%,
-      rgb(4 8 14 / 0.5) 68%,
-      rgb(4 8 14 / 0.55) 80%,
-      rgb(4 8 14 / 0.88)
+      rgb(5 5 5 / 0.82),
+      rgb(5 5 5 / 0.72) 45%,
+      rgb(5 5 5 / 0.5) 68%,
+      rgb(5 5 5 / 0.55) 80%,
+      rgb(5 5 5 / 0.88)
     );
   }
   .hero-bar {
@@ -414,7 +425,7 @@
     padding-top: 44px;
   }
   .hero-logo {
-    font-size: min(30vw, 190px);
+    width: min(78vw, 470px);
   }
   .hero-title {
     margin-top: 18px;

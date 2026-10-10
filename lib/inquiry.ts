@@ -78,25 +78,25 @@ export function inquiryEmail(i: Inquiry) {
   const text = [...rows.map(([k, v]) => `${k}: ${v}`), "", i.message, "", "Reply to this email to respond directly."].join("\n");
 
   const cell = (k: string, v: string) =>
-    k === "Email" ? `<a href="mailto:${escapeHtml(v)}" style="color:#071A2D">${escapeHtml(v)}</a>` : escapeHtml(v);
+    k === "Email" ? `<a href="mailto:${escapeHtml(v)}" style="color:#0E0E0E">${escapeHtml(v)}</a>` : escapeHtml(v);
   const html = `<!doctype html>
-<html><body style="margin:0;padding:0;background:#F7F3EA">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EA;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#071A2D">
+<html><body style="margin:0;padding:0;background:#F2EFE8">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EFE8;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0E0E0E">
 <tr><td align="center">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
-    <tr><td style="background:#071A2D;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">New project inquiry</div>
-      <div style="margin-top:10px;font-size:22px;font-weight:700;color:#F7F3EA">${escapeHtml(i.projectType)} · ${escapeHtml(i.name)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
+    <tr><td style="background:#0E0E0E;padding:28px 32px">
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0E0E0E">New project inquiry</div>
+      <div style="margin-top:10px;font-size:22px;font-weight:700;color:#F2EFE8">${escapeHtml(i.projectType)} · ${escapeHtml(i.name)}</div>
     </td></tr>
     <tr><td style="padding:28px 32px">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.5">
-        ${rows.map(([k, v]) => `<tr><td style="padding:7px 0;width:96px;color:#5F6B7E;vertical-align:top">${k}</td><td style="padding:7px 0;font-weight:600">${cell(k, v)}</td></tr>`).join("\n        ")}
+        ${rows.map(([k, v]) => `<tr><td style="padding:7px 0;width:96px;color:#66635C;vertical-align:top">${k}</td><td style="padding:7px 0;font-weight:600">${cell(k, v)}</td></tr>`).join("\n        ")}
       </table>
-      <div style="margin-top:24px;padding:20px 22px;background:#F7F3EA;border-radius:14px;font-size:15px;line-height:1.65">${escapeHtml(i.message).replace(/\r?\n/g, "<br>")}</div>
-      <p style="margin:24px 0 0;font-size:13px;color:#5F6B7E">Reply to this email to respond to ${escapeHtml(i.name)} directly.</p>
+      <div style="margin-top:24px;padding:20px 22px;background:#F2EFE8;border-radius:14px;font-size:15px;line-height:1.65">${escapeHtml(i.message).replace(/\r?\n/g, "<br>")}</div>
+      <p style="margin:24px 0 0;font-size:13px;color:#66635C">Reply to this email to respond to ${escapeHtml(i.name)} directly.</p>
     </td></tr>
   </table>
-  <p style="margin:16px 0 0;font-size:12px;color:#5F6B7E">ALVN — Built by Leou · Sent from the inquiry form</p>
+  <p style="margin:16px 0 0;font-size:12px;color:#66635C">build — Built by Leou · Sent from the inquiry form</p>
 </td></tr>
 </table>
 </body></html>`;

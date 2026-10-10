@@ -82,43 +82,43 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, { reminder = false,
     "",
     "Thank you,",
     "Leou",
-    `ALVN — Built by Leou · ${siteUrl}`,
+    `build — Built by Leou · ${siteUrl}`,
   ].join("\n");
 
   const html = `<!doctype html>
-<html><body style="margin:0;padding:0;background:#F7F3EA">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EA;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#071A2D">
+<html><body style="margin:0;padding:0;background:#F2EFE8">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EFE8;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0E0E0E">
 <tr><td align="center">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
-    <tr><td style="padding:0 4px 20px"><img src="${esc(siteUrl)}/brand/alvn-wordmark.png" width="112" height="33" alt="ALVN" style="display:block;border:0"></td></tr>
+    <tr><td style="padding:0 4px 20px"><img src="${esc(siteUrl)}/brand/alvn-wordmark.png" width="112" height="33" alt="build" style="display:block;border:0"></td></tr>
   </table>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(7,26,45,0.12);border-radius:20px;overflow:hidden">
-    <tr><td style="background:#071A2D;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#F47721">${reminder ? "Payment reminder" : "Billing statement"} · ${esc(inv.number)}</div>
-      <div style="margin-top:10px;font-size:28px;line-height:1.2;font-weight:700;color:#F7F3EA">${esc(php(inv.total))}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
+    <tr><td style="background:#0E0E0E;padding:28px 32px">
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0E0E0E">${reminder ? "Payment reminder" : "Billing statement"} · ${esc(inv.number)}</div>
+      <div style="margin-top:10px;font-size:28px;line-height:1.2;font-weight:700;color:#F2EFE8">${esc(php(inv.total))}</div>
       <div style="margin-top:6px;font-size:15px;color:#CFCCC4">Due ${esc(due)}</div>
     </td></tr>
     <tr><td style="padding:28px 32px 32px">
       <p style="margin:0;font-size:16px;line-height:1.6">Hi ${esc(first)},</p>
       <p style="margin:12px 0 0;font-size:16px;line-height:1.6">${esc(intro)}</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;font-size:15px;line-height:1.5">
-        ${inv.items.map((i) => `<tr><td style="padding:9px 0;border-bottom:1px solid rgba(7,26,45,0.1)">${esc(i.description)}</td><td align="right" style="padding:9px 0 9px 16px;border-bottom:1px solid rgba(7,26,45,0.1);white-space:nowrap">${esc(php(i.amount))}</td></tr>`).join("\n        ")}
+        ${inv.items.map((i) => `<tr><td style="padding:9px 0;border-bottom:1px solid rgba(14,14,14,0.1)">${esc(i.description)}</td><td align="right" style="padding:9px 0 9px 16px;border-bottom:1px solid rgba(14,14,14,0.1);white-space:nowrap">${esc(php(i.amount))}</td></tr>`).join("\n        ")}
         <tr><td style="padding:12px 0 0;font-weight:700">Total due</td><td align="right" style="padding:12px 0 0 16px;font-weight:700;white-space:nowrap">${esc(php(inv.total))}</td></tr>
       </table>
       ${
         inv.notes || scan
-          ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#F7F3EA;border-radius:14px"><tr><td style="padding:18px 20px">
-        <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#5F6B7E">How to pay</div>
+          ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#F2EFE8;border-radius:14px"><tr><td style="padding:18px 20px">
+        <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#66635C">How to pay</div>
         ${inv.notes ? `<div style="margin-top:8px;font-size:15px;line-height:1.6">${esc(inv.notes).replace(/\n/g, "<br>")}</div>` : ""}
-        ${scan ? `<div style="margin-top:8px;font-size:14px;line-height:1.6;color:#5F6B7E">${scan}</div>` : ""}
+        ${scan ? `<div style="margin-top:8px;font-size:14px;line-height:1.6;color:#66635C">${scan}</div>` : ""}
       </td></tr></table>`
           : ""
       }
-      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#5F6B7E">Questions? Just reply to this email.</p>
+      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#66635C">Questions? Just reply to this email.</p>
       <p style="margin:20px 0 0;font-size:16px;line-height:1.6">Thank you,<br><strong>Leou</strong></p>
     </td></tr>
   </table>
-  <p style="margin:16px 0 0;font-size:12px;color:#5F6B7E">ALVN — Built by Leou · <a href="${esc(siteUrl)}" style="color:#5F6B7E">${esc(siteUrl.replace(/^https?:\/\//, ""))}</a></p>
+  <p style="margin:16px 0 0;font-size:12px;color:#66635C">build — Built by Leou · <a href="${esc(siteUrl)}" style="color:#66635C">${esc(siteUrl.replace(/^https?:\/\//, ""))}</a></p>
 </td></tr>
 </table>
 </body></html>`;

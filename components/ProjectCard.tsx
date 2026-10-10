@@ -9,7 +9,7 @@ export function ProjectCard({ project, size = "md" }: { project: Project; size?:
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className={`group flex h-full flex-col rounded-[28px] border border-line bg-white/55 p-2 transition duration-500 ease-out hover:-translate-y-1 hover:border-navy/20 hover:bg-white/80 hover:shadow-[0_30px_60px_-30px_rgb(7_26_45/0.35)] active:scale-[0.99] ${
+      className={`group flex h-full flex-col rounded-[28px] border border-line bg-white/55 p-2 transition duration-500 ease-out hover:-translate-y-1 hover:border-navy/20 hover:bg-white/80 hover:shadow-[0_30px_60px_-30px_rgb(14_14_14/0.35)] active:scale-[0.99] ${
         lg ? "lg:grid lg:grid-cols-12" : ""
       }`}
     >
