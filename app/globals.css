@@ -119,6 +119,14 @@
   object-position: 50% 0;
   translate: -50% 0;
 }
+/* Ask AI (components/AskAI.tsx): bottom-left, mirroring the pause button; the narrow box puts the icons under
+   the label. On phones it follows the buttons instead (below). */
+.hero-ask {
+  position: absolute;
+  left: calc(17 * var(--u));
+  bottom: calc(24 * var(--u));
+  width: 190px;
+}
 /* Pause / play for the video (bottom-right, clear of the Trusted by row). */
 .hero-pause {
   position: absolute;
@@ -440,6 +448,12 @@
   .hero-actions {
     gap: 22px;
     margin-top: 26px;
+  }
+  .hero-ask {
+    position: static;
+    width: auto;
+    margin-top: 26px;
+    justify-content: center;
   }
   .hero-actions .hero-cta {
     height: 48px;

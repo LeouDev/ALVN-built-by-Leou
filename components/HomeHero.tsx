@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { AskAI } from "@/components/AskAI";
 import { HeroVideo } from "@/components/HeroVideo";
 import { Logo } from "@/components/Logo";
 import { MenuButton } from "@/components/Nav";
@@ -63,6 +64,7 @@ export function HomeHero({ clients }: { clients: string[] }) {
             View Work <ArrowRight aria-hidden />
           </a>
         </div>
+        <AskAI dark className="hero-ask animate-fade-up [animation-delay:370ms]" />
       </div>
 
       <a href="#testimonials" className="hero-proof animate-fade-up [animation-delay:420ms]">

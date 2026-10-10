@@ -1,3 +1,4 @@
+import { AskAI } from "@/components/AskAI";
 import { Logo } from "@/components/Logo";
 import { NavLink } from "@/components/NavLink";
 import { ButtonLink } from "@/components/ui";
@@ -21,6 +22,7 @@ export function Footer() {
               Start a Project
             </ButtonLink>
           </div>
+          <AskAI className="mt-8" />
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 md:col-span-5 md:col-start-8">
           <div>
