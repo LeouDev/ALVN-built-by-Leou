@@ -267,6 +267,49 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/LeouDev/POS",
   },
   {
+    id: "hireme",
+    slug: "hireme",
+    name: "Hire Me!",
+    tagline: "A marketplace for hiring skilled workers in Cebu, from first message to finished job.",
+    result: "From idea to a working marketplace, launching in Cebu",
+    description:
+      "A marketplace for skilled workers in the Philippines, starting in Cebu. Customers find plumbers, electricians, carpenters and other professionals, request quotations, sign contracts, book and pay. Each professional gets a shareable page and a dashboard for inquiries, quotations, contracts, availability and bookings.",
+    categories: ["web-app"],
+    status: "in-development", // MVP built and deployed; online payments run in PayMongo test mode until the merchant account is approved
+    year: 2026,
+    featured: false,
+    // Screens are the public pages, signed out.
+    coverImage: "/projects/hireme/desktop-1.webp",
+    logo: "/projects/hireme/icon.png",
+    gallery: [
+      { src: "/projects/hireme/desktop-2.webp", alt: "Popular service categories on the home page", kind: "desktop" },
+      { src: "/projects/hireme/desktop-3.webp", alt: "How it works, for customers and for professionals", kind: "desktop" },
+      { src: "/projects/hireme/desktop-4.webp", alt: "How the platform keeps verification, reviews, agreements and payments honest", kind: "desktop" },
+      { src: "/projects/hireme/desktop-5.webp", alt: "All twelve service categories", kind: "desktop" },
+      { src: "/projects/hireme/desktop-6.webp", alt: "The page for professionals joining the marketplace", kind: "desktop" },
+      { src: "/projects/hireme/mobile-1.webp", alt: "The home page on a phone", kind: "mobile" },
+      { src: "/projects/hireme/mobile-2.webp", alt: "Service categories on a phone", kind: "mobile" },
+      { src: "/projects/hireme/mobile-3.webp", alt: "The page for professionals on a phone", kind: "mobile" },
+    ],
+    technologies: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router", "TanStack Query", "React Hook Form", "Zod", "Supabase", "PostgreSQL", "PayMongo", "Vercel", "Vitest"],
+    platforms: ["Web"],
+    features: [
+      { icon: "compass", title: "Find a professional", description: "Search by service, area and date, or browse twelve categories from plumbing to home maintenance." },
+      { icon: "share", title: "A page to share", description: "Every professional gets their own link to post on Facebook, Messenger, WhatsApp or a business card." },
+      { icon: "quote", title: "Quotations and contracts", description: "Itemized quotations, then a contract both sides sign online. Accepted quotes and signed versions can’t be changed." },
+      { icon: "calendar", title: "Bookings", description: "Working hours, blocked days and upcoming jobs in one calendar. The database makes double-booking impossible." },
+      { icon: "card", title: "Payments", description: "Card, GCash and Maya through PayMongo. A booking is only marked paid once the payment is confirmed on the server." },
+      { icon: "shield", title: "Trust you can check", description: "Identity and license documents reviewed by the team, and reviews only from customers with completed bookings." },
+    ],
+    challenge:
+      "Skilled workers in Cebu mostly find customers through Facebook posts and word of mouth, so quotes, agreements and schedules end up scattered across chats, and customers have little to go on when choosing who to hire.",
+    solution:
+      "A React and Supabase marketplace where the business rules live in Postgres, not the browser. Every status change goes through a database function that checks who is asking and whether the step is allowed; money is counted in whole centavos; an exclusion constraint rules out double-booking; and signed contracts are locked against edits. Row Level Security limits each person to their own data, and the database tests run the real migrations.",
+    role: "Concept, product design, and development.",
+    liveUrl: "https://hire-me-marketplace.vercel.app",
+    githubUrl: "https://github.com/LeouDev/HireMe",
+  },
+  {
     id: "dataverse",
     slug: "dataverse",
     name: "DataVerse",
