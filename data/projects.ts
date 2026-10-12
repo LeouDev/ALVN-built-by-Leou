@@ -277,7 +277,7 @@ export const projects: Project[] = [
     categories: ["web-app"],
     status: "in-development", // MVP built and deployed; online payments run in PayMongo test mode until the merchant account is approved
     year: 2026,
-    featured: false,
+    featured: true,
     // Screens are the public pages, signed out.
     coverImage: "/projects/hireme/desktop-1.webp",
     logo: "/projects/hireme/icon.png",
