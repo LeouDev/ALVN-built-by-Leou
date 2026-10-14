@@ -11,7 +11,7 @@ function branded({ eyebrow, title, paragraphs, button, siteUrl }: { eyebrow: str
   </table>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
     <tr><td style="background:#0E0E0E;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0E0E0E">${esc(eyebrow)}</div>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#BDB9B0">${esc(eyebrow)}</div>
       <div style="margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:#F2EFE8">${esc(title)}</div>
     </td></tr>
     <tr><td style="padding:28px 32px 32px">

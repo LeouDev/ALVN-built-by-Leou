@@ -13,13 +13,14 @@ export type Invoice = InvoiceInput & {
   status: InvoiceStatus;
   sent_at: Date | null;
   paid_at: Date | null;
+  receipt_sent_at: Date | null;
   created_at: Date;
   updated_at: Date;
 };
 
 // Dates come back as "YYYY-MM-DD" text, like the projects table.
 const columns = sql`id, seq, number, project_id, client_name, client_email, client_company, items, total,
-  issue_date::text, due_date::text, notes, status, sent_at, paid_at, created_at, updated_at`;
+  issue_date::text, due_date::text, notes, status, sent_at, paid_at, receipt_sent_at, created_at, updated_at`;
 
 export async function listInvoices(projectId?: number) {
   return sql<(Invoice & { project_name: string | null })[]>`
@@ -76,6 +77,10 @@ export async function markPaid(id: number) {
     )
     select count(*)::int as n from inv`;
   return row.n > 0;
+}
+
+export async function markReceiptSent(id: number) {
+  await sql`update alvn.invoices set receipt_sent_at = now(), updated_at = now() where id = ${id} and status = 'paid'`;
 }
 
 export async function voidInvoice(id: number) {

@@ -3,15 +3,17 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin";
 import { provider } from "@/lib/contracts-db";
-import { renderInvoicePdf } from "@/lib/invoice-pdf";
-import { invoiceEmail, parseInvoice } from "@/lib/invoices";
-import { createInvoice, deleteDraft, getInvoice, getPaymentQr, markPaid, markSent, setPaymentQr, updateDraft, voidInvoice } from "@/lib/invoices-db";
+import { getProject } from "@/lib/client-projects-db";
+import { renderInvoicePdf, renderReceiptPdf } from "@/lib/invoice-pdf";
+import { invoiceEmail, manilaDate, parseInvoice, receiptEmail } from "@/lib/invoices";
+import { createInvoice, deleteDraft, getInvoice, getPaymentQr, markPaid, markReceiptSent, markSent, setPaymentQr, updateDraft, voidInvoice } from "@/lib/invoices-db";
 import { callScript } from "@/lib/script";
 import { site } from "@/lib/site";
 
 type FormState = { error: string; values?: Record<string, FormDataEntryValue[]> } | null;
 
-const notice = (id: number, kind: "saved" | "sent" | "reminded" | "paid" | "failed") => `/admin/invoices/${id}?notice=${kind}&t=${Date.now()}`;
+type Notice = "saved" | "sent" | "reminded" | "paid" | "paid-sent" | "paid-unsent" | "receipt-sent" | "receipt-failed" | "failed";
+const notice = (id: number, kind: Notice) => `/admin/invoices/${id}?notice=${kind}&t=${Date.now()}`;
 
 /** Creates (id = null) or updates a draft invoice. On a validation error it returns what was submitted. */
 export async function saveInvoice(projectId: number | null, id: number | null, _state: FormState, form: FormData): Promise<FormState> {
@@ -51,10 +53,42 @@ export async function sendInvoice(id: number) {
   redirect(notice(id, reminder ? "reminded" : "sent"));
 }
 
-export async function markPaidAction(id: number) {
+/** Records the payment; with "notify" ticked in the dialog, also emails the client the acknowledgement receipt. */
+export async function markPaidAction(id: number, form: FormData) {
   await requireAdmin();
-  await markPaid(id);
-  redirect(notice(id, "paid"));
+  const marked = await markPaid(id);
+  if (!marked || form.get("notify") !== "on") redirect(notice(id, "paid"));
+  redirect(notice(id, (await emailReceipt(id)) ? "paid-sent" : "paid-unsent"));
+}
+
+/** Sends (or re-sends) the acknowledgement for an invoice that's already paid. */
+export async function sendReceipt(id: number) {
+  await requireAdmin();
+  redirect(notice(id, (await emailReceipt(id)) ? "receipt-sent" : "receipt-failed"));
+}
+
+/** Emails the acknowledgement receipt with its PDF from Leou's Gmail; false if it couldn't be sent. */
+async function emailReceipt(id: number) {
+  const inv = await getInvoice(id);
+  if (inv?.status !== "paid" || !inv.paid_at) return false;
+  const project = inv.project_id ? await getProject(inv.project_id) : null;
+  const remaining = project?.budget != null ? Math.max(0, project.budget - project.paid) : null;
+  const sent = await renderReceiptPdf(inv, provider(), site.url)
+    .then((pdf) =>
+      callScript<{ ok?: boolean }>({
+        action: "send",
+        to: inv.client_email,
+        ...receiptEmail(inv, manilaDate(new Date(inv.paid_at!)), site.url, { remaining }),
+        attachments: [{ name: `Acknowledgement Receipt ${inv.number}.pdf`, base64: pdf.toString("base64") }],
+      }),
+    )
+    .catch((err) => {
+      console.error(`[invoices] couldn't send the acknowledgement for ${inv.number}:`, err);
+      return null;
+    });
+  if (!sent?.ok) return false;
+  await markReceiptSent(id);
+  return true;
 }
 
 export async function voidInvoiceAction(id: number) {

@@ -4,7 +4,7 @@ import { useEffect, useId, useRef } from "react";
 import { useFormStatus } from "react-dom";
 
 type Props = {
-  action: () => Promise<void>;
+  action: (form: FormData) => Promise<void>;
   label: string;
   title: string;
   message: string;
@@ -12,10 +12,12 @@ type Props = {
   pendingLabel: string;
   danger?: boolean;
   className: string;
+  /** Extra fields in the dialog (e.g. a checkbox); they're submitted with the action. */
+  children?: React.ReactNode;
 };
 
 /** A button that asks in a pop-up first, then locks while its server action runs, so it can't fire twice. */
-export function ConfirmButton({ action, label, title, message, confirmLabel, pendingLabel, danger, className }: Props) {
+export function ConfirmButton({ action, label, title, message, confirmLabel, pendingLabel, danger, className, children }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   return (
@@ -33,6 +35,7 @@ export function ConfirmButton({ action, label, title, message, confirmLabel, pen
             {title}
           </h2>
           <p className="mt-2 leading-relaxed text-muted">{message}</p>
+          {children}
           <Buttons confirmLabel={confirmLabel} pendingLabel={pendingLabel} danger={danger} onClose={() => dialog.current?.close()} />
         </form>
       </dialog>

@@ -1,7 +1,7 @@
 import { Document, Image, Page, renderToBuffer, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { Provider } from "@/lib/contracts";
 import type { Invoice } from "@/lib/invoices-db";
-import { longDate, php } from "@/lib/invoices";
+import { longDate, manilaDate, php, RECEIPT_NOTE } from "@/lib/invoices";
 import { registerPdfFonts } from "@/lib/pdf-fonts";
 
 const navy = "#0E0E0E";
@@ -25,25 +25,29 @@ function qrSize(png: Buffer) {
   return { width: w * scale, height: h * scale };
 }
 
-function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provider; logo: string; qr: Buffer | null }) {
+// `receipt`: the acknowledgement sent once it's paid, same layout, titled as a receipt and without payment instructions.
+function InvoicePdf({ inv, provider, logo, qr, receipt = false }: { inv: Invoice; provider: Provider; logo: string; qr: Buffer | null; receipt?: boolean }) {
   const paid = inv.status === "paid";
+  const kind = receipt ? "Acknowledgement Receipt" : "Billing Statement";
   const stamp = paid
     ? { text: `PAID${inv.paid_at ? ` · ${new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "Asia/Manila" })}` : ""}`, color: "#067647" }
     : inv.status === "void"
       ? { text: "VOID", color: "#b42318" }
       : null;
   return (
-    <Document title={`Billing Statement ${inv.number}`} author={provider.name} subject={`Billing Statement ${inv.number}`}>
+    <Document title={`${kind} ${inv.number}`} author={provider.name} subject={`${kind} ${inv.number}`}>
       <Page size="A4" style={s.page}>
         <View style={s.header}>
           <Image src={logo} style={{ height: 24 }} />
-          <Text style={s.eyebrow}>Billing statement · {inv.number}</Text>
+          <Text style={s.eyebrow}>
+            {kind} · {inv.number}
+          </Text>
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View>
-            <Text style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.2 }}>Billing Statement</Text>
-            <Text style={{ color: muted, marginTop: 2 }}>{inv.number}</Text>
+            <Text style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.2 }}>{kind}</Text>
+            <Text style={{ color: muted, marginTop: 2 }}>{receipt ? `For billing statement ${inv.number}` : inv.number}</Text>
           </View>
           {stamp && (
             <Text style={{ borderWidth: 1.5, borderColor: stamp.color, color: stamp.color, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 10, fontWeight: 700, letterSpacing: 1.2 }}>
@@ -54,7 +58,7 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
 
         <View style={{ flexDirection: "row", gap: 24, marginTop: 26 }}>
           <View style={{ flex: 1 }}>
-            <Text style={s.label}>Billed to</Text>
+            <Text style={s.label}>{receipt ? "Received from" : "Billed to"}</Text>
             <Text style={{ fontWeight: 700 }}>{inv.client_name}</Text>
             {inv.client_company ? <Text>{inv.client_company}</Text> : null}
             <Text style={{ color: muted }}>{inv.client_email}</Text>
@@ -66,10 +70,21 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
             <Text style={{ color: muted }}>{provider.address}</Text>
           </View>
           <View style={{ width: 130 }}>
-            <Text style={s.label}>Issued</Text>
-            <Text>{longDate(inv.issue_date)}</Text>
-            <Text style={[s.label, { marginTop: 10 }]}>Due</Text>
-            <Text style={{ fontWeight: 700 }}>{longDate(inv.due_date)}</Text>
+            {receipt && inv.paid_at ? (
+              <>
+                <Text style={s.label}>Received</Text>
+                <Text style={{ fontWeight: 700 }}>{longDate(manilaDate(new Date(inv.paid_at)))}</Text>
+                <Text style={[s.label, { marginTop: 10 }]}>Billed</Text>
+                <Text>{longDate(inv.issue_date)}</Text>
+              </>
+            ) : (
+              <>
+                <Text style={s.label}>Issued</Text>
+                <Text>{longDate(inv.issue_date)}</Text>
+                <Text style={[s.label, { marginTop: 10 }]}>Due</Text>
+                <Text style={{ fontWeight: 700 }}>{longDate(inv.due_date)}</Text>
+              </>
+            )}
           </View>
         </View>
 
@@ -86,13 +101,13 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
           ))}
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 14 }}>
             <View style={{ width: 240, backgroundColor: "#F2EFE8", borderRadius: 10, padding: 14, flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ fontWeight: 700 }}>{paid ? "Total paid" : "Total due"}</Text>
+              <Text style={{ fontWeight: 700 }}>{receipt ? "Amount received" : paid ? "Total paid" : "Total due"}</Text>
               <Text style={{ fontWeight: 700, fontSize: 13 }}>{php(inv.total)}</Text>
             </View>
           </View>
         </View>
 
-        {inv.notes || qr ? (
+        {!receipt && (inv.notes || qr) ? (
           <View style={{ marginTop: 30, flexDirection: "row", gap: 20, borderLeftWidth: 3, borderLeftColor: accent, paddingLeft: 14 }} wrap={false}>
             <View style={{ flex: 1 }}>
               <Text style={s.label}>How to pay</Text>
@@ -103,11 +118,12 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
           </View>
         ) : null}
 
-        <Text style={{ marginTop: 36, color: muted }}>Thank you for your business.</Text>
+        <Text style={{ marginTop: 36, color: muted }}>{receipt ? "Thank you for your payment." : "Thank you for your business."}</Text>
+        {receipt ? <Text style={{ marginTop: 6, fontSize: 8, color: muted }}>{RECEIPT_NOTE}</Text> : null}
 
         <View style={s.footer} fixed>
           <Text>
-            {provider.business} · Billing statement {inv.number}
+            {provider.business} · {kind} {inv.number}
           </Text>
           <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
         </View>
@@ -120,4 +136,10 @@ function InvoicePdf({ inv, provider, logo, qr }: { inv: Invoice; provider: Provi
 export async function renderInvoicePdf(inv: Invoice, provider: Provider, origin: string, qr: Buffer | null) {
   registerPdfFonts(origin);
   return renderToBuffer(<InvoicePdf inv={inv} provider={provider} logo={`${origin}/brand/alvn-wordmark.png`} qr={qr} />);
+}
+
+/** Renders the acknowledgement receipt for a paid billing statement. */
+export async function renderReceiptPdf(inv: Invoice, provider: Provider, origin: string) {
+  registerPdfFonts(origin);
+  return renderToBuffer(<InvoicePdf inv={inv} provider={provider} logo={`${origin}/brand/alvn-wordmark.png`} qr={null} receipt />);
 }

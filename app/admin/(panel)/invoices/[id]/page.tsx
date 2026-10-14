@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Download } from "lucide-react";
-import { deleteInvoiceDraft, markPaidAction, sendInvoice, voidInvoiceAction } from "@/app/admin/invoice-actions";
+import { deleteInvoiceDraft, markPaidAction, sendInvoice, sendReceipt, voidInvoiceAction } from "@/app/admin/invoice-actions";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { InvoicePill } from "@/components/ContractStatus";
 import { InvoiceForm } from "@/components/InvoiceForm";
@@ -19,6 +19,10 @@ const notices: Record<string, [string, "success" | "error"]> = {
   sent: ["Invoice sent, with the PDF attached.", "success"],
   reminded: ["Reminder sent, with the invoice attached again.", "success"],
   paid: ["Marked as paid.", "success"],
+  "paid-sent": ["Marked as paid, and the acknowledgement receipt was emailed.", "success"],
+  "paid-unsent": ["Marked as paid, but the acknowledgement couldn’t be sent. Try “Send acknowledgement” again in a minute.", "error"],
+  "receipt-sent": ["Acknowledgement receipt sent.", "success"],
+  "receipt-failed": ["The acknowledgement couldn’t be sent. Google can be slow for a minute after the script is updated, so try again shortly.", "error"],
   failed: ["The invoice couldn’t be sent. Google can be slow for a minute after the script is updated, so try again shortly.", "error"],
 };
 
@@ -139,6 +143,10 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
             <span className={`font-semibold ${inv.paid_at ? "" : "text-muted"}`}>Paid</span>
             {inv.paid_at && <span className="block text-xs text-muted">{at(inv.paid_at)}</span>}
           </li>
+          <li>
+            <span className={`font-semibold ${inv.receipt_sent_at ? "" : "text-muted"}`}>Acknowledgement sent</span>
+            {inv.receipt_sent_at && <span className="block text-xs text-muted">{at(inv.receipt_sent_at)}</span>}
+          </li>
         </ol>
 
         {(inv.status === "draft" || inv.status === "sent") && (
@@ -161,10 +169,34 @@ export default async function InvoicePage({ params, searchParams }: PageProps<"/
             confirmLabel="Mark as paid"
             pendingLabel="Saving…"
             className={plainButton}
+          >
+            <label className="mt-5 flex items-start gap-3 rounded-2xl border border-line bg-white/70 p-4 text-sm">
+              <input type="checkbox" name="notify" defaultChecked className="mt-0.5 size-4 shrink-0 accent-navy" />
+              <span>
+                <span className="block font-semibold">Email {first} an acknowledgement receipt</span>
+                <span className="block text-muted">A thank-you with the receipt PDF goes to {inv.client_email} from your Gmail.</span>
+              </span>
+            </label>
+          </ConfirmButton>
+        )}
+        {inv.status === "paid" && (
+          <ConfirmButton
+            action={sendReceipt.bind(null, inv.id)}
+            label={inv.receipt_sent_at ? "Resend acknowledgement" : "Send acknowledgement"}
+            title={`${inv.receipt_sent_at ? "Resend" : "Send"} the acknowledgement to ${first}?`}
+            message={`The acknowledgement receipt for ${php(inv.total)}, with its PDF attached, goes to ${inv.client_email} from your Gmail.`}
+            confirmLabel={inv.receipt_sent_at ? "Resend" : "Send"}
+            pendingLabel="Sending…"
+            className={plainButton}
           />
         )}
+        {inv.status === "paid" && (
+          <a href={`/admin/invoices/${inv.id}/pdf?receipt=1`} target="_blank" className={`${plainButton} inline-flex items-center justify-center gap-2`}>
+            <Download aria-hidden className="size-4" /> Download receipt
+          </a>
+        )}
         <a href={`/admin/invoices/${inv.id}/pdf`} target="_blank" className={`${plainButton} inline-flex items-center justify-center gap-2`}>
-          <Download aria-hidden className="size-4" /> {inv.status === "draft" ? "Preview PDF" : "Download PDF"}
+          <Download aria-hidden className="size-4" /> {inv.status === "draft" ? "Preview PDF" : inv.status === "paid" ? "Download statement" : "Download PDF"}
         </a>
         {inv.status === "sent" && (
           <ConfirmButton

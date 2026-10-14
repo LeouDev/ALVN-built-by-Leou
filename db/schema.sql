@@ -132,9 +132,12 @@ create table if not exists alvn.invoices (
   status text not null default 'draft' check (status in ('draft', 'sent', 'paid', 'void')),
   sent_at timestamptz,
   paid_at timestamptz,
+  receipt_sent_at timestamptz, -- when the payment acknowledgement was last emailed
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+-- Added after the table was first created; safe to re-run.
+alter table alvn.invoices add column if not exists receipt_sent_at timestamptz;
 create index if not exists invoices_project_id on alvn.invoices (project_id);
 
 -- PNG images uploaded in the admin: 'payment_qr' is the bank QR printed on billing statements.

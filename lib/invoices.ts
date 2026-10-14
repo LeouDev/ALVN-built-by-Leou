@@ -1,4 +1,4 @@
-// Invoices: validation, numbering, totals, and the email a client receives (the PDF is attached).
+// Invoices: validation, numbering, totals, and the emails a client receives (billing statement, then the payment acknowledgement).
 // Keep this file free of imports so `npm test` can load it directly with Node.
 
 export type InvoiceItem = { description: string; amount: number };
@@ -18,6 +18,11 @@ export const invoiceTotal = (items: InvoiceItem[]) => items.reduce((sum, i) => s
 export const php = (amount: number) => `PHP ${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export const longDate = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+/** A moment as its "YYYY-MM-DD" date in Manila (where payments are received), for longDate. */
+export const manilaDate = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Manila" }).format(d);
+
+/** On acknowledgements: these confirm a payment, they don't replace a BIR-registered invoice. */
+export const RECEIPT_NOTE = "This acknowledges a payment received. It is not a BIR-registered invoice or official receipt.";
 
 export function parseInvoice(form: FormData): InvoiceInput | { error: string } {
   const get = (key: string) => {
@@ -94,7 +99,7 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, { reminder = false,
   </table>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
     <tr><td style="background:#0E0E0E;padding:28px 32px">
-      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#0E0E0E">${reminder ? "Payment reminder" : "Billing statement"} · ${esc(inv.number)}</div>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#BDB9B0">${reminder ? "Payment reminder" : "Billing statement"} · ${esc(inv.number)}</div>
       <div style="margin-top:10px;font-size:28px;line-height:1.2;font-weight:700;color:#F2EFE8">${esc(php(inv.total))}</div>
       <div style="margin-top:6px;font-size:15px;color:#CFCCC4">Due ${esc(due)}</div>
     </td></tr>
@@ -125,3 +130,66 @@ export function invoiceEmail(inv: Sendable, siteUrl: string, { reminder = false,
 
   return { subject, text, html };
 }
+
+/**
+ * The thank-you a client gets once a billing statement is marked paid; the acknowledgement receipt PDF is attached.
+ * `remaining` is what's still to collect on the linked project (0 = fully paid), or null when there's no project budget.
+ */
+export function receiptEmail(inv: Sendable, paidOn: string, siteUrl: string, { remaining = null }: { remaining?: number | null } = {}) {
+  const first = inv.client_name.split(" ")[0];
+  const when = longDate(paidOn);
+  const subject = `Payment received: ${inv.number} (${php(inv.total)})`;
+  const intro = `Thank you! This confirms I received your payment of ${php(inv.total)} for billing statement ${inv.number} on ${when}. The acknowledgement receipt is attached for your records.`;
+  const balance = remaining == null ? "" : remaining > 0 ? `${php(remaining)} remains on the project.` : "With this payment, the project is fully paid.";
+  const text = [
+    `Hi ${first},`,
+    "",
+    intro,
+    "",
+    ...inv.items.map((i) => `- ${i.description}: ${php(i.amount)}`),
+    `Total paid: ${php(inv.total)}`,
+    ...(balance ? ["", balance] : []),
+    "",
+    "Questions? Just reply to this email.",
+    "",
+    "Thank you,",
+    "Leou",
+    `build — Built by Leou · ${siteUrl}`,
+    "",
+    RECEIPT_NOTE,
+  ].join("\n");
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#F2EFE8">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EFE8;padding:32px 16px;font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#0E0E0E">
+<tr><td align="center">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
+    <tr><td style="padding:0 4px 20px"><img src="${esc(siteUrl)}/brand/alvn-wordmark.png" width="112" height="33" alt="build" style="display:block;border:0"></td></tr>
+  </table>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border:1px solid rgba(14,14,14,0.12);border-radius:20px;overflow:hidden">
+    <tr><td style="background:#0E0E0E;padding:28px 32px">
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:#BDB9B0">Payment received · ${esc(inv.number)}</div>
+      <div style="margin-top:10px;font-size:28px;line-height:1.2;font-weight:700;color:#F2EFE8">${esc(php(inv.total))}</div>
+      <div style="margin-top:6px;font-size:15px;color:#CFCCC4">Received ${esc(when)}</div>
+    </td></tr>
+    <tr><td style="padding:28px 32px 32px">
+      <p style="margin:0;font-size:16px;line-height:1.6">Hi ${esc(first)},</p>
+      <p style="margin:12px 0 0;font-size:16px;line-height:1.6">${esc(intro)}</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;font-size:15px;line-height:1.5">
+        ${inv.items.map((i) => `<tr><td style="padding:9px 0;border-bottom:1px solid rgba(14,14,14,0.1)">${esc(i.description)}</td><td align="right" style="padding:9px 0 9px 16px;border-bottom:1px solid rgba(14,14,14,0.1);white-space:nowrap">${esc(php(i.amount))}</td></tr>`).join("\n        ")}
+        <tr><td style="padding:12px 0 0;font-weight:700">Total paid</td><td align="right" style="padding:12px 0 0 16px;font-weight:700;white-space:nowrap">${esc(php(inv.total))}</td></tr>
+      </table>
+      ${balance ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#F2EFE8;border-radius:14px"><tr><td style="padding:16px 20px;font-size:15px;line-height:1.6">${esc(balance)}</td></tr></table>` : ""}
+      <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#66635C">Questions? Just reply to this email.</p>
+      <p style="margin:20px 0 0;font-size:16px;line-height:1.6">Thank you,<br><strong>Leou</strong></p>
+    </td></tr>
+  </table>
+  <p style="margin:16px 0 0;font-size:12px;color:#66635C">build — Built by Leou · <a href="${esc(siteUrl)}" style="color:#66635C">${esc(siteUrl.replace(/^https?:\/\//, ""))}</a></p>
+  <p style="margin:6px 0 0;font-size:11px;color:#8A8780">${esc(RECEIPT_NOTE)}</p>
+</td></tr>
+</table>
+</body></html>`;
+
+  return { subject, text, html };
+}
+
