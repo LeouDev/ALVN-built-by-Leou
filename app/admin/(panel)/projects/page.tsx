@@ -16,10 +16,13 @@ export default async function Projects() {
   const projects = await listProjects();
   const today = todayInManila();
   const open = projects.filter((p) => isOpen(p.stage));
+  const owing = projects.filter((p) => ["contract", "in_progress", "review", "done"].includes(p.stage));
   const stats = [
     ["Open projects", String(open.length)],
     ["Open budget", peso(open.reduce((sum, p) => sum + (p.budget ?? 0), 0))],
     ["Paid on open projects", peso(open.reduce((sum, p) => sum + p.paid, 0))],
+    // Done projects count too: delivered work can still be owed. Leads and proposals are only quotes.
+    ["Still to collect", peso(owing.reduce((sum, p) => sum + Math.max((p.budget ?? 0) - p.paid, 0), 0))],
   ];
 
   return (
@@ -34,7 +37,7 @@ export default async function Projects() {
         </Link>
       </div>
 
-      <dl className="mt-8 grid gap-3 sm:grid-cols-3">
+      <dl className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map(([label, value]) => (
           <div key={label} className="rounded-[22px] border border-line bg-white/60 px-6 py-5">
             <dt className="text-sm text-muted">{label}</dt>
