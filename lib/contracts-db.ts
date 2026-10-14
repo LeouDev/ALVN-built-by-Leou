@@ -94,11 +94,26 @@ export async function markSent(id: number, s: Signature, tokenHash: string, body
   return Boolean(row);
 }
 
-/** A fresh signing link (the old one stops working). */
-export async function replaceToken(id: number, tokenHash: string) {
+/** A fresh signing link (the old one stops working), optionally to a new address. A new address restarts
+ *  the sent and opened record, since the signed PDF's audit trail prints them next to the address. */
+export async function replaceToken(id: number, tokenHash: string, email: string) {
+  // SET reads the row as it was, so client_email here is still the old address.
   const [row] = await sql<{ id: number }[]>`
-    update alvn.contracts set token_hash = ${tokenHash}, updated_at = now() where id = ${id} and status = 'sent' returning id`;
+    update alvn.contracts set token_hash = ${tokenHash}, client_email = ${email},
+      sent_at = case when client_email = ${email} then sent_at else now() end,
+      viewed_at = case when client_email = ${email} then viewed_at end,
+      viewed_ip = case when client_email = ${email} then viewed_ip end,
+      updated_at = now()
+    where id = ${id} and status = 'sent' returning id`;
   return Boolean(row);
+}
+
+/** Puts the link back as it was, when the new one's email didn't go out. */
+export async function restoreLink(c: Contract) {
+  await sql`
+    update alvn.contracts set token_hash = ${c.token_hash}, client_email = ${c.client_email}, sent_at = ${c.sent_at},
+      viewed_at = ${c.viewed_at}, viewed_ip = ${c.viewed_ip}, updated_at = now()
+    where id = ${c.id} and status = 'sent'`;
 }
 
 export async function markViewed(id: number, ip: string) {

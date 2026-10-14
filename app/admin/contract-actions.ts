@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { requestMeta, requireAdmin, todayInManila } from "@/lib/admin";
 import { signRequestEmail } from "@/lib/contract-email";
 import { contractBody, parseSignature, parseTerms } from "@/lib/contracts";
-import { createContract, deleteDraft, getContract, markSent, provider, replaceToken, updateDraft, updateDraftBody, voidContract } from "@/lib/contracts-db";
+import { createContract, deleteDraft, getContract, markSent, provider, replaceToken, restoreLink, updateDraft, updateDraftBody, voidContract } from "@/lib/contracts-db";
 import { callScript } from "@/lib/script";
 import { hashToken, newLoginToken, sha256 } from "@/lib/session";
 import { site } from "@/lib/site";
@@ -12,7 +12,7 @@ import { site } from "@/lib/site";
 type FormState = { error: string; values?: Record<string, string> } | null;
 
 // The contract page shows a pop-up for each notice; `t` makes a repeat of the same notice pop up again.
-const notice = (id: number, kind: "saved" | "sent" | "resent" | "failed") => `/admin/contracts/${id}?notice=${kind}&t=${Date.now()}`;
+const notice = (id: number, kind: "saved" | "sent" | "resent" | "failed" | "bad-email") => `/admin/contracts/${id}?notice=${kind}&t=${Date.now()}`;
 
 /** Creates (id = null) or updates a draft from the terms form, regenerating its text. */
 export async function saveContract(projectId: number | null, id: number | null, _state: FormState, form: FormData): Promise<FormState> {
@@ -58,15 +58,18 @@ export async function signAndSend(id: number, _state: FormState, form: FormData)
   redirect(notice(id, (await emailSigningLink(id, token)) ? "sent" : "failed"));
 }
 
-/** A new link (the old one stops working), e.g. if the client lost the email. */
-export async function resendLink(id: number) {
+/** A new link (the old one stops working), e.g. if the client lost the email or wants it at another address. */
+export async function resendLink(id: number, form: FormData) {
   await requireAdmin();
   const c = await getContract(id);
+  if (!c?.token_hash) redirect(`/admin/contracts/${id}`);
+  const email = String(form.get("email") ?? c.client_email).trim();
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) redirect(notice(id, "bad-email"));
   const token = newLoginToken();
-  if (!c?.token_hash || !(await replaceToken(id, hashToken(token)))) redirect(`/admin/contracts/${id}`);
+  if (!(await replaceToken(id, hashToken(token), email))) redirect(`/admin/contracts/${id}`);
   if (await emailSigningLink(id, token)) redirect(notice(id, "resent"));
   // The new link never reached them, so keep the one they already have working.
-  await replaceToken(id, c.token_hash);
+  await restoreLink(c);
   redirect(notice(id, "failed"));
 }
 

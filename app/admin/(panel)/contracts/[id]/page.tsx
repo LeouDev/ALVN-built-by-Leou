@@ -11,6 +11,7 @@ import { Toast } from "@/components/Toast";
 import { inManila, requireAdmin } from "@/lib/admin";
 import { getContract, provider, type Contract } from "@/lib/contracts-db";
 import { signatureFont } from "@/lib/signature-font";
+import { field } from "@/lib/styles";
 
 const at = (d: Date | null) => (d ? inManila(d, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "");
 const plainButton = "w-full rounded-full border border-line bg-white/70 px-6 py-3.5 text-sm font-semibold transition-colors hover:border-navy/40";
@@ -19,6 +20,7 @@ const notices: Record<string, [string, "success" | "error"]> = {
   saved: ["Draft saved.", "success"],
   sent: ["Signed and sent. Your client has the signing link.", "success"],
   resent: ["New signing link sent. The previous link no longer works.", "success"],
+  "bad-email": ["That email address doesn’t look right, so nothing was sent. The current link still works.", "error"],
   failed: ["The email couldn’t be sent. Google can be slow for a minute after the script is updated, so try again shortly. Any link already sent still works.", "error"],
 };
 
@@ -128,11 +130,19 @@ export default async function ContractPage({ params, searchParams }: PageProps<"
               action={resendLink.bind(null, c.id)}
               label="Send a new link"
               title={`Send ${first} a new signing link?`}
-              message={`We’ll email a fresh link to ${c.client_email}. The link they have now will stop working.`}
+              message="We’ll email a fresh link. The link they have now will stop working."
               confirmLabel="Send new link"
               pendingLabel="Sending…"
               className={plainButton}
-            />
+            >
+              <label className="mt-5 block">
+                <span className="text-sm font-semibold">Send it to</span>
+                <input name="email" type="email" required maxLength={254} defaultValue={c.client_email} className={field} />
+                <span className="mt-2 block text-sm text-muted">
+                  Change it to use another address. The signed copy goes there too; the contract text keeps {c.client_email}.
+                </span>
+              </label>
+            </ConfirmButton>
             <ConfirmButton
               action={voidAction.bind(null, c.id)}
               label="Void contract"
